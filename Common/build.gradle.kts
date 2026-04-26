@@ -1,3 +1,5 @@
+import fuzs.multiloader.extension.packageName
+
 plugins {
     id("fuzs.multiloader.multiloader-convention-plugins-common")
 }
@@ -6,13 +8,9 @@ dependencies {
     modCompileOnlyApi(sharedLibs.forgeconfigapiport.common)
 }
 
-neoForge {
-    validateAccessTransformers = false
-}
-
 multiloader {
     mixins {
-        plugin.set("${project.group}.mixin.MixinConfigPluginImpl")
+        plugin.set("${project.group}.${project.packageName}.mixin.MixinConfigPluginImpl")
         mixin(
             "DataCommandsMixin",
             "EnchantCommandMixin"

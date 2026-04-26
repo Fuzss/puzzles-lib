@@ -1,3 +1,5 @@
+import fuzs.multiloader.extension.packageName
+
 plugins {
     id("fuzs.multiloader.multiloader-convention-plugins-fabric")
 }
@@ -14,7 +16,7 @@ multiloader {
     }
 
     mixins {
-        plugin.set("${project.group}.fabric.mixin.MixinConfigPluginFabricImpl")
+        plugin.set("${project.group}.${project.packageName}.mixin.MixinConfigPluginFabricImpl")
         mixin(
             "AbstractHorseFabricMixin",
             "AnimalFabricMixin",
