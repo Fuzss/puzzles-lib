@@ -12,14 +12,6 @@ import net.minecraft.world.level.block.Block;
  * A utility for managing model and texture locations for blocks and items.
  */
 public final class ModelLocationHelper {
-    /**
-     * The block model / texture path prefix.
-     */
-    public static final String BLOCK_PATH = "block";
-    /**
-     * The item model / texture path prefix.
-     */
-    public static final String ITEM_PATH = "item";
 
     private ModelLocationHelper() {
         // NO-OP
@@ -27,7 +19,7 @@ public final class ModelLocationHelper {
 
     /**
      * @param block the block
-     * @return the default block model location, prefixed with {@link #BLOCK_PATH}
+     * @return the default block model location, prefixed with {@code block/}
      */
     public static Identifier getBlockModel(Block block) {
         return ModelLocationUtils.getModelLocation(block);
@@ -36,7 +28,7 @@ public final class ModelLocationHelper {
     /**
      * @param block  the block
      * @param suffix the block model suffix
-     * @return the block model location, prefixed with {@link #BLOCK_PATH}
+     * @return the block model location, prefixed with {@code block/}
      */
     public static Identifier getBlockModel(Block block, String suffix) {
         return ModelLocationUtils.getModelLocation(block, suffix);
@@ -44,16 +36,16 @@ public final class ModelLocationHelper {
 
     /**
      * @param identifier the block location
-     * @return the default block model location, prefixed with {@link #BLOCK_PATH}
+     * @return the default block model location, prefixed with {@code block/}
      */
     public static Identifier getBlockModel(Identifier identifier) {
-        return identifier.withPrefix(BLOCK_PATH + "/");
+        return identifier.withPrefix("block/");
     }
 
     /**
      * @param identifier the block location
      * @param suffix     the block model suffix
-     * @return the block model location, prefixed with {@link #BLOCK_PATH}
+     * @return the block model location, prefixed with {@code block/}
      */
     public static Identifier getBlockModel(Identifier identifier, String suffix) {
         return getBlockModel(identifier).withSuffix(suffix);
@@ -61,7 +53,7 @@ public final class ModelLocationHelper {
 
     /**
      * @param block the block
-     * @return the default block texture location, prefixed with {@link #BLOCK_PATH}
+     * @return the default block texture location, prefixed with {@code block/}
      */
     public static Material getBlockTexture(Block block) {
         return TextureMapping.getBlockTexture(block);
@@ -70,7 +62,7 @@ public final class ModelLocationHelper {
     /**
      * @param block  the block
      * @param suffix the block texture suffix
-     * @return the block texture location, prefixed with {@link #BLOCK_PATH}
+     * @return the block texture location, prefixed with {@code block/}
      */
     public static Material getBlockTexture(Block block, String suffix) {
         return TextureMapping.getBlockTexture(block, suffix);
@@ -78,19 +70,19 @@ public final class ModelLocationHelper {
 
     /**
      * @param identifier the block location
-     * @return the default block texture location, prefixed with {@link #BLOCK_PATH}
+     * @return the default block texture location, prefixed with {@code block/}
      */
-    public static Identifier getBlockTexture(Identifier identifier) {
-        return identifier.withPrefix(BLOCK_PATH + "/");
+    public static Material getBlockTexture(Identifier identifier) {
+        return new Material(identifier.withPrefix("block/"));
     }
 
     /**
      * @param identifier the block location
      * @param suffix     the block texture suffix
-     * @return the block texture location, prefixed with {@link #BLOCK_PATH}
+     * @return the block texture location, prefixed with {@code block/}
      */
-    public static Identifier getBlockTexture(Identifier identifier, String suffix) {
-        return getBlockTexture(identifier).withSuffix(suffix);
+    public static Material getBlockTexture(Identifier identifier, String suffix) {
+        return new Material(identifier.withPath((String path) -> "block/" + path + suffix));
     }
 
     /**
@@ -120,7 +112,7 @@ public final class ModelLocationHelper {
 
     /**
      * @param item the item
-     * @return the default item model location, prefixed with {@link #ITEM_PATH}
+     * @return the default item model location, prefixed with {@code item/}
      */
     public static Identifier getItemModel(Item item) {
         return ModelLocationUtils.getModelLocation(item);
@@ -129,7 +121,7 @@ public final class ModelLocationHelper {
     /**
      * @param item   the item
      * @param suffix the item model suffix
-     * @return the item model location, prefixed with {@link #ITEM_PATH}
+     * @return the item model location, prefixed with {@code item/}
      */
     public static Identifier getItemModel(Item item, String suffix) {
         return ModelLocationUtils.getModelLocation(item, suffix);
@@ -137,16 +129,16 @@ public final class ModelLocationHelper {
 
     /**
      * @param identifier the item location
-     * @return the default item model location, prefixed with {@link #ITEM_PATH}
+     * @return the default item model location, prefixed with {@code item/}
      */
     public static Identifier getItemModel(Identifier identifier) {
-        return identifier.withPrefix(ITEM_PATH + "/");
+        return identifier.withPrefix("item/");
     }
 
     /**
      * @param identifier the item location
      * @param suffix     the item model suffix
-     * @return the item model location, prefixed with {@link #ITEM_PATH}
+     * @return the item model location, prefixed with {@code item/}
      */
     public static Identifier getItemModel(Identifier identifier, String suffix) {
         return getItemModel(identifier).withSuffix(suffix);
@@ -154,7 +146,7 @@ public final class ModelLocationHelper {
 
     /**
      * @param item the item
-     * @return the default item texture location, prefixed with {@link #ITEM_PATH}
+     * @return the default item texture location, prefixed with {@code item/}
      */
     public static Material getItemTexture(Item item) {
         return TextureMapping.getItemTexture(item);
@@ -163,7 +155,7 @@ public final class ModelLocationHelper {
     /**
      * @param item   the item
      * @param suffix the item texture suffix
-     * @return the item texture location, prefixed with {@link #ITEM_PATH}
+     * @return the item texture location, prefixed with {@code item/}
      */
     public static Material getItemTexture(Item item, String suffix) {
         return TextureMapping.getItemTexture(item, suffix);
@@ -171,19 +163,19 @@ public final class ModelLocationHelper {
 
     /**
      * @param identifier the item location
-     * @return the default item texture location, prefixed with {@link #ITEM_PATH}
+     * @return the default item texture location, prefixed with {@code item/}
      */
-    public static Identifier getItemTexture(Identifier identifier) {
-        return identifier.withPrefix(ITEM_PATH + "/");
+    public static Material getItemTexture(Identifier identifier) {
+        return new Material(identifier.withPrefix("item/"));
     }
 
     /**
      * @param identifier the item location
      * @param suffix     the item texture suffix
-     * @return the item texture location, prefixed with {@link #ITEM_PATH}
+     * @return the item texture location, prefixed with {@code item/}
      */
-    public static Identifier getItemTexture(Identifier identifier, String suffix) {
-        return getItemTexture(identifier).withSuffix(suffix);
+    public static Material getItemTexture(Identifier identifier, String suffix) {
+        return new Material(identifier.withPath((String path) -> "item/" + path + suffix));
     }
 
     /**

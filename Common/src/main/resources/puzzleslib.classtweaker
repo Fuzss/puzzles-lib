@@ -23,7 +23,10 @@ transitive-accessible   field   net/minecraft/world/level/ServerExplosion   dama
 transitive-accessible   field   net/minecraft/world/level/ServerExplosion   damageCalculator    Lnet/minecraft/world/level/ExplosionDamageCalculator;
 transitive-accessible   field   net/minecraft/world/level/ServerExplosion   blockInteraction    Lnet/minecraft/world/level/Explosion$BlockInteraction;
 transitive-mutable  field   net/minecraft/world/level/ServerExplosion   blockInteraction    Lnet/minecraft/world/level/Explosion$BlockInteraction;
+transitive-accessible   field   net/minecraft/client/Minecraft  blockModelResolver  Lnet/minecraft/client/renderer/block/BlockModelResolver;
 transitive-accessible	field	net/minecraft/client/Minecraft	missTime	I
+accessible	field   net/minecraft/client/Minecraft  running Z
+transitive-accessible   method  net/minecraft/client/Minecraft  pick    (F)V
 transitive-accessible   method  net/minecraft/client/gui/screens/inventory/AbstractContainerScreen  slotClicked (Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V
 transitive-accessible   method  net/minecraft/client/gui/screens/inventory/AbstractRecipeBookScreen slotClicked (Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V
 transitive-accessible   method  net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen  slotClicked (Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V
@@ -126,7 +129,6 @@ accessible	field   net/minecraft/world/item/BlockItem  block   Lnet/minecraft/wo
 mutable field   net/minecraft/world/item/BlockItem  block   Lnet/minecraft/world/level/block/Block;
 accessible  field   net/minecraft/world/level/gamerules/GameRule    defaultValue    Ljava/lang/Object;
 mutable field   net/minecraft/world/level/gamerules/GameRule    defaultValue    Ljava/lang/Object;
-accessible	field   net/minecraft/client/Minecraft  running Z
 accessible	field   net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen  selectedTab Lnet/minecraft/world/item/CreativeModeTab;
 accessible  method  net/minecraft/world/inventory/AbstractContainerMenu addSlot (Lnet/minecraft/world/inventory/Slot;)Lnet/minecraft/world/inventory/Slot;
 mutable field	net/minecraft/data/loot/BlockLootSubProvider	registries  Lnet/minecraft/core/HolderLookup$Provider;

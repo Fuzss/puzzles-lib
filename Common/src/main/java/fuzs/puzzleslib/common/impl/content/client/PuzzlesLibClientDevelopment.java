@@ -38,6 +38,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.storage.LevelSummary;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
@@ -149,7 +150,19 @@ public class PuzzlesLibClientDevelopment implements ClientModConstructor {
     }
 
     private static void initializeScreenSkipper() {
-        // skip experimental settings warning
+        // skip backup option when upgrading a world
+        ScreenSkipper.create()
+                .setTitleComponent("selectWorld.backupQuestion."
+                        + LevelSummary.BackupStatus.FILE_FIXING_REQUIRED.getTranslationKey())
+                .setButtonComponent("selectWorld.backupJoinSkipButton")
+                .build();
+        ScreenSkipper.create()
+                .setTitleComponent("upgradeWorld.done")
+                .setButtonComponent(CommonComponents.GUI_YES)
+                .setLastTitleComponent("selectWorld.backupQuestion."
+                        + LevelSummary.BackupStatus.FILE_FIXING_REQUIRED.getTranslationKey())
+                .build();
+        // skip experimental settings warning when loading a world
         ScreenSkipper.create()
                 .setTitleComponent("selectWorld.backupQuestion.experimental")
                 .setButtonComponent("selectWorld.backupJoinSkipButton")
