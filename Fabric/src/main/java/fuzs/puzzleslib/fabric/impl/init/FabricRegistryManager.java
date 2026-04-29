@@ -3,7 +3,7 @@ package fuzs.puzzleslib.fabric.impl.init;
 import com.mojang.brigadier.arguments.ArgumentType;
 import fuzs.puzzleslib.common.api.init.v3.registry.LookupHelper;
 import fuzs.puzzleslib.common.api.init.v3.registry.MenuSupplierWithData;
-import fuzs.puzzleslib.common.impl.init.DirectReferenceHolder;
+import fuzs.puzzleslib.common.impl.init.StandAloneHolder;
 import fuzs.puzzleslib.common.impl.init.LazyHolder;
 import fuzs.puzzleslib.common.impl.init.RegistryManagerImpl;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
@@ -128,7 +128,7 @@ public final class FabricRegistryManager extends RegistryManagerImpl {
     public <T> Holder.Reference<EntityDataSerializer<T>> registerEntityDataSerializer(String path, Supplier<EntityDataSerializer<T>> entityDataSerializerSupplier) {
         ResourceKey<EntityDataSerializer<T>> resourceKey = this.makeResourceKey(ENTITY_DATA_SERIALIZERS_REGISTRY_KEY,
                 path);
-        Holder.Reference<EntityDataSerializer<T>> holder = new DirectReferenceHolder<>(resourceKey,
+        Holder.Reference<EntityDataSerializer<T>> holder = new StandAloneHolder<>(resourceKey,
                 entityDataSerializerSupplier.get());
         FabricEntityDataRegistry.register(holder.key().identifier(), holder.value());
         return holder;
