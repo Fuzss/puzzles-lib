@@ -2,19 +2,30 @@ package fuzs.puzzleslib.common.api.client.renderer.v1;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.object.chest.ChestModel;
+import net.minecraft.client.renderer.MultiblockChestResources;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BuiltInBlockModels;
+import net.minecraft.client.renderer.block.model.ConditionalBlockModel;
+import net.minecraft.client.renderer.block.model.properties.conditional.IsXmas;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.renderer.blockentity.state.ChestRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.special.ChestSpecialRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * An extension of {@link ChestRenderer} that allows specifying custom chest texture materials for single chests (e.g.
@@ -41,6 +52,24 @@ public abstract class SingleChestRenderer<T extends BlockEntity & LidBlockEntity
         super(context);
         this.sprites = context.sprites();
         this.model = model;
+    }
+
+    /**
+     * Creates a single chest model factory which is able to use Christmas textures.
+     *
+     * @param texture the chest texture location
+     * @return the model factory
+     *
+     * @see BuiltInBlockModels#createXmasChest(MultiblockChestResources)
+     */
+    public static BuiltInBlockModels.SpecialModelFactory createXmasChest(Identifier texture) {
+        return BuiltInBlockModels.specialModelWithPropertyDispatch(ChestBlock.FACING,
+                (Direction facing) -> new ConditionalBlockModel.Unbaked(Optional.empty(),
+                        new IsXmas(),
+                        BuiltInBlockModels.createChest(ChestSpecialRenderer.CHRISTMAS.single(),
+                                ChestType.SINGLE,
+                                facing),
+                        BuiltInBlockModels.createChest(texture, ChestType.SINGLE, facing)));
     }
 
     @Override
