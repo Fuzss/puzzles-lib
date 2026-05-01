@@ -385,6 +385,8 @@ transitive-accessible	class	net/minecraft/client/renderer/block/BuiltInBlockMode
 accessible  method  net/minecraft/core/component/DataComponentMap$Builder   <init>  ()V
 accessible  field   net/minecraft/core/component/DataComponentMap$Builder   map Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;
 mutable field   net/minecraft/core/component/DataComponentMap$Builder   map Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;
+transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  commonInfo  Lnet/minecraft/world/item/crafting/Recipe$CommonInfo;
+transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  bookInfo    Lnet/minecraft/world/item/crafting/CraftingRecipe$CraftingBookInfo;
 
 # fabric-transitive-access-wideners-v1
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	litBlockEmission	(I)Ljava/util/function/ToIntFunction;
