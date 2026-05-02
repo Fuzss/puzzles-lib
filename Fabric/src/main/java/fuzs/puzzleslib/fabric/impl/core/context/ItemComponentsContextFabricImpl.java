@@ -20,33 +20,27 @@ public final class ItemComponentsContextFabricImpl implements ItemComponentsCont
     private final List<Consumer<DefaultItemComponentEvents.ModifyContext>> itemComponentPatches = new ArrayList<>();
 
     @Override
-    public void registerItemComponentsPatch(Item item, Initializer<Item> initializer) {
+    public void registerItemComponentsPatch(Item item, InitializerV2 initializer) {
         Objects.requireNonNull(item, "item is null");
         Objects.requireNonNull(initializer, "initializer is null");
         this.registerIfNecessary();
         this.itemComponentPatches.add((DefaultItemComponentEvents.ModifyContext context) -> {
             context.modify(item,
-                    (DataComponentMap.Builder builder, HolderLookup.Provider lookupProvider, Item currentItem) -> {
-                        initializer.run(new DataComponentGetterImpl(builder),
-                                builder,
-                                lookupProvider,
-                                currentItem.builtInRegistryHolder().key());
+                    (DataComponentMap.Builder builder, HolderLookup.Provider lookupProvider, Item itemInstance) -> {
+                        initializer.run(new DataComponentGetterImpl(builder), builder, lookupProvider, itemInstance);
                     });
         });
     }
 
     @Override
-    public void registerItemComponentsPatch(Predicate<Item> itemPredicate, Initializer<Item> initializer) {
+    public void registerItemComponentsPatch(Predicate<Item> itemPredicate, InitializerV2 initializer) {
         Objects.requireNonNull(itemPredicate, "item predicate is null");
         Objects.requireNonNull(initializer, "initializer is null");
         this.registerIfNecessary();
         this.itemComponentPatches.add((DefaultItemComponentEvents.ModifyContext context) -> {
             context.modify(itemPredicate,
-                    (DataComponentMap.Builder builder, HolderLookup.Provider lookupProvider, Item currentItem) -> {
-                        initializer.run(new DataComponentGetterImpl(builder),
-                                builder,
-                                lookupProvider,
-                                currentItem.builtInRegistryHolder().key());
+                    (DataComponentMap.Builder builder, HolderLookup.Provider lookupProvider, Item itemInstance) -> {
+                        initializer.run(new DataComponentGetterImpl(builder), builder, lookupProvider, itemInstance);
                     });
         });
     }

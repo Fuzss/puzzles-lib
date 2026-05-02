@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
  * A helper class for adapting the new {@link InteractionResult} class from the previous {@code InteractionResult},
  * {@code ItemInteractionResult}, and {@code InteractionResultHolder} implementations.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public final class InteractionResultHelper {
     /**
      * An abstraction for {@code InteractionResult#SUCCESS}.
@@ -56,8 +56,8 @@ public final class InteractionResultHelper {
      */
     public static boolean shouldSwing(InteractionResult interactionResult) {
         // there is no need for distinguishing between client and server swing sources
-        return interactionResult instanceof InteractionResult.Success success &&
-                success.swingSource() != InteractionResult.SwingSource.NONE;
+        return interactionResult instanceof InteractionResult.Success success
+                && success.swingSource() != InteractionResult.SwingSource.NONE;
     }
 
     /**
@@ -67,8 +67,8 @@ public final class InteractionResultHelper {
      * @return should {@link net.minecraft.stats.Stats#ITEM_USED} be awarded
      */
     public static boolean indicateItemUse(InteractionResult interactionResult) {
-        return interactionResult instanceof InteractionResult.Success success &&
-                success.itemContext().wasItemInteraction();
+        return interactionResult instanceof InteractionResult.Success success && success.itemContext()
+                .wasItemInteraction();
     }
 
     /**
@@ -88,8 +88,8 @@ public final class InteractionResultHelper {
      * @return the new held item stack, possibly {@link ItemStack#EMPTY} if not available
      */
     public static ItemStack getObject(InteractionResult interactionResult) {
-        return interactionResult instanceof InteractionResult.Success success &&
-                success.heldItemTransformedTo() != null ? success.heldItemTransformedTo() : ItemStack.EMPTY;
+        return interactionResult instanceof InteractionResult.Success success
+                && success.heldItemTransformedTo() != null ? success.heldItemTransformedTo() : ItemStack.EMPTY;
     }
 
     /**

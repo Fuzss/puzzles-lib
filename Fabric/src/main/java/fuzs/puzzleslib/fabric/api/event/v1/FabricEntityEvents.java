@@ -12,14 +12,6 @@ import net.minecraft.world.entity.Pose;
  */
 public final class FabricEntityEvents {
     /**
-     * Fired when an entity is added to the level on the server after it has been loaded from chunk storage.
-     * <p>
-     * We do not use {@link net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents#ENTITY_LOAD} as it does not
-     * allow for preventing the entity from being added.
-     */
-    public static final Event<ServerEntityLevelEvents.Load> ENTITY_LOAD = FabricEventFactory.createResult(
-            ServerEntityLevelEvents.Load.class);
-    /**
      * Fires when a projectile entity impacts on something, either a block or another entity.
      */
     public static final Event<ProjectileImpactCallback> PROJECTILE_IMPACT = FabricEventFactory.createResult(

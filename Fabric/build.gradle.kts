@@ -44,7 +44,6 @@ multiloader {
             "OcelotFabricMixin",
             "PackRepositoryFabricMixin",
             "ParrotFabricMixin",
-            "PersistentEntitySectionManagerFabricMixin",
             "PlayerChunkSenderFabricMixin",
             "PlayerFabricMixin",
             "ProjectileFabricMixin",

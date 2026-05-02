@@ -4,22 +4,22 @@ import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fuzs.puzzleslib.common.api.event.v1.*;
-import fuzs.puzzleslib.common.api.event.v1.entity.*;
-import fuzs.puzzleslib.common.api.event.v1.entity.living.*;
-import fuzs.puzzleslib.common.api.event.v1.entity.player.*;
-import fuzs.puzzleslib.common.api.event.v1.level.*;
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import fuzs.puzzleslib.common.api.event.v1.core.EventPhase;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResultHolder;
+import fuzs.puzzleslib.common.api.event.v1.entity.*;
+import fuzs.puzzleslib.common.api.event.v1.entity.living.*;
+import fuzs.puzzleslib.common.api.event.v1.entity.player.*;
+import fuzs.puzzleslib.common.api.event.v1.level.*;
 import fuzs.puzzleslib.common.api.event.v1.level.BlockEvents;
 import fuzs.puzzleslib.common.api.event.v1.server.*;
 import fuzs.puzzleslib.common.api.init.v3.registry.LookupHelper;
+import fuzs.puzzleslib.common.impl.event.core.EventInvokerImpl;
 import fuzs.puzzleslib.fabric.api.event.v1.*;
 import fuzs.puzzleslib.fabric.api.event.v1.core.FabricEventInvokerRegistry;
 import fuzs.puzzleslib.fabric.impl.core.FabricProxy;
 import fuzs.puzzleslib.fabric.impl.init.FabricPotionBrewingBuilder;
-import fuzs.puzzleslib.common.impl.event.core.EventInvokerImpl;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
@@ -50,10 +50,7 @@ import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.ConversionParams;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.alchemy.PotionBrewing;
@@ -290,7 +287,17 @@ public final class FabricEventInvokerRegistryImpl implements FabricEventInvokerR
                 });
         INSTANCE.register(PlaySoundEvents.AtPosition.class, FabricLevelEvents.PLAY_SOUND_AT_POSITION);
         INSTANCE.register(PlaySoundEvents.AtEntity.class, FabricLevelEvents.PLAY_SOUND_AT_ENTITY);
-        INSTANCE.register(ServerEntityLevelEvents.Load.class, FabricEntityEvents.ENTITY_LOAD);
+        INSTANCE.register(ServerEntityLevelEvents.Load.class, ServerEntityEvents.ALLOW_LOAD, callback -> {
+            return (Entity entity, ServerLevel level, @Nullable EntitySpawnReason spawnReason, boolean isLoadedFromDisk) -> {
+                EventResult eventResult = callback.onEntityLoad(entity, level, !isLoadedFromDisk);
+                if (eventResult.isInterrupt() && entity instanceof Player) {
+                    // We do not support players as it isn't as straight-forward to implement for the server player on Fabric.
+                    throw new UnsupportedOperationException("Cannot prevent player from loading in!");
+                } else {
+                    return eventResult.isPass();
+                }
+            };
+        });
         INSTANCE.register(ServerEntityLevelEvents.Unload.class,
                 ServerEntityEvents.ENTITY_UNLOAD,
                 (ServerEntityLevelEvents.Unload callback) -> {

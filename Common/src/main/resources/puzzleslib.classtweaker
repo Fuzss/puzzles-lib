@@ -78,6 +78,9 @@ transitive-accessible   method  net/minecraft/client/data/models/BlockModelGener
 transitive-accessible   method  net/minecraft/client/data/models/BlockModelGenerators$BlockFamilyProvider  trapdoor    (Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible   method  net/minecraft/world/level/block/state/properties/BlockSetType   register    (Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;
 transitive-accessible   method  net/minecraft/world/level/block/state/properties/WoodType   register    (Lnet/minecraft/world/level/block/state/properties/WoodType;)Lnet/minecraft/world/level/block/state/properties/WoodType;
+transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  commonInfo  Lnet/minecraft/world/item/crafting/Recipe$CommonInfo;
+transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  bookInfo    Lnet/minecraft/world/item/crafting/CraftingRecipe$CraftingBookInfo;
+transitive-accessible   field   net/minecraft/world/item/crafting/ShapedRecipe  pattern Lnet/minecraft/world/item/crafting/ShapedRecipePattern;
 transitive-accessible   field   net/minecraft/world/item/crafting/ShapedRecipe  result  Lnet/minecraft/world/item/ItemStackTemplate;
 transitive-accessible   field   net/minecraft/world/item/crafting/ShapelessRecipe   result  Lnet/minecraft/world/item/ItemStackTemplate;
 transitive-accessible   field   net/minecraft/world/item/crafting/ShapelessRecipe   ingredients Ljava/util/List;
@@ -123,7 +126,6 @@ accessible  field   net/minecraft/client/gui/components/Tooltip splitWithLanguag
 accessible  method  net/minecraft/core/Holder$Reference bindValue   (Ljava/lang/Object;)V
 accessible  method  net/minecraft/core/RegistrySetBuilder$LazyHolder    bindValue   (Ljava/lang/Object;)V
 accessible  method  net/minecraft/core/Holder$Reference bindTags    (Ljava/util/Collection;)V
-accessible	field   net/minecraft/world/item/crafting/ShapedRecipe  pattern Lnet/minecraft/world/item/crafting/ShapedRecipePattern;
 accessible	field   net/minecraft/world/level/block/Block   item    Lnet/minecraft/world/item/Item;
 accessible	field   net/minecraft/world/item/BlockItem  block   Lnet/minecraft/world/level/block/Block;
 mutable field   net/minecraft/world/item/BlockItem  block   Lnet/minecraft/world/level/block/Block;
@@ -340,8 +342,6 @@ transitive-accessible	method	net/minecraft/data/recipes/packs/VanillaRecipeProvi
 transitive-accessible	method	net/minecraft/data/loot/packs/VanillaBlockLoot  generate	()V
 transitive-accessible   field   net/minecraft/client/color/block/BlockColors    BLANK_LAYER Lnet/minecraft/client/color/block/BlockTintSource;
 transitive-accessible   field   net/minecraft/client/color/block/BlockColors    sources Ljava/util/Map;
-accessible  field   net/minecraft/world/item/crafting/NormalCraftingRecipe  commonInfo  Lnet/minecraft/world/item/crafting/Recipe$CommonInfo;
-accessible  field   net/minecraft/world/item/crafting/NormalCraftingRecipe  bookInfo    Lnet/minecraft/world/item/crafting/CraftingRecipe$CraftingBookInfo;
 accessible  field   net/minecraft/data/loot/BlockLootSubProvider    map Ljava/util/Map;
 accessible  method  net/minecraft/world/level/block/FireBlock   setFlammable    (Lnet/minecraft/world/level/block/Block;II)V
 transitive-accessible   method  net/minecraft/client/renderer/block/BuiltInBlockModels  special (Lnet/minecraft/client/renderer/special/SpecialModelRenderer$Unbaked;Lcom/mojang/math/Transformation;)Lnet/minecraft/client/renderer/block/model/BlockModel$Unbaked;
@@ -385,8 +385,6 @@ transitive-accessible	class	net/minecraft/client/renderer/block/BuiltInBlockMode
 accessible  method  net/minecraft/core/component/DataComponentMap$Builder   <init>  ()V
 accessible  field   net/minecraft/core/component/DataComponentMap$Builder   map Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;
 mutable field   net/minecraft/core/component/DataComponentMap$Builder   map Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;
-transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  commonInfo  Lnet/minecraft/world/item/crafting/Recipe$CommonInfo;
-transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  bookInfo    Lnet/minecraft/world/item/crafting/CraftingRecipe$CraftingBookInfo;
 
 # fabric-transitive-access-wideners-v1
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	litBlockEmission	(I)Ljava/util/function/ToIntFunction;

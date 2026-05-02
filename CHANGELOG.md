@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `SingleChestRenderer::createXmasChest`
+- Add `ItemComponentsContext$InitializerV2`
+
+### Changed
+
+- Update `ServerEntityLevelEvents$Load` to use the native Fabric event
 
 ## [v26.1.3-mc26.1.x] - 2026-04-29
 

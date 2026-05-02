@@ -17,18 +17,43 @@ public interface ItemComponentsContext {
      * @param item        the item
      * @param initializer apply changes to the data component map builder before it is finalized
      */
-    void registerItemComponentsPatch(Item item, Initializer<Item> initializer);
+    @Deprecated(forRemoval = true)
+    default void registerItemComponentsPatch(Item item, Initializer<Item> initializer) {
+        this.registerItemComponentsPatch(item,
+                (DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider context, Item itemInstance) -> {
+                    initializer.run(components, builder, context, itemInstance.builtInRegistryHolder().key());
+                });
+    }
 
     /**
      * @param itemPredicate the item filter
      * @param initializer   apply changes to the data component map builder before it is finalized
      */
-    void registerItemComponentsPatch(Predicate<Item> itemPredicate, Initializer<Item> initializer);
+    @Deprecated(forRemoval = true)
+    default void registerItemComponentsPatch(Predicate<Item> itemPredicate, Initializer<Item> initializer) {
+        this.registerItemComponentsPatch(itemPredicate,
+                (DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider context, Item itemInstance) -> {
+                    initializer.run(components, builder, context, itemInstance.builtInRegistryHolder().key());
+                });
+    }
+
+    /**
+     * @param item        the item
+     * @param initializer apply changes to the data component map builder before it is finalized
+     */
+    void registerItemComponentsPatch(Item item, InitializerV2 initializer);
+
+    /**
+     * @param itemPredicate the item filter
+     * @param initializer   apply changes to the data component map builder before it is finalized
+     */
+    void registerItemComponentsPatch(Predicate<Item> itemPredicate, InitializerV2 initializer);
 
     /**
      * @param <T> the value type
      * @see net.minecraft.core.component.DataComponentInitializers.Initializer
      */
+    @Deprecated(forRemoval = true)
     @FunctionalInterface
     interface Initializer<T> {
         /**
@@ -38,5 +63,19 @@ public interface ItemComponentsContext {
          * @param key        the resource key
          */
         void run(DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider context, ResourceKey<T> key);
+    }
+
+    /**
+     * @see net.minecraft.core.component.DataComponentInitializers.Initializer
+     */
+    @FunctionalInterface
+    interface InitializerV2 {
+        /**
+         * @param components the access for getting existing values
+         * @param builder    the builder for setting new values
+         * @param context    the holder lookup
+         * @param item       the item
+         */
+        void run(DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider context, Item item);
     }
 }

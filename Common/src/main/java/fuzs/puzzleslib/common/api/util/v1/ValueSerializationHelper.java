@@ -49,6 +49,7 @@ public final class ValueSerializationHelper {
             } else {
                 valueOutput = TagValueOutput.createWithoutContext(scopedCollector);
             }
+
             valueOutputConsumer.accept(valueOutput);
             return valueOutput.buildResult();
         }
