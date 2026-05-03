@@ -1,6 +1,5 @@
 package fuzs.puzzleslib.fabric.mixin.client;
 
-import com.google.common.base.Preconditions;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import fuzs.puzzleslib.common.api.event.v1.data.MutableFloat;
@@ -39,7 +38,6 @@ abstract class CameraFabricMixin {
                at = @At(value = "INVOKE", target = "Lorg/joml/Quaternionf;rotationYXZ(FFF)Lorg/joml/Quaternionf;"),
                index = 2)
     protected float setRotation(float zRot) {
-        Preconditions.checkArgument(zRot == 0.0F, "roll is not zero");
         return -this.puzzleslib$zRot * Mth.DEG_TO_RAD;
     }
 

@@ -1,5 +1,6 @@
 package fuzs.puzzleslib.common.api.core.v1.context;
 
+import com.google.common.base.Predicates;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -50,6 +51,13 @@ public interface ItemComponentsContext {
     void registerItemComponentsPatch(Predicate<Item> itemPredicate, InitializerV2 initializer);
 
     /**
+     * @param initializer apply changes to the data component map builder before it is finalized
+     */
+    default void registerItemComponentsPatch(InitializerV2 initializer) {
+        this.registerItemComponentsPatch(Predicates.alwaysTrue(), initializer);
+    }
+
+    /**
      * @param <T> the value type
      * @see net.minecraft.core.component.DataComponentInitializers.Initializer
      */
@@ -59,10 +67,10 @@ public interface ItemComponentsContext {
         /**
          * @param components the access for getting existing values
          * @param builder    the builder for setting new values
-         * @param context    the holder lookup
+         * @param registries the holder lookup
          * @param key        the resource key
          */
-        void run(DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider context, ResourceKey<T> key);
+        void run(DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider registries, ResourceKey<T> key);
     }
 
     /**
@@ -73,9 +81,9 @@ public interface ItemComponentsContext {
         /**
          * @param components the access for getting existing values
          * @param builder    the builder for setting new values
-         * @param context    the holder lookup
+         * @param registries the holder lookup
          * @param item       the item
          */
-        void run(DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider context, Item item);
+        void run(DataComponentGetter components, DataComponentMap.Builder builder, HolderLookup.Provider registries, Item item);
     }
 }
