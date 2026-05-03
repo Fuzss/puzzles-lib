@@ -117,7 +117,7 @@ mutable field   net/minecraft/client/data/models/BlockModelGenerators  FULL_BLOC
 transitive-accessible   field   net/minecraft/client/data/models/BlockModelGenerators  TEXTURED_MODELS  Ljava/util/Map;
 mutable field   net/minecraft/client/data/models/BlockModelGenerators  TEXTURED_MODELS  Ljava/util/Map;
 transitive-accessible   field   net/minecraft/client/data/models/BlockModelGenerators  SHAPE_CONSUMERS Ljava/util/Map;
-accessible  field   net/minecraft/client/gui/components/AbstractWidget  tooltip Lnet/minecraft/client/gui/components/WidgetTooltipHolder;
+transitive-accessible   field   net/minecraft/client/gui/components/AbstractWidget  tooltip Lnet/minecraft/client/gui/components/WidgetTooltipHolder;
 mutable field   net/minecraft/client/gui/components/AbstractWidget  tooltip Lnet/minecraft/client/gui/components/WidgetTooltipHolder;
 extendable  method  net/minecraft/client/gui/components/WidgetTooltipHolder createTooltipPositioner (Lnet/minecraft/client/gui/navigation/ScreenRectangle;ZZ)Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;
 extendable  method  net/minecraft/client/gui/components/Tooltip <init>  (Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/Component;Ljava/util/Optional;Lnet/minecraft/resources/Identifier;)V
