@@ -482,6 +482,19 @@ public final class NeoForgeClientEventInvokers {
                         event.setCanceled(true);
                     }
                 });
+        INSTANCE.register(ClientInputEvents.MouseScroll.class,
+                InputEvent.MouseScrollingEvent.class,
+                (ClientInputEvents.MouseScroll callback, InputEvent.MouseScrollingEvent event) -> {
+                    EventResult eventResult = callback.onMouseScroll(event.getMouseX(),
+                            event.getMouseY(),
+                            event.getScrollDeltaX(),
+                            event.getScrollDeltaY(),
+                            event.getAccumulatedScrollX(),
+                            event.getAccumulatedScrollY());
+                    if (eventResult.isInterrupt()) {
+                        event.setCanceled(true);
+                    }
+                });
         INSTANCE.register(ClientInputEvents.KeyPress.class,
                 InputEvent.Key.class,
                 (ClientInputEvents.KeyPress callback, InputEvent.Key event) -> {

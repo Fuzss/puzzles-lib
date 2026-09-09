@@ -10,7 +10,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
 
 /**
- * Register new {@link Layer Layers} to be drawn as part of the {@link net.minecraft.client.gui.Gui}.
+ * Register new {@link Layer Layers} to be drawn as part of the {@link net.minecraft.client.gui.Hud}.
  */
 public interface GuiLayersContext {
     /**

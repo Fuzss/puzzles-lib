@@ -503,6 +503,7 @@ public final class FabricClientEventInvokers {
                     };
                 });
         INSTANCE.register(ClientInputEvents.MouseClick.class, FabricClientEvents.MOUSE_CLICK);
+        INSTANCE.register(ClientInputEvents.MouseScroll.class, FabricClientEvents.MOUSE_SCROLL);
         INSTANCE.register(ClientInputEvents.KeyPress.class, FabricClientEvents.KEY_PRESS);
         INSTANCE.register(SubmitLivingEntityEvents.Before.class, FabricRendererEvents.BEFORE_SUBMIT_LIVING_ENTITY);
         INSTANCE.register(SubmitLivingEntityEvents.After.class, FabricRendererEvents.AFTER_SUBMIT_LIVING_ENTITY);

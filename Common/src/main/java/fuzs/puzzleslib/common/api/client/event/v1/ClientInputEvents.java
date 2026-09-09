@@ -10,10 +10,11 @@ import net.minecraft.client.input.MouseButtonInfo;
 
 /**
  * Very similar to {@link ScreenMouseEvents} and {@link ScreenKeyboardEvents}, but fires when no screen is open to
- * handle input events in the {@link net.minecraft.client.gui.Gui}.
+ * handle input events in the {@link net.minecraft.client.gui.Hud}.
  */
 public final class ClientInputEvents {
     public static final EventInvoker<MouseClick> MOUSE_CLICK = EventInvoker.lookup(MouseClick.class);
+    public static final EventInvoker<MouseScroll> MOUSE_SCROLL = EventInvoker.lookup(MouseScroll.class);
     public static final EventInvoker<KeyPress> KEY_PRESS = EventInvoker.lookup(KeyPress.class);
 
     private ClientInputEvents() {
@@ -31,11 +32,33 @@ public final class ClientInputEvents {
          * @param action          the mouse button action; see {@link InputConstants#RELEASE},
          *                        {@link InputConstants#PRESS}, {@link InputConstants#REPEAT}
          * @return <ul>
-         *         <li>{@link EventResult#INTERRUPT INTERRUPT} for marking the event as handled, it will not be passed to other listeners and vanilla behavior will not run</li>
-         *         <li>{@link EventResult#PASS PASS} for letting other listeners as well as vanilla process this event</li>
+         *         <li>{@link EventResult#INTERRUPT INTERRUPT} for marking the event as already handled</li>
+         *         <li>{@link EventResult#PASS PASS} to allow the event to be handled normally</li>
          *         </ul>
          */
         EventResult onMouseClick(MouseButtonInfo mouseButtonInfo, int action);
+    }
+
+    @FunctionalInterface
+    public interface MouseScroll {
+
+        /**
+         * Called before a mouse has scrolled without a screen being open.
+         *
+         * @param mouseX             the x-position of the mouse cursor
+         * @param mouseY             the y-position of the mouse cursor
+         * @param scrollX            the horizontal scroll amount
+         * @param scrollY            the vertical scroll amount
+         * @param accumulatedScrollX the horizontal scroll amount from
+         *                           {@link net.minecraft.client.ScrollWheelHandler#onMouseScroll(double, double)}
+         * @param accumulatedScrollY the vertical scroll amount from
+         *                           {@link net.minecraft.client.ScrollWheelHandler#onMouseScroll(double, double)}
+         * @return <ul>
+         *         <li>{@link EventResult#INTERRUPT INTERRUPT} for marking the event as already handled</li>
+         *         <li>{@link EventResult#PASS PASS} to allow the event to be handled normally</li>
+         *         </ul>
+         */
+        EventResult onMouseScroll(double mouseX, double mouseY, double scrollX, double scrollY, double accumulatedScrollX, double accumulatedScrollY);
     }
 
     @FunctionalInterface
@@ -51,8 +74,8 @@ public final class ClientInputEvents {
          * @param action   the mouse button action; see {@link InputConstants#RELEASE}, {@link InputConstants#PRESS},
          *                 {@link InputConstants#REPEAT}
          * @return <ul>
-         *         <li>{@link EventResult#INTERRUPT INTERRUPT} for marking the event as handled, it will not be passed to other listeners and vanilla behavior will not run</li>
-         *         <li>{@link EventResult#PASS PASS} for letting other listeners as well as vanilla process this event</li>
+         *         <li>{@link EventResult#INTERRUPT INTERRUPT} for marking the event as already handled</li>
+         *         <li>{@link EventResult#PASS PASS} to allow the event to be handled normally</li>
          *         </ul>
          */
         EventResult onKeyPress(KeyEvent keyEvent, int action);

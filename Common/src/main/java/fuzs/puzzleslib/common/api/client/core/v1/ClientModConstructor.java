@@ -166,7 +166,7 @@ public interface ClientModConstructor {
 
     /**
      * @param context register new {@link GuiLayersContext.Layer Layers} to be drawn as part of the
-     *                {@link net.minecraft.client.gui.Gui}
+     *                {@link net.minecraft.client.gui.Hud}
      */
     default void onRegisterGuiLayers(GuiLayersContext context) {
         // NO-OP

@@ -120,17 +120,17 @@ public final class ScreenMouseEvents {
         /**
          * Called before a mouse has scrolled on a screen.
          *
-         * @param screen           the currently displayed screen
-         * @param mouseX           the x-position of the mouse cursor
-         * @param mouseY           the y-position of the mouse cursor
-         * @param horizontalAmount the horizontal scroll amount
-         * @param verticalAmount   the vertical scroll amount
+         * @param screen  the currently displayed screen
+         * @param mouseX  the x-position of the mouse cursor
+         * @param mouseY  the y-position of the mouse cursor
+         * @param scrollX the horizontal scroll amount
+         * @param scrollY the vertical scroll amount
          * @return <ul>
          *         <li>{@link EventResult#INTERRUPT INTERRUPT} for marking the scroll event as handled, it will not be passed to other listeners and vanilla behavior will not run</li>
          *         <li>{@link EventResult#PASS PASS} for letting other listeners as well as vanilla process this event</li>
          *         </ul>
          */
-        EventResult onBeforeMouseScroll(T screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+        EventResult onBeforeMouseScroll(T screen, double mouseX, double mouseY, double scrollX, double scrollY);
     }
 
     @FunctionalInterface
@@ -139,13 +139,13 @@ public final class ScreenMouseEvents {
         /**
          * Called after a mouse has scrolled on a screen.
          *
-         * @param screen           the currently displayed screen
-         * @param mouseX           the x-position of the mouse cursor
-         * @param mouseY           the y-position of the mouse cursor
-         * @param horizontalAmount the horizontal scroll amount
-         * @param verticalAmount   the vertical scroll amount
+         * @param screen  the currently displayed screen
+         * @param mouseX  the x-position of the mouse cursor
+         * @param mouseY  the y-position of the mouse cursor
+         * @param scrollX the horizontal scroll amount
+         * @param scrollY the vertical scroll amount
          */
-        void onAfterMouseScroll(T screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+        void onAfterMouseScroll(T screen, double mouseX, double mouseY, double scrollX, double scrollY);
     }
 
     @FunctionalInterface
