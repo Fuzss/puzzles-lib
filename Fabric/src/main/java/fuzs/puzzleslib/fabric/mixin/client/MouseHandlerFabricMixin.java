@@ -7,17 +7,12 @@ import net.minecraft.client.MouseHandler;
 import net.minecraft.client.input.MouseButtonInfo;
 import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MouseHandler.class)
 abstract class MouseHandlerFabricMixin {
-    @Shadow
-    private double xpos;
-    @Shadow
-    private double ypos;
 
     @Inject(method = "onButton",
             at = @At(value = "INVOKE",
@@ -36,7 +31,7 @@ abstract class MouseHandlerFabricMixin {
             cancellable = true)
     private void onScroll(CallbackInfo callback, @Local(ordinal = 3) double scaledXOffset, @Local(ordinal = 4) double scaledYOffset, @Local Vector2i wheelXY) {
         EventResult eventResult = FabricClientEvents.MOUSE_SCROLL.invoker()
-                .onMouseScroll(this.xpos, this.ypos, scaledXOffset, scaledYOffset, wheelXY.x(), wheelXY.y());
+                .onMouseScroll(scaledXOffset, scaledYOffset, wheelXY.x(), wheelXY.y());
         if (eventResult.isInterrupt()) {
             callback.cancel();
         }

@@ -45,8 +45,6 @@ public final class ClientInputEvents {
         /**
          * Called before a mouse has scrolled without a screen being open.
          *
-         * @param mouseX             the x-position of the mouse cursor
-         * @param mouseY             the y-position of the mouse cursor
          * @param scrollX            the horizontal scroll amount
          * @param scrollY            the vertical scroll amount
          * @param accumulatedScrollX the horizontal scroll amount from
@@ -58,7 +56,7 @@ public final class ClientInputEvents {
          *         <li>{@link EventResult#PASS PASS} to allow the event to be handled normally</li>
          *         </ul>
          */
-        EventResult onMouseScroll(double mouseX, double mouseY, double scrollX, double scrollY, double accumulatedScrollX, double accumulatedScrollY);
+        EventResult onMouseScroll(double scrollX, double scrollY, double accumulatedScrollX, double accumulatedScrollY);
     }
 
     @FunctionalInterface

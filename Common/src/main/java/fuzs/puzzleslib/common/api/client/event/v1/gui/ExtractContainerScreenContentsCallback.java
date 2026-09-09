@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
  * @deprecated use {@link ScreenEvents.AfterForeground} instead, but note that it requires manually applying the pose
  *         stack translations from {@link AbstractContainerScreen#leftPos} &amp; {@link AbstractContainerScreen#topPos}
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 @FunctionalInterface
 public interface ExtractContainerScreenContentsCallback {
     EventInvoker<ExtractContainerScreenContentsCallback> EVENT = EventInvoker.lookup(

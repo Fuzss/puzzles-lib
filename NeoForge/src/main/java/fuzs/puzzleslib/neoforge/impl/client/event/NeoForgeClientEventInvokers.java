@@ -485,9 +485,7 @@ public final class NeoForgeClientEventInvokers {
         INSTANCE.register(ClientInputEvents.MouseScroll.class,
                 InputEvent.MouseScrollingEvent.class,
                 (ClientInputEvents.MouseScroll callback, InputEvent.MouseScrollingEvent event) -> {
-                    EventResult eventResult = callback.onMouseScroll(event.getMouseX(),
-                            event.getMouseY(),
-                            event.getScrollDeltaX(),
+                    EventResult eventResult = callback.onMouseScroll(event.getScrollDeltaX(),
                             event.getScrollDeltaY(),
                             event.getAccumulatedScrollX(),
                             event.getAccumulatedScrollY());

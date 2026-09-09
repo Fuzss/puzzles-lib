@@ -4,7 +4,7 @@ import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 
-@Deprecated(forRemoval = true)
+@Deprecated
 @FunctionalInterface
 public interface HotbarScrollingCallback {
     EventInvoker<HotbarScrollingCallback> EVENT = EventInvoker.lookup(HotbarScrollingCallback.class);
