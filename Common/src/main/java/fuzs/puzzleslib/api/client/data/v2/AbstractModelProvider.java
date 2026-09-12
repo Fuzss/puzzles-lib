@@ -17,6 +17,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.BlockStateGenerator;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -72,6 +74,13 @@ public abstract class AbstractModelProvider implements DataProvider {
                 .build();
     }
 
+    /**
+     * Copied from Minecraft 26.2.
+     */
+    public static Variant plainVariant(ResourceLocation model) {
+        return Variant.variant().with(VariantProperties.MODEL, model);
+    }
+
     public void addBlockModels(BlockModelGenerators builder) {
         // NO-OP
     }
@@ -121,6 +130,11 @@ public abstract class AbstractModelProvider implements DataProvider {
         }
     }
 
+    protected boolean skipAllValidation() {
+        return this.skipValidation();
+    }
+
+    @Deprecated
     protected boolean skipValidation() {
         return false;
     }
@@ -153,7 +167,7 @@ public abstract class AbstractModelProvider implements DataProvider {
         this.addBlockModels(new BlockModelGenerators(blockStateOutput, modelOutput, skippedAutoModels::add));
         this.addItemModels(new ItemModelGenerators(modelOutput));
         List<Block> missingBlocks;
-        if (!this.skipValidation()) {
+        if (!this.skipAllValidation()) {
             missingBlocks = BuiltInRegistries.BLOCK.entrySet().stream().filter(entry -> {
                 return entry.getKey().location().getNamespace().equals(this.modId)
                         && !generators.containsKey(entry.getValue());
@@ -180,7 +194,7 @@ public abstract class AbstractModelProvider implements DataProvider {
                 }
             });
             List<Item> missingItems;
-            if (!this.skipValidation()) {
+            if (!this.skipAllValidation()) {
                 missingItems = BuiltInRegistries.ITEM.entrySet().stream().filter(entry -> {
                     return entry.getKey().location().getNamespace().equals(this.modId) && !models.containsKey(
                             decorateItemModelLocation(entry.getKey().location()));
