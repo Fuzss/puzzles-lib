@@ -289,11 +289,9 @@ public final class QuadUtils {
     }
 
     /**
-     * @param bakedQuad   the baked quad
-     * @param vertexIndex the vertex index
-     * @param x           the x-normal component
-     * @param y           the y-normal component
-     * @param z           the z-normal component
+     * @param bakedQuad    the baked quad
+     * @param vertexIndex  the vertex index
+     * @param packedNormal the packed normal
      */
     public static void setPackedNormal(BakedQuad bakedQuad, int vertexIndex, int packedNormal) {
         int offset = vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL;
