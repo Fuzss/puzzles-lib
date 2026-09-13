@@ -1,6 +1,7 @@
 package fuzs.puzzleslib.api.client.event.v1.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import fuzs.puzzleslib.api.event.v1.core.EventInvoker;
 import fuzs.puzzleslib.api.event.v1.core.EventResult;
 import net.minecraft.client.Camera;
@@ -9,7 +10,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 @FunctionalInterface
 public interface RenderHighlightCallback {
@@ -20,6 +25,13 @@ public interface RenderHighlightCallback {
      * <p>
      * Vanilla only handles this in case the hit result is {@link HitResult.Type#BLOCK}, but the callback also allows
      * for handling {@link HitResult.Type#ENTITY}.
+     * <p>
+     * Do not use
+     * {@link LevelRenderer#renderHitOutline(PoseStack, VertexConsumer, Entity, double, double, double, BlockPos,
+     * BlockState)} for rendering a custom model; that is where the Fabric callback runs in which will result in
+     * unexpected behavior. Instead, use
+     * {@link LevelRenderer#renderShape(PoseStack, VertexConsumer, VoxelShape, double, double, double, float, float,
+     * float, float)}.
      *
      * @param levelRenderer     the level renderer instance
      * @param camera            the camera instance
