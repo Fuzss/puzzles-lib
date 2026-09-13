@@ -3,6 +3,7 @@ package fuzs.puzzleslib.neoforge.impl.client.core;
 import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.api.client.key.v1.KeyMappingHelper;
+import fuzs.puzzleslib.api.client.renderer.v1.model.MutableBakedQuad;
 import fuzs.puzzleslib.api.core.v1.context.PayloadTypesContext;
 import fuzs.puzzleslib.api.network.v3.ClientboundMessage;
 import fuzs.puzzleslib.impl.client.core.proxy.ClientProxyImpl;
@@ -130,6 +131,22 @@ public class NeoForgeClientProxy extends NeoForgeCommonProxy implements ClientPr
                 bakedQuad.getSprite(),
                 bakedQuad.isShade(),
                 bakedQuad.hasAmbientOcclusion());
+    }
+
+    @Override
+    public MutableBakedQuad getMutableBakedQuad(BakedQuad bakedQuad) {
+        return new MutableBakedQuad(bakedQuad) {
+            @Override
+            protected BakedQuad copyBakedQuad(BakedQuad bakedQuad) {
+                int[] vertices = bakedQuad.getVertices();
+                return new BakedQuad(Arrays.copyOf(vertices, vertices.length),
+                        this.tintIndex(),
+                        this.direction(),
+                        this.sprite(),
+                        this.shade(),
+                        bakedQuad.hasAmbientOcclusion());
+            }
+        };
     }
 
     @Override

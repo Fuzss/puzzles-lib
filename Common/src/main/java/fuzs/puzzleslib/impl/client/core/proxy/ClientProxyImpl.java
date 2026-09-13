@@ -4,6 +4,7 @@ import fuzs.puzzleslib.api.chat.v1.ComponentHelper;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.ClientComponentSplitter;
 import fuzs.puzzleslib.api.client.key.v1.KeyMappingHelper;
+import fuzs.puzzleslib.api.client.renderer.v1.model.MutableBakedQuad;
 import fuzs.puzzleslib.impl.client.init.ItemDisplayOverridesImpl;
 import fuzs.puzzleslib.impl.core.context.ModConstructorImpl;
 import fuzs.puzzleslib.impl.core.proxy.ProxyImpl;
@@ -55,6 +56,8 @@ public interface ClientProxyImpl extends ProxyImpl {
     boolean onRenderTooltip(GuiGraphics guiGraphics, Font font, int mouseX, int mouseY, List<ClientTooltipComponent> components, ClientTooltipPositioner positioner);
 
     BakedQuad copyBakedQuad(BakedQuad bakedQuad);
+
+    MutableBakedQuad getMutableBakedQuad(BakedQuad bakedQuad);
 
     boolean isEffectVisibleInInventory(MobEffectInstance mobEffect);
 

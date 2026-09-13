@@ -17,8 +17,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.BlockStateGenerator;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -72,13 +70,6 @@ public abstract class AbstractModelProvider implements DataProvider {
                     blockModelGenerators.createHangingSign(strippedBlock, block, wallHangingSign.value());
                 })
                 .build();
-    }
-
-    /**
-     * Copied from Minecraft 26.2.
-     */
-    public static Variant plainVariant(ResourceLocation model) {
-        return Variant.variant().with(VariantProperties.MODEL, model);
     }
 
     public void addBlockModels(BlockModelGenerators builder) {
