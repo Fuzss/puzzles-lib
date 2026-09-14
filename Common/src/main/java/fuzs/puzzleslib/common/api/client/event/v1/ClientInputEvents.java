@@ -39,7 +39,7 @@ public final class ClientInputEvents {
         EventResult onMouseClick(MouseButtonInfo mouseButtonInfo, int action);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated
     @FunctionalInterface
     public interface MouseScroll {
 

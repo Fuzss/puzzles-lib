@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-@Deprecated(forRemoval = true)
+@Deprecated
 public final class ServerEntityLevelEvents {
     public static final EventInvoker<Load> LOAD = EventInvoker.lookup(Load.class);
     public static final EventInvoker<Unload> UNLOAD = EventInvoker.lookup(Unload.class);

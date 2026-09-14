@@ -3,7 +3,7 @@ package fuzs.puzzleslib.common.api.event.v1.server;
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import net.minecraft.core.HolderLookup;
 
-@Deprecated(forRemoval = true)
+@Deprecated
 @FunctionalInterface
 public interface TagsUpdatedCallback {
     EventInvoker<TagsUpdatedCallback> EVENT = EventInvoker.lookup(TagsUpdatedCallback.class);
