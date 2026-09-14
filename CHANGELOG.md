@@ -5,11 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v26.1.15-mc26.1.x] - 2026-09-07
+## [v26.1.15-mc26.1.x] - 2026-09-14
 
 ### Added
 
 - Backport `ColorCollection`
+- Add `AbstractAtlasProvider::armorTrims` & `AbstractAtlasProvider$TrimPatternBuilder` for generating armor trim atlases
+- Add a `RegistryManager::registerCreativeModeTab` overload taking a
+  `UnaryOperator<CreativeModeTab.DisplayItemsGenerator>`
+- Add `RegistryManager::bootstrapTag`, replacing `RegistryManager::prepareTag`
+- Add an `AbstractLootProvider$Blocks::generateFor(BlockSetFamily)` overload
+
+### Changed
+
+- `RegistryManager::registerCreativeModeTab` now filters duplicate items
+- `SpawnerDataBuilder::apply` now also copies the mob spawn cost
+- Register handshake payloads after mod construction instead of during it
 
 ## [v26.1.14-mc26.1.x] - 2026-08-05
 
