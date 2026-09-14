@@ -5,11 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v26.2.4-mc26.2.x] - 2026-09-09
+## [v26.2.4-mc26.2.x] - 2026-09-14
 
 ### Added
 
 - Add back updated `ClientInputEvents.MouseScroll`
+- Add `AbstractAdvancementProvider$DisplayInfoBuilder`
+- Add `AbstractAtlasProvider::armorTrims` & `AbstractAtlasProvider$TrimPatternBuilder` for generating armor trim atlases
+- Add `RegistryManager::bootstrapTag`, replacing `RegistryManager::prepareTag`
+- Add an `AbstractLootProvider$Blocks::generateFor(BlockSetFamily)` overload
+
+### Changed
+
+- `SpawnerDataBuilder::apply` now also copies the mob spawn cost
+- Register handshake payloads after mod construction instead of during it
+- Invoke `ClientTagsUpdatedCallback` later during client setup
 
 ## [v26.2.3-mc26.2.x] - 2026-08-05
 
