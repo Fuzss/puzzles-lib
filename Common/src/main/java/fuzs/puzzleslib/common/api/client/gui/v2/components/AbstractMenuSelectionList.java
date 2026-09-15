@@ -32,10 +32,7 @@ import java.util.List;
 public class AbstractMenuSelectionList<E extends AbstractMenuSelectionList.Entry<E>> extends ContainerObjectSelectionList<E> {
     public static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace(
             "container/creative_inventory/scroller");
-    /**
-     * TODO should be called SCROLLER_DISABLED_SPRITE
-     */
-    public static final Identifier DISABLED_SCROLLER_SPRITE = Identifier.withDefaultNamespace(
+    public static final Identifier SCROLLER_DISABLED_SPRITE = Identifier.withDefaultNamespace(
             "container/creative_inventory/scroller_disabled");
 
     public AbstractMenuSelectionList(Minecraft minecraft, int x, int y, int width, int height, int itemHeight) {
@@ -55,7 +52,7 @@ public class AbstractMenuSelectionList<E extends AbstractMenuSelectionList.Entry
 
     @Override
     protected void extractScrollbar(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        Identifier sprite = this.scrollable() ? SCROLLER_SPRITE : DISABLED_SCROLLER_SPRITE;
+        Identifier sprite = this.scrollable() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE;
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                 sprite,
                 this.scrollBarX(),

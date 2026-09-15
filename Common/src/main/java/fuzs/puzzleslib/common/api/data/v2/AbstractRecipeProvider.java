@@ -101,14 +101,6 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements D
     /**
      * @see #generateFor(BlockSetFamily, Map, Map)
      */
-    @Deprecated(forRemoval = true)
-    public static Map<BlockSetVariant, FamilyRecipeProvider> createVariantWoodProviders(BlockSetFamily blockSetFamily, Block strippedBlock) {
-        return createVariantWoodProviders(blockSetFamily);
-    }
-
-    /**
-     * @see #generateFor(BlockSetFamily, Map, Map)
-     */
     public static Map<BlockSetVariant, FamilyRecipeProvider> createVariantWoodProviders(BlockSetFamily blockSetFamily) {
         return ImmutableMap.<BlockSetVariant, FamilyRecipeProvider>builder()
                 .put(BlockSetVariant.WOOD,

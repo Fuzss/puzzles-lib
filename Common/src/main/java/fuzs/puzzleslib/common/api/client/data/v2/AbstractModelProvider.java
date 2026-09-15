@@ -63,14 +63,6 @@ public abstract class AbstractModelProvider implements DataProvider {
     /**
      * @see #generateForBlocks(BlockModelGenerators, BlockSetFamily, Map)
      */
-    @Deprecated(forRemoval = true)
-    public static Map<BlockSetVariant, BiConsumer<BlockModelGenerators, Block>> createVariantWoodBlockProviders(BlockSetFamily blockSetFamily, Block strippedBlock) {
-        return createVariantWoodBlockProviders(blockSetFamily);
-    }
-
-    /**
-     * @see #generateForBlocks(BlockModelGenerators, BlockSetFamily, Map)
-     */
     public static Map<BlockSetVariant, BiConsumer<BlockModelGenerators, Block>> createVariantWoodBlockProviders(BlockSetFamily blockSetFamily) {
         return ImmutableMap.<BlockSetVariant, BiConsumer<BlockModelGenerators, Block>>builder()
                 .put(BlockSetVariant.LOG, (BlockModelGenerators blockModelGenerators, Block block) -> {

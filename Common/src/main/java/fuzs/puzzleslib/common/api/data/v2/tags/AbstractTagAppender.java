@@ -13,10 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * TODO replace Holder.Reference with plain Holder, also maybe this could be an interface
- * TODO maybe also remove ids
- */
 public abstract class AbstractTagAppender<T> implements TagAppender<T> {
     protected final TagBuilder tagBuilder;
 

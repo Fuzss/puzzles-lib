@@ -15,7 +15,6 @@ public final class FabricGuiEvents {
      * foreground is drawn (like text labels) via
      * {@link AbstractContainerScreen#extractContents(GuiGraphicsExtractor, int, int, float)}.
      */
-    @Deprecated
     public static final Event<ExtractContainerScreenContentsCallback> EXTRACT_CONTAINER_SCREEN_CONTENTS = FabricEventFactory.create(
             ExtractContainerScreenContentsCallback.class);
     /**

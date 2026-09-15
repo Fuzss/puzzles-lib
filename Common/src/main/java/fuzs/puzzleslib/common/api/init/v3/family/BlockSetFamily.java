@@ -83,25 +83,13 @@ public interface BlockSetFamily {
         return new BlockSetFamilyRegistrar(registries, baseBlock, baseName, blockSetType, woodType);
     }
 
-    static Writable any(RegistryManager registries, Holder.Reference<Block> baseBlock, String baseName) {
+    static Writable stone(RegistryManager registries, Holder.Reference<Block> baseBlock, String baseName) {
         return base(registries,
                 baseBlock,
                 baseName).configureBlockFamily(BlockFamily.Builder::generateStonecutterRecipe)
                 .generateFor(BlockSetVariant.STAIRS)
                 .generateFor(BlockSetVariant.SLAB)
                 .generateFor(BlockSetVariant.WALL);
-    }
-
-    @Deprecated(forRemoval = true)
-    static Writable metal(RegistryManager registries, Holder.Reference<Block> baseBlock, String baseName) {
-        return base(registries,
-                baseBlock,
-                baseName).configureBlockFamily(BlockFamily.Builder::generateStonecutterRecipe)
-                .generateFor(BlockSetVariant.STAIRS)
-                .generateFor(BlockSetVariant.SLAB)
-                .generateFor(BlockSetVariant.DOOR)
-                .generateFor(BlockSetVariant.TRAPDOOR)
-                .generateFor(BlockSetVariant.PRESSURE_PLATE);
     }
 
     static Writable wooden(RegistryManager registries, Holder.Reference<Block> baseBlock, String baseName) {

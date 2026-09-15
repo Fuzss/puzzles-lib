@@ -39,13 +39,10 @@ public abstract class AbstractAdvancementProvider implements DataProvider, Advan
     }
 
     protected static DisplayInfoBuilder display(ItemLike icon, Identifier id) {
-        return displayV2(new ItemStackTemplate(icon.asItem()), id);
+        return display(new ItemStackTemplate(icon.asItem()), id);
     }
 
-    /**
-     * TODO rename method as {@code display}
-     */
-    protected static DisplayInfoBuilder displayV2(ItemStackTemplate icon, Identifier id) {
+    protected static DisplayInfoBuilder display(ItemStackTemplate icon, Identifier id) {
         return display(icon, new AdvancementToken(id));
     }
 
@@ -63,31 +60,6 @@ public abstract class AbstractAdvancementProvider implements DataProvider, Advan
 
     protected static DisplayInfoBuilder display(ItemStackTemplate icon, Component title, Component description) {
         return new DisplayInfoBuilder(icon, title, description);
-    }
-
-    @Deprecated(forRemoval = true)
-    protected static DisplayInfo display(ItemStackTemplate icon, Identifier id) {
-        return displayV2(icon, id).build();
-    }
-
-    @Deprecated(forRemoval = true)
-    protected static DisplayInfo display(ItemStackTemplate icon, Identifier id, AdvancementType type) {
-        return displayV2(icon, id).setType(type).build();
-    }
-
-    @Deprecated(forRemoval = true)
-    protected static DisplayInfo display(ItemStackTemplate icon, Identifier id, @Nullable Identifier background, AdvancementType type, boolean hidden) {
-        return displayV2(icon, id).setBackground(background).setType(type).setHidden(hidden).build();
-    }
-
-    @Deprecated(forRemoval = true)
-    protected static DisplayInfo display(ItemStackTemplate icon, Identifier id, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceChat, boolean hidden) {
-        return displayV2(icon, id).setBackground(background)
-                .setType(type)
-                .setShowToast(showToast)
-                .setAnnounceChat(announceChat)
-                .setHidden(hidden)
-                .build();
     }
 
     @Override
@@ -130,14 +102,6 @@ public abstract class AbstractAdvancementProvider implements DataProvider, Advan
 
         public Component description() {
             return Component.translatable(this.id.toLanguageKey("advancements", "description").replace('/', '.'));
-        }
-
-        @Deprecated(forRemoval = true)
-        public AdvancementHolder asParent() {
-            // workaround for getting the proper parent id,
-            // the advancement holder from saving the builder always has the `minecraft` namespace set
-            // (which we replace when running the data generator, which happens later though)
-            return new AdvancementHolder(this.id, null);
         }
 
         public String name() {

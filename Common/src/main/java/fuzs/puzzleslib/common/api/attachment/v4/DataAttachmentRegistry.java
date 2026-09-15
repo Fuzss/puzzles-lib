@@ -182,18 +182,6 @@ public final class DataAttachmentRegistry {
         /**
          * Set a default value for the provided entity type.
          *
-         * @param entityType   the entity type
-         * @param defaultValue the default value
-         * @return the builder instance
-         */
-        @Deprecated
-        default EntityBuilder<V> defaultValue(EntityType<?> entityType, V defaultValue) {
-            return this.defaultValue(entityType.builtInRegistryHolder().key(), defaultValue);
-        }
-
-        /**
-         * Set a default value for the provided entity type.
-         *
          * @param entityType   the entity type key
          * @param defaultValue the default value
          * @return the builder instance
@@ -218,18 +206,6 @@ public final class DataAttachmentRegistry {
      * @param <V> attachment value type
      */
     public interface BlockEntityBuilder<V> extends RegistryBuilder<BlockEntity, V, BlockEntityBuilder<V>> {
-
-        /**
-         * Set a default value for the provided block entity type.
-         *
-         * @param blockEntityType the block entity type
-         * @param defaultValue    the default value
-         * @return the builder instance
-         */
-        @Deprecated
-        default BlockEntityBuilder<V> defaultValue(BlockEntityType<?> blockEntityType, V defaultValue) {
-            return this.defaultValue(blockEntityType.builtInRegistryHolder().key(), defaultValue);
-        }
 
         /**
          * Set a default value for the provided block entity type.
