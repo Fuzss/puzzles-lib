@@ -51,9 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public class PuzzlesLibClientDevelopment implements ClientModConstructor {
@@ -98,17 +96,15 @@ public class PuzzlesLibClientDevelopment implements ClientModConstructor {
 
             return EventResultHolder.pass();
         });
-        ScreenEvents.beforeInit(TitleScreen.class)
-                .register((TitleScreen screen, int screenWidth, int screenHeight, List<AbstractWidget> widgets) -> {
-                    if (screen.minecraft.gui.overlay() instanceof LoadingOverlay loadingOverlay
-                            && loadingOverlay.fadeOutStart != 0L) {
-                        loadingOverlay.fadeOutStart = 0L;
-                    }
-                });
-        ScreenEvents.afterInit(TitleScreen.class)
-                .register((TitleScreen screen, int screenWidth, int screenHeight, List<AbstractWidget> widgets, UnaryOperator<AbstractWidget> addWidget, Consumer<AbstractWidget> removeWidget) -> {
-                    getButton(widgets, "TW").ifPresent(removeWidget);
-                });
+        ScreenEvents.beforeInit(TitleScreen.class).register((TitleScreen screen, int screenWidth, int screenHeight) -> {
+            if (screen.minecraft.gui.overlay() instanceof LoadingOverlay loadingOverlay
+                    && loadingOverlay.fadeOutStart != 0L) {
+                loadingOverlay.fadeOutStart = 0L;
+            }
+        });
+        ScreenEvents.afterInit(TitleScreen.class).register((TitleScreen screen, int screenWidth, int screenHeight) -> {
+            getButton(screen.children(), "TW").ifPresent(screen::removeWidget);
+        });
         AddToastCallback.EVENT.register((ToastManager toastManager, Toast toast) -> {
             if (toast instanceof SystemToast systemToast
                     && systemToast.getToken() == SystemToast.SystemToastId.UNSECURE_SERVER_WARNING) {

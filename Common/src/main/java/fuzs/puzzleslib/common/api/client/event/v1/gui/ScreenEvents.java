@@ -2,13 +2,9 @@ package fuzs.puzzleslib.common.api.client.event.v1.gui;
 
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unchecked")
 public final class ScreenEvents {
@@ -62,14 +58,12 @@ public final class ScreenEvents {
          * As opposed to Forge, this callback cannot be cancelled, and therefore also does not allow for manipulating
          * widgets, as those will be cleared anyway.
          * <p>
-         * TODO remove widgets list, those are available via {@link Screen#children()}
          *
          * @param screen       the screen that is rebuilding widgets
          * @param screenWidth  width of the window
          * @param screenHeight height of the window
-         * @param widgets      all old widgets on the screen provided as a read-only list, those will be cleared
          */
-        void onBeforeInit(T screen, int screenWidth, int screenHeight, List<AbstractWidget> widgets);
+        void onBeforeInit(T screen, int screenWidth, int screenHeight);
     }
 
     @FunctionalInterface
@@ -81,17 +75,12 @@ public final class ScreenEvents {
          * <p>
          * This callback allows for manipulating widgets on the screen, allowing for both additions and removals, as
          * well as modifications to existing widgets.
-         * <p>
-         * TODO remove widgets list related parameters, those are available via methods directly on {@link Screen} (needs AWs)
          *
          * @param screen       the screen that is rebuilding widgets
          * @param screenWidth  width of the window
          * @param screenHeight height of the window
-         * @param widgets      all widgets on the screen provided as a read-only list
-         * @param addWidget    a consumer for adding a new widget
-         * @param removeWidget a consumer for removing an existing widget
          */
-        void onAfterInit(T screen, int screenWidth, int screenHeight, List<AbstractWidget> widgets, UnaryOperator<AbstractWidget> addWidget, Consumer<AbstractWidget> removeWidget);
+        void onAfterInit(T screen, int screenWidth, int screenHeight);
     }
 
     @FunctionalInterface

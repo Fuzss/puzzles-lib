@@ -6,7 +6,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import fuzs.puzzleslib.common.api.client.event.v1.gui.ScreenEvents;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -19,8 +18,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 /**
  * Allows for skipping a screen that's just been opened by automatically triggering the press action of a button on that
@@ -196,10 +193,10 @@ public final class ScreenSkipper {
         }
     }
 
-    private void onAfterInit(Screen screen, int screenWidth, int screenHeight, List<AbstractWidget> widgets, UnaryOperator<AbstractWidget> addWidget, Consumer<AbstractWidget> removeWidget) {
+    private void onAfterInit(Screen screen, int screenWidth, int screenHeight) {
         if (this.trigger == EventResult.ALLOW && (this.titleComponent == null || screen.getTitle()
                 .equals(this.titleComponent))) {
-            this.iterateAllWidgets(widgets, this.skipButtons);
+            this.iterateAllWidgets(screen.children(), this.skipButtons);
         }
     }
 

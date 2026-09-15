@@ -20,7 +20,6 @@ import fuzs.puzzleslib.common.impl.event.data.DefaultedFloat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -62,7 +61,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 import static fuzs.puzzleslib.neoforge.api.event.v1.core.NeoForgeEventInvokerRegistry.INSTANCE;
 
@@ -238,22 +236,11 @@ public final class NeoForgeClientEventInvokers {
                 });
         registerScreenEvent(ScreenEvents.BeforeInit.class, ScreenEvent.Init.Pre.class, (callback, event) -> {
             Window window = event.getScreen().getMinecraft().getWindow();
-            callback.onBeforeInit(event.getScreen(),
-                    window.getGuiScaledWidth(),
-                    window.getGuiScaledHeight(),
-                    new ScreenButtonList(event.getScreen().renderables));
+            callback.onBeforeInit(event.getScreen(), window.getGuiScaledWidth(), window.getGuiScaledHeight());
         });
         registerScreenEvent(ScreenEvents.AfterInit.class, ScreenEvent.Init.Post.class, (callback, event) -> {
             Window window = event.getScreen().getMinecraft().getWindow();
-            callback.onAfterInit(event.getScreen(),
-                    window.getGuiScaledWidth(),
-                    window.getGuiScaledHeight(),
-                    new ScreenButtonList(event.getScreen().renderables),
-                    (UnaryOperator<AbstractWidget>) (AbstractWidget abstractWidget) -> {
-                        event.addListener(abstractWidget);
-                        return abstractWidget;
-                    },
-                    (Consumer<AbstractWidget>) event::removeListener);
+            callback.onAfterInit(event.getScreen(), window.getGuiScaledWidth(), window.getGuiScaledHeight());
         });
         registerScreenEvent(ScreenEvents.Remove.class, ScreenEvent.Closing.class, (callback, event) -> {
             callback.onRemove(event.getScreen());

@@ -30,7 +30,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -60,13 +59,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 import static fuzs.puzzleslib.fabric.api.event.v1.core.FabricEventInvokerRegistry.INSTANCE;
 
@@ -196,10 +193,7 @@ public final class FabricClientEventInvokers {
                             return;
                         }
 
-                        callback.onBeforeInit(screen,
-                                scaledWidth,
-                                scaledHeight,
-                                Collections.unmodifiableList(Screens.getWidgets(screen)));
+                        callback.onBeforeInit(screen, scaledWidth, scaledHeight);
                     };
                 });
         INSTANCE.register(ScreenEvents.AfterInit.class,
@@ -211,16 +205,7 @@ public final class FabricClientEventInvokers {
                             return;
                         }
 
-                        List<AbstractWidget> widgets = Screens.getWidgets(screen);
-                        callback.onAfterInit(screen,
-                                scaledWidth,
-                                scaledHeight,
-                                Collections.unmodifiableList(widgets),
-                                (UnaryOperator<AbstractWidget>) (AbstractWidget abstractWidget) -> {
-                                    widgets.add(abstractWidget);
-                                    return abstractWidget;
-                                },
-                                (Consumer<AbstractWidget>) widgets::remove);
+                        callback.onAfterInit(screen, scaledWidth, scaledHeight);
                     };
                 });
         registerScreenEvent(ScreenEvents.Remove.class,

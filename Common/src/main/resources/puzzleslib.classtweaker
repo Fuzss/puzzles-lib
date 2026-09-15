@@ -58,6 +58,10 @@ transitive-mutable	field	net/minecraft/client/gui/components/ImageButton	sprites
 transitive-accessible	method	net/minecraft/client/gui/components/debug/DebugScreenEntries	register	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/gui/components/debug/DebugScreenEntry;)Lnet/minecraft/resources/Identifier;
 transitive-accessible	field	net/minecraft/client/gui/screens/Screen	minecraft	Lnet/minecraft/client/Minecraft;
 transitive-accessible	field	net/minecraft/client/gui/screens/Screen	renderables	Ljava/util/List;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	addRenderableOnly	(Lnet/minecraft/client/gui/components/Renderable;)Lnet/minecraft/client/gui/components/Renderable;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	addRenderableWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	addWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	removeWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)V
 transitive-accessible	field	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	SLOT_HIGHLIGHT_BACK_SPRITE	Lnet/minecraft/resources/Identifier;
 transitive-accessible	field	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	SLOT_HIGHLIGHT_FRONT_SPRITE	Lnet/minecraft/resources/Identifier;
 transitive-accessible	field	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	hoveredSlot	Lnet/minecraft/world/inventory/Slot;
