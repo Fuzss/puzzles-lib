@@ -1,4 +1,4 @@
-name: Sync LICENSE.md files
+name: Sync license files
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Sync LICENSE.md files
+      - name: Sync license files
         run: |
           # Fetch all branches
           git fetch --all
@@ -50,13 +50,13 @@ jobs:
               # This includes 'LICENSE', 'LICENSE.md', 'LICENSING.md', 'LICENSE-ASSETS.md', etc.
               rm -f LICENS*
 
-              # Copy all 'LICENSE.md' files from main into this branch
+              # Copy all license files from main into this branch
               git checkout main -- 'LICENS*'
 
               # Stage and commit changes only if there are any
               git add -A 'LICENS*'
               git diff-index --quiet HEAD || {
-                git commit -m "Sync LICENSE.md files [skip ci]"
+                git commit -m "Sync license files [skip ci]"
                 git push origin "$name"
               }
             fi
