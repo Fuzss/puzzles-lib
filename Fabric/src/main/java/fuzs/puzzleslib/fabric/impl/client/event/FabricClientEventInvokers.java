@@ -8,27 +8,19 @@ import fuzs.puzzleslib.common.api.client.event.v1.gui.*;
 import fuzs.puzzleslib.common.api.client.event.v1.level.ClientChunkEvents;
 import fuzs.puzzleslib.common.api.client.event.v1.level.ClientLevelEvents;
 import fuzs.puzzleslib.common.api.client.event.v1.level.ClientLevelTickEvents;
-import fuzs.puzzleslib.common.api.client.event.v1.model.ModelBakingEvents;
-import fuzs.puzzleslib.common.api.client.event.v1.model.ModelLoadingEvents;
 import fuzs.puzzleslib.common.api.client.event.v1.renderer.*;
 import fuzs.puzzleslib.common.api.event.v1.core.EventPhase;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResultHolder;
 import fuzs.puzzleslib.common.impl.PuzzlesLibMod;
-import fuzs.puzzleslib.common.impl.event.data.DefaultedInt;
 import fuzs.puzzleslib.fabric.api.client.event.v1.*;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.rendering.v1.ExtractItemDecorationsCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.client.player.ClientHotbarScrollEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -45,12 +37,9 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -59,7 +48,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -91,88 +79,6 @@ public final class FabricClientEventInvokers {
 
     public static void registerLoadingHandlers() {
         INSTANCE.register(ScreenOpeningCallback.class, FabricGuiEvents.SCREEN_OPENING);
-        INSTANCE.register(ModelLoadingEvents.LoadModel.class,
-                (ModelLoadingEvents.LoadModel callback, @Nullable Object o) -> {
-                    ModelLoadingPlugin.register((ModelLoadingPlugin.Context pluginContext) -> {
-                        pluginContext.modifyModelOnLoad()
-                                .register(ModelModifier.OVERRIDE_PHASE,
-                                        (UnbakedModel model, ModelModifier.OnLoad.Context context) -> {
-                                            EventResultHolder<UnbakedModel> eventResult = callback.onLoadModel(context.id(),
-                                                    model);
-                                            return eventResult.getInterrupt().orElse(model);
-                                        });
-                    });
-                });
-        INSTANCE.register(ModelBakingEvents.BeforeItem.class,
-                (ModelBakingEvents.BeforeItem callback, @Nullable Object o) -> {
-                    ModelLoadingPlugin.register((ModelLoadingPlugin.Context pluginContext) -> {
-                        pluginContext.modifyItemModelBeforeBake()
-                                .register(ModelModifier.OVERRIDE_PHASE,
-                                        (ItemModel.Unbaked model, ModelModifier.BeforeBakeItem.Context context) -> {
-                                            EventResultHolder<ItemModel.Unbaked> eventResult = callback.onBeforeBakeItem(
-                                                    context.itemId(),
-                                                    model,
-                                                    context.bakingContext());
-                                            return eventResult.getInterrupt().orElse(model);
-                                        });
-                    });
-                });
-        INSTANCE.register(ModelBakingEvents.AfterItem.class,
-                (ModelBakingEvents.AfterItem callback, @Nullable Object o) -> {
-                    ModelLoadingPlugin.register((ModelLoadingPlugin.Context pluginContext) -> {
-                        pluginContext.modifyItemModelAfterBake()
-                                .register(ModelModifier.OVERRIDE_PHASE,
-                                        (ItemModel model, ModelModifier.AfterBakeItem.Context context) -> {
-                                            EventResultHolder<ItemModel> eventResult = callback.onAfterBakeItem(context.itemId(),
-                                                    model,
-                                                    context.sourceModel(),
-                                                    context.bakingContext());
-                                            return eventResult.getInterrupt().orElse(model);
-                                        });
-                    });
-                });
-        INSTANCE.register(ModelLoadingEvents.LoadBlockModel.class,
-                (ModelLoadingEvents.LoadBlockModel callback, @Nullable Object o) -> {
-                    ModelLoadingPlugin.register((ModelLoadingPlugin.Context pluginContext) -> {
-                        pluginContext.modifyBlockModelOnLoad()
-                                .register(ModelModifier.OVERRIDE_PHASE,
-                                        (BlockStateModel.UnbakedRoot model, ModelModifier.OnLoadBlock.Context context) -> {
-                                            EventResultHolder<BlockStateModel.UnbakedRoot> eventResult = callback.onLoadBlockModel(
-                                                    context.state(),
-                                                    model);
-                                            return eventResult.getInterrupt().orElse(model);
-                                        });
-                    });
-                });
-        INSTANCE.register(ModelBakingEvents.BeforeBlock.class,
-                (ModelBakingEvents.BeforeBlock callback, @Nullable Object o) -> {
-                    ModelLoadingPlugin.register((ModelLoadingPlugin.Context pluginContext) -> {
-                        pluginContext.modifyBlockModelBeforeBake()
-                                .register(ModelModifier.OVERRIDE_PHASE,
-                                        (BlockStateModel.UnbakedRoot model, ModelModifier.BeforeBakeBlock.Context context) -> {
-                                            EventResultHolder<BlockStateModel.UnbakedRoot> eventResult = callback.onBeforeBakeBlock(
-                                                    context.state(),
-                                                    model,
-                                                    context.baker());
-                                            return eventResult.getInterrupt().orElse(model);
-                                        });
-                    });
-                });
-        INSTANCE.register(ModelBakingEvents.AfterBlock.class,
-                (ModelBakingEvents.AfterBlock callback, @Nullable Object o) -> {
-                    ModelLoadingPlugin.register((ModelLoadingPlugin.Context pluginContext) -> {
-                        pluginContext.modifyBlockModelAfterBake()
-                                .register(ModelModifier.OVERRIDE_PHASE,
-                                        (BlockStateModel model, ModelModifier.AfterBakeBlock.Context context) -> {
-                                            EventResultHolder<BlockStateModel> eventResult = callback.onAfterBakeBlock(
-                                                    context.state(),
-                                                    model,
-                                                    context.sourceModel(),
-                                                    context.baker());
-                                            return eventResult.getInterrupt().orElse(model);
-                                        });
-                    });
-                });
         INSTANCE.register(ClientLifecycleEvents.Started.class,
                 net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STARTED,
                 (ClientLifecycleEvents.Started callback) -> {
@@ -279,8 +185,6 @@ public final class FabricClientEventInvokers {
                     };
                 });
         INSTANCE.register(SubmitNameTagCallback.class, FabricRendererEvents.SUBMIT_NAME_TAG);
-        INSTANCE.register(ExtractContainerScreenContentsCallback.class,
-                FabricGuiEvents.EXTRACT_CONTAINER_SCREEN_CONTENTS);
         INSTANCE.register(PrepareInventoryMobEffectsCallback.class, FabricGuiEvents.INVENTORY_MOB_EFFECTS);
         INSTANCE.register(ComputeFovModifierCallback.class, FabricClientPlayerEvents.COMPUTE_FOV_MODIFIER);
         INSTANCE.register(ScreenEvents.BeforeInit.class,
@@ -462,45 +366,11 @@ public final class FabricClientEventInvokers {
                     return callback::onAfterCharacterType;
                 },
                 net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents::afterCharType);
-        INSTANCE.register(CustomizeChatPanelCallback.class,
-                (CustomizeChatPanelCallback callback, @Nullable Object context) -> {
-                    HudElementRegistry.replaceElement(VanillaHudElements.CHAT, (HudElement hudElement) -> {
-                        return (GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) -> {
-                            guiGraphics.pose().pushMatrix();
-                            DefaultedInt posX = DefaultedInt.fromValue(0);
-                            DefaultedInt posY = DefaultedInt.fromValue(guiGraphics.guiHeight() - 48);
-                            callback.onRenderChatPanel(guiGraphics, deltaTracker, posX, posY);
-                            if (posX.getAsOptionalInt().isPresent() || posY.getAsOptionalInt().isPresent()) {
-                                guiGraphics.pose()
-                                        .translate(posX.getAsInt(), posY.getAsInt() - (guiGraphics.guiHeight() - 48));
-                            }
-
-                            hudElement.extractRenderState(guiGraphics, deltaTracker);
-                            guiGraphics.pose().popMatrix();
-                        };
-                    });
-                });
         INSTANCE.register(ClientEntityEvents.Load.class, FabricClientEntityEvents.ENTITY_LOAD);
         INSTANCE.register(ClientEntityEvents.Unload.class,
                 net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents.ENTITY_UNLOAD,
                 (ClientEntityEvents.Unload callback) -> {
                     return callback::onEntityUnload;
-                });
-        INSTANCE.register(HotbarScrollingCallback.class,
-                ClientHotbarScrollEvents.ALLOW,
-                (HotbarScrollingCallback callback) -> {
-                    return (Inventory inventory, int currentSlot, int newSlot, double xOffset, double yOffset) -> {
-                        EventResultHolder<Integer> holder = callback.onHotbarScrolling(inventory,
-                                currentSlot,
-                                newSlot,
-                                xOffset,
-                                yOffset);
-                        holder.ifAllow((Integer slot) -> {
-                            Objects.requireNonNull(slot, "slot is null");
-                            inventory.setSelectedSlot(slot);
-                        });
-                        return holder.isPass();
-                    };
                 });
         INSTANCE.register(ClientInputEvents.MouseClick.class, FabricClientEvents.MOUSE_CLICK);
         INSTANCE.register(ClientInputEvents.MouseScroll.class, FabricClientEvents.MOUSE_SCROLL);

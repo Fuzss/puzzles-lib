@@ -16,15 +16,12 @@ import fuzs.puzzleslib.common.api.event.v1.data.MutableBoolean;
 import fuzs.puzzleslib.common.api.event.v1.data.MutableFloat;
 import fuzs.puzzleslib.common.api.event.v1.data.MutableInt;
 import fuzs.puzzleslib.common.api.event.v1.data.MutableValue;
-import fuzs.puzzleslib.common.impl.client.event.ScreenButtonList;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedFloat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.ScrollWheelHandler;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -40,8 +37,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +55,6 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
@@ -404,27 +398,6 @@ public final class NeoForgeClientEventInvokers {
                 (callback, event) -> {
                     callback.onAfterCharacterType(event.getScreen(), event.getCharacterEvent());
                 });
-        INSTANCE.register(ExtractContainerScreenContentsCallback.class,
-                ScreenEvent.Render.Foreground.class,
-                (ExtractContainerScreenContentsCallback callback, ScreenEvent.Render.Foreground event) -> {
-                    if (event.getScreen() instanceof AbstractContainerScreen<?> screen) {
-                        Matrix3x2fStack pose = event.getGuiGraphics().pose();
-                        pose.pushMatrix();
-                        pose.translate(screen.getLeftPos(), screen.getTopPos());
-                        callback.onExtractContainerScreenContents(screen,
-                                event.getGuiGraphics(),
-                                event.getMouseX(),
-                                event.getMouseY());
-                        pose.popMatrix();
-                    }
-                });
-        INSTANCE.register(CustomizeChatPanelCallback.class,
-                CustomizeGuiOverlayEvent.Chat.class,
-                (CustomizeChatPanelCallback callback, CustomizeGuiOverlayEvent.Chat event) -> {
-                    MutableInt posX = MutableInt.fromEvent(event::setPosX, event::getPosX);
-                    MutableInt posY = MutableInt.fromEvent(event::setPosY, event::getPosY);
-                    callback.onRenderChatPanel(event.getGuiGraphics(), event.getPartialTick(), posX, posY);
-                });
         INSTANCE.register(ClientEntityEvents.Load.class,
                 EntityJoinLevelEvent.class,
                 (ClientEntityEvents.Load callback, EntityJoinLevelEvent event) -> {
@@ -445,34 +418,6 @@ public final class NeoForgeClientEventInvokers {
                     }
 
                     callback.onEntityUnload(event.getEntity(), clientLevel);
-                });
-        INSTANCE.register(HotbarScrollingCallback.class,
-                InputEvent.MouseScrollingEvent.class,
-                (HotbarScrollingCallback callback, InputEvent.MouseScrollingEvent event) -> {
-                    // Only handle scrolling in the inventory to mirror Fabric.
-                    Player player = Minecraft.getInstance().player;
-                    if (player.isSpectator()) {
-                        return;
-                    }
-
-                    Inventory inventory = player.getInventory();
-                    int wheel = event.getAccumulatedScrollY() == 0 ? -event.getAccumulatedScrollX() :
-                            event.getAccumulatedScrollY();
-                    int newSlot = ScrollWheelHandler.getNextScrollWheelSelection(wheel,
-                            inventory.getSelectedSlot(),
-                            Inventory.getSelectionSize());
-                    EventResultHolder<Integer> holder = callback.onHotbarScrolling(inventory,
-                            inventory.getSelectedSlot(),
-                            newSlot,
-                            event.getScrollDeltaX(),
-                            event.getScrollDeltaY());
-                    holder.ifAllow((Integer slot) -> {
-                        Objects.requireNonNull(slot, "slot is null");
-                        inventory.setSelectedSlot(slot);
-                    });
-                    if (holder.isInterrupt()) {
-                        event.setCanceled(true);
-                    }
                 });
         INSTANCE.register(ClientInputEvents.MouseClick.class,
                 InputEvent.MouseButton.Pre.class,

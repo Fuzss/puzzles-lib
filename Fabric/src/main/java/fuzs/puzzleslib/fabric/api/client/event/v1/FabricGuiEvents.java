@@ -4,19 +4,10 @@ import fuzs.puzzleslib.common.api.client.event.v1.gui.*;
 import fuzs.puzzleslib.fabric.api.event.v1.core.FabricEventFactory;
 import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public final class FabricGuiEvents {
-    /**
-     * Called for {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen}, after the screen
-     * foreground is drawn (like text labels) via
-     * {@link AbstractContainerScreen#extractContents(GuiGraphicsExtractor, int, int, float)}.
-     */
-    public static final Event<ExtractContainerScreenContentsCallback> EXTRACT_CONTAINER_SCREEN_CONTENTS = FabricEventFactory.create(
-            ExtractContainerScreenContentsCallback.class);
     /**
      * Called before mob effects are drawn next to the inventory menu, used to force a rendering mode; or to cancel the
      * rendering completely.
