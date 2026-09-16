@@ -1,6 +1,5 @@
 package fuzs.puzzleslib.common.api.init.v3.registry;
 
-import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.common.api.event.v1.CommonSetupCallback;
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
 import fuzs.puzzleslib.common.impl.item.TransmuteShapedRecipe;
@@ -9,14 +8,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.block.SkullBlock;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-
-import java.util.function.Consumer;
 
 /**
  * Contains methods for registering various gameplay content.
@@ -78,36 +73,5 @@ public final class ContentRegistrationHelper {
             SkullBlock.Type.TYPES.put(skullBlockType.getSerializedName(), skullBlockType);
         });
         return skullBlockType;
-    }
-
-    /**
-     * Creates and registers a new {@link ContextKeySet}.
-     *
-     * @param id              the identifier for the registry
-     * @param builderConsumer the consumer for configuring the builder
-     * @return the created context key set
-     */
-    public static ContextKeySet registerContextKeySet(Identifier id, Consumer<ContextKeySet.Builder> builderConsumer) {
-        ContextKeySet.Builder builder = new ContextKeySet.Builder();
-        builderConsumer.accept(builder);
-        ContextKeySet contextKeySet = builder.build();
-        if (ModLoaderEnvironment.INSTANCE.isDataGeneration()) {
-            // Run this immediately, as the common setup does not run during data generation, but we need this for generating loot tables.
-            // This can only ever run in a development environment where no other mods conflicting here will be present.
-            registerContextKeySet(id, contextKeySet);
-        } else {
-            // Delay this, as the underlying registry map is not concurrent, possibly leading to issues with other mods on NeoForge.
-            CommonSetupCallback.EVENT.register(() -> {
-                registerContextKeySet(id, contextKeySet);
-            });
-        }
-
-        return contextKeySet;
-    }
-
-    private static void registerContextKeySet(Identifier id, ContextKeySet contextKeySet) {
-        if (LootContextParamSets.REGISTRY.put(id, contextKeySet) != null) {
-            throw new IllegalStateException("Loot context key set " + id + " is already registered");
-        }
     }
 }

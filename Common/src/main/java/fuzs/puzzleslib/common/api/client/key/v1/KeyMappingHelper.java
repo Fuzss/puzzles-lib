@@ -8,7 +8,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLKeyboard;
 
 import java.util.Map;
 
@@ -57,7 +57,7 @@ public interface KeyMappingHelper {
      * Register a modded key mapping with a custom category.
      *
      * @param identifier key mapping identifier for defining name and category keys
-     * @param keyCode          the default key, get the value from {@link com.mojang.blaze3d.platform.InputConstants}
+     * @param keyCode    the default key, get the value from {@link com.mojang.blaze3d.platform.InputConstants}
      * @return key mapping instance
      */
     static KeyMapping registerKeyMapping(Identifier identifier, int keyCode) {
@@ -90,12 +90,17 @@ public interface KeyMappingHelper {
      * @param keyMapping the key mapping
      * @param codePoint  the code point
      * @return is the key mapping pressed
+     *
+     * @see KeyMapping#matches(KeyEvent)
+     * @see InputConstants.Type#KEYBOARD
      */
     static boolean matchesCodePoint(KeyMapping keyMapping, int codePoint) {
-        if (keyMapping.key.getType() == InputConstants.Type.KEYSYM && !keyMapping.isUnbound()) {
-            String string = new String(Character.toChars(codePoint));
-            String keyName = GLFW.glfwGetKeyName(keyMapping.key.getValue(), -1);
-            return keyName != null && keyName.equalsIgnoreCase(string);
+        if (keyMapping.key.getType() == InputConstants.Type.KEYBOARD && !keyMapping.isUnbound()) {
+            String text = new String(Character.toChars(codePoint));
+            int keycode = SDLKeyboard.SDL_GetKeyFromScancode(keyMapping.key.getValue(), (short) 0, false);
+            String systemName = SDLKeyboard.SDL_GetKeyName(keycode);
+            return systemName != null && systemName.codePointCount(0, systemName.length()) == 1
+                    && systemName.equalsIgnoreCase(text);
         } else {
             return false;
         }

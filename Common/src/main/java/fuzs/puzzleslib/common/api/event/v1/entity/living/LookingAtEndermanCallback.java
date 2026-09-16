@@ -2,7 +2,7 @@ package fuzs.puzzleslib.common.api.event.v1.entity.living;
 
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.player.Player;
 
 @FunctionalInterface
@@ -10,7 +10,7 @@ public interface LookingAtEndermanCallback {
     EventInvoker<LookingAtEndermanCallback> EVENT = EventInvoker.lookup(LookingAtEndermanCallback.class);
 
     /**
-     * Called in {@link EnderMan#isBeingStaredBy(Player)}, to allow for custom behavior when looking at an enderman.
+     * Called in {@link Enderman#isBeingStaredBy(Player)}, to allow for custom behavior when looking at an enderman.
      * <p>
      * Mainly useful for supporting custom mask blocks for safely looking at an enderman.
      * <p>
@@ -23,5 +23,5 @@ public interface LookingAtEndermanCallback {
      *         <li>{@link EventResult#PASS PASS} to let the enderman become angry</li>
      *         </ul>
      */
-    EventResult onLookingAtEnderManCallback(EnderMan enderman, Player player);
+    EventResult onLookingAtEndermanCallback(Enderman enderman, Player player);
 }

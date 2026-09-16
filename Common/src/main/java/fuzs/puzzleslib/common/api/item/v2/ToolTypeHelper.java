@@ -41,7 +41,7 @@ public interface ToolTypeHelper {
      */
     @MustBeInvokedByOverriders
     default boolean isAxe(ItemStack itemStack) {
-        return itemStack.getItem() instanceof AxeItem || itemStack.is(ItemTags.AXES);
+        return itemStack.is(ItemTags.AXES);
     }
 
     /**
@@ -52,7 +52,7 @@ public interface ToolTypeHelper {
      */
     @MustBeInvokedByOverriders
     default boolean isHoe(ItemStack itemStack) {
-        return itemStack.getItem() instanceof HoeItem || itemStack.is(ItemTags.HOES);
+        return itemStack.is(ItemTags.HOES);
     }
 
     /**
@@ -74,7 +74,7 @@ public interface ToolTypeHelper {
      */
     @MustBeInvokedByOverriders
     default boolean isShovel(ItemStack itemStack) {
-        return itemStack.getItem() instanceof AxeItem || itemStack.is(ItemTags.SHOVELS);
+        return itemStack.is(ItemTags.SHOVELS);
     }
 
     /**

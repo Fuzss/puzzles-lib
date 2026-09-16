@@ -4,12 +4,15 @@ import fuzs.puzzleslib.common.api.resources.v1.AbstractModPackResources;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackMetadataResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.util.InclusiveRange;
+
+import java.util.stream.Stream;
 
 public record ModPackResourcesSupplier(PackType packType,
                                        PackLocationInfo info,
@@ -26,13 +29,13 @@ public record ModPackResourcesSupplier(PackType packType,
     }
 
     @Override
-    public PackResources openPrimary(PackLocationInfo info) {
+    public PackMetadataResources openMetadata(PackLocationInfo location) {
         return this.getAndSetupPackResources();
     }
 
     @Override
-    public PackResources openFull(PackLocationInfo info, Pack.Metadata packMetadata) {
-        return this.getAndSetupPackResources();
+    public Stream<PackResources> openResources(PackLocationInfo location, Pack.Metadata metadata) {
+        return Stream.of(this.getAndSetupPackResources());
     }
 
     private AbstractModPackResources getAndSetupPackResources() {

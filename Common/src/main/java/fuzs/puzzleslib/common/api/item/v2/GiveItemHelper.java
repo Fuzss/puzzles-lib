@@ -2,6 +2,7 @@ package fuzs.puzzleslib.common.api.item.v2;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fuzs.puzzleslib.common.impl.PuzzlesLib;
+import fuzs.puzzleslib.common.impl.PuzzlesLibMod;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.item.ItemInput;
@@ -19,7 +20,7 @@ import java.util.Collections;
 
 /**
  * A helper class for giving items to the player just like the {@code /give} command does, meaning the item is either
- * added to the player inventory, or dropped on the ground if no available inventory space is found.
+ * added to the player inventory or dropped on the ground if no available inventory space is found.
  */
 public final class GiveItemHelper {
 
@@ -64,9 +65,7 @@ public final class GiveItemHelper {
                 Vec2.ZERO,
                 serverLevel,
                 LevelBasedPermissionSet.GAMEMASTER,
-                "Empty",
-                Component.literal("Empty"),
-                serverLevel.getServer(),
-                null).withSuppressedOutput();
+                Component.literal(PuzzlesLibMod.id("empty").toString()),
+                serverLevel.getServer()).withSuppressedOutput();
     }
 }

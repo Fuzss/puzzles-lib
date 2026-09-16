@@ -4,6 +4,7 @@ import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.data.v2.core.RegistriesDataProvider;
 import fuzs.puzzleslib.common.api.init.v3.registry.ResourceKeyHelper;
 import net.minecraft.core.*;
+import net.minecraft.core.registries.SingleRegistryBootstrap;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.data.registries.RegistryPatchGenerator;
@@ -79,8 +80,16 @@ public abstract class AbstractDatapackRegistriesProvider extends RegistriesDatap
     }
 
     public static void registerInstrument(BootstrapContext<Instrument> context, ResourceKey<Instrument> resourceKey, Holder<SoundEvent> soundEvent, float useDuration, float range) {
+        registerInstrument(context, resourceKey, soundEvent, useDuration, range, 0);
+    }
+
+    public static void registerInstrument(BootstrapContext<Instrument> context, ResourceKey<Instrument> resourceKey, Holder<SoundEvent> soundEvent, float useDuration, float range, int durabilityDamage) {
         context.register(resourceKey,
-                new Instrument(soundEvent, useDuration, range, ResourceKeyHelper.getComponent(resourceKey)));
+                new Instrument(soundEvent,
+                        useDuration,
+                        range,
+                        durabilityDamage,
+                        ResourceKeyHelper.getComponent(resourceKey)));
     }
 
     public static void registerJukeboxSong(BootstrapContext<JukeboxSong> context, ResourceKey<JukeboxSong> resourceKey, Holder<SoundEvent> soundEvent, float lengthInSeconds, int comparatorOutput) {
@@ -93,6 +102,6 @@ public abstract class AbstractDatapackRegistriesProvider extends RegistriesDatap
 
     @FunctionalInterface
     public interface RegistryBoostrapConsumer {
-        <T> void add(ResourceKey<? extends Registry<T>> key, RegistrySetBuilder.RegistryBootstrap<T> bootstrap);
+        <T> void add(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap);
     }
 }

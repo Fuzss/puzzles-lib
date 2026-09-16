@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.neoforge.impl.client.core.context;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import fuzs.puzzleslib.common.api.client.core.v1.context.RenderPipelinesContext;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 

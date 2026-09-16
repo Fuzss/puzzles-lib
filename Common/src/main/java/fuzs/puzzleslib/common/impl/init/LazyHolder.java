@@ -32,7 +32,7 @@ public final class LazyHolder<T> extends Holder.Reference<T> {
     public LazyHolder(ResourceKey<? extends Registry<? super T>> registryKey, ResourceKey<T> key, Supplier<Holder<T>> holderSupplier) {
         super(Holder.Reference.Type.STAND_ALONE, new HolderOwner<>() {
             @Override
-            public boolean canSerializeIn(HolderOwner<T> context) {
+            public boolean canSerialize(HolderOwner<T> context) {
                 throw new UnsupportedOperationException();
             }
         }, key, null);

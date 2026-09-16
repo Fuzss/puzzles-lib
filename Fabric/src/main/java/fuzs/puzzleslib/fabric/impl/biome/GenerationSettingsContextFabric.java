@@ -8,7 +8,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.List;
@@ -27,12 +27,12 @@ public record GenerationSettingsContextFabric(BiomeGenerationSettings generation
     }
 
     @Override
-    public void addCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey) {
+    public void addCarver(ResourceKey<WorldCarver> carverKey) {
         this.context.addCarver(carverKey);
     }
 
     @Override
-    public boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey) {
+    public boolean removeCarver(ResourceKey<WorldCarver> carverKey) {
         return this.context.removeCarver(carverKey);
     }
 
@@ -44,7 +44,7 @@ public record GenerationSettingsContextFabric(BiomeGenerationSettings generation
     }
 
     @Override
-    public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers() {
+    public Iterable<Holder<WorldCarver>> getCarvers() {
         return Iterables.unmodifiableIterable(this.generationSettings.getCarvers());
     }
 }

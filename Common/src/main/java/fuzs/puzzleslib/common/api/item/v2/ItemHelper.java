@@ -9,7 +9,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -50,8 +49,8 @@ public final class ItemHelper {
     public static void hurtAndBreak(ItemStack itemStack, int amount, LivingEntity livingEntity, EquipmentSlot equipmentSlot) {
         if (livingEntity.level() instanceof ServerLevel serverLevel) {
             ServerPlayer serverPlayer = livingEntity instanceof ServerPlayer ? (ServerPlayer) livingEntity : null;
-            hurtAndBreak(itemStack, amount, serverLevel, serverPlayer, (Item item) -> {
-                livingEntity.onEquippedItemBroken(item, equipmentSlot);
+            hurtAndBreak(itemStack, amount, serverLevel, serverPlayer, (ItemStack brokenItem) -> {
+                livingEntity.onEquippedItemBroken(brokenItem, equipmentSlot);
             });
         }
     }
@@ -64,12 +63,12 @@ public final class ItemHelper {
      * @param serverLevel  the level
      * @param serverPlayer the player using the stack
      * @param onBreak      what happens when the stack breaks, usually calls
-     *                     {@link LivingEntity#onEquippedItemBroken(Item, EquipmentSlot)}
+     *                     {@link LivingEntity#onEquippedItemBroken(ItemStack, EquipmentSlot)}
      */
-    public static void hurtAndBreak(ItemStack itemStack, int amount, ServerLevel serverLevel, @Nullable ServerPlayer serverPlayer, Consumer<Item> onBreak) {
+    public static void hurtAndBreak(ItemStack itemStack, int amount, ServerLevel serverLevel, @Nullable ServerPlayer serverPlayer, Consumer<ItemStack> onBreak) {
         ItemStack originalItemStack = copyItemStackIfNecessary(itemStack, serverPlayer);
-        itemStack.hurtAndBreak(amount, serverLevel, serverPlayer, (Item item) -> {
-            onBreak.accept(item);
+        itemStack.hurtAndBreak(amount, serverLevel, serverPlayer, (ItemStack brokenItem) -> {
+            onBreak.accept(brokenItem);
             if (serverPlayer != null) {
                 onPlayerDestroyItem(serverPlayer, originalItemStack, null);
             }

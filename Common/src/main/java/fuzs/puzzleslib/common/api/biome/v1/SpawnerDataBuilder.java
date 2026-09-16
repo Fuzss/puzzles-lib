@@ -1,6 +1,7 @@
 package fuzs.puzzleslib.common.api.biome.v1;
 
 import net.minecraft.util.random.Weighted;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -18,8 +19,12 @@ public final class SpawnerDataBuilder {
     private final MobSpawnSettingsContext context;
     private final EntityType<?> entityType;
     private IntUnaryOperator weightMapper = IntUnaryOperator.identity();
-    private ToIntFunction<MobSpawnSettings.SpawnerData> minCountMapper = MobSpawnSettings.SpawnerData::minCount;
-    private ToIntFunction<MobSpawnSettings.SpawnerData> maxCountMapper = MobSpawnSettings.SpawnerData::maxCount;
+    private ToIntFunction<MobSpawnSettings.SpawnerData> minCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> {
+        return spawnerData.count().minInclusive();
+    };
+    private ToIntFunction<MobSpawnSettings.SpawnerData> maxCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> {
+        return spawnerData.count().maxInclusive();
+    };
 
     private SpawnerDataBuilder(MobSpawnSettingsContext context, EntityType<?> entityType) {
         Objects.requireNonNull(context, "context is null");
@@ -44,7 +49,9 @@ public final class SpawnerDataBuilder {
      * @return the builder
      */
     public SpawnerDataBuilder setWeight(int weight) {
-        return this.setWeight((int oldWeight) -> weight);
+        return this.setWeight((int oldWeight) -> {
+            return weight;
+        });
     }
 
     /**
@@ -53,7 +60,9 @@ public final class SpawnerDataBuilder {
      */
     public SpawnerDataBuilder setWeight(Fraction weight) {
         Objects.requireNonNull(weight, "weight is null");
-        return this.setWeight((int oldWeight) -> weight.multiplyBy(Fraction.getFraction(oldWeight, 1)).intValue());
+        return this.setWeight((int oldWeight) -> {
+            return weight.multiplyBy(Fraction.getFraction(oldWeight, 1)).intValue();
+        });
     }
 
     /**
@@ -62,7 +71,9 @@ public final class SpawnerDataBuilder {
      */
     public SpawnerDataBuilder setWeight(IntUnaryOperator weight) {
         Objects.requireNonNull(weight, "weight is null");
-        this.weightMapper = (int oldWeight) -> Math.max(1, weight.applyAsInt(oldWeight));
+        this.weightMapper = (int oldWeight) -> {
+            return Math.max(1, weight.applyAsInt(oldWeight));
+        };
         return this;
     }
 
@@ -71,7 +82,9 @@ public final class SpawnerDataBuilder {
      * @return the builder
      */
     public SpawnerDataBuilder setMinCount(int minCount) {
-        return this.setMinCount((MobSpawnSettings.SpawnerData spawnerData) -> minCount);
+        return this.setMinCount((MobSpawnSettings.SpawnerData spawnerData) -> {
+            return minCount;
+        });
     }
 
     /**
@@ -80,9 +93,9 @@ public final class SpawnerDataBuilder {
      */
     public SpawnerDataBuilder setMinCount(Fraction minCount) {
         Objects.requireNonNull(minCount, "min count is null");
-        return this.setMinCount((MobSpawnSettings.SpawnerData spawnerData) -> minCount.multiplyBy(Fraction.getFraction(
-                spawnerData.minCount(),
-                1)).intValue());
+        return this.setMinCount((MobSpawnSettings.SpawnerData spawnerData) -> {
+            return minCount.multiplyBy(Fraction.getFraction(spawnerData.count().minInclusive(), 1)).intValue();
+        });
     }
 
     /**
@@ -91,8 +104,9 @@ public final class SpawnerDataBuilder {
      */
     public SpawnerDataBuilder setMinCount(ToIntFunction<MobSpawnSettings.SpawnerData> minCount) {
         Objects.requireNonNull(minCount, "min count is null");
-        this.minCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> Math.max(1,
-                minCount.applyAsInt(spawnerData));
+        this.minCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> {
+            return Math.max(1, minCount.applyAsInt(spawnerData));
+        };
         return this;
     }
 
@@ -101,7 +115,9 @@ public final class SpawnerDataBuilder {
      * @return the builder
      */
     public SpawnerDataBuilder setMaxCount(int maxCount) {
-        return this.setMaxCount((MobSpawnSettings.SpawnerData spawnerData) -> maxCount);
+        return this.setMaxCount((MobSpawnSettings.SpawnerData spawnerData) -> {
+            return maxCount;
+        });
     }
 
     /**
@@ -110,9 +126,9 @@ public final class SpawnerDataBuilder {
      */
     public SpawnerDataBuilder setMaxCount(Fraction maxCount) {
         Objects.requireNonNull(maxCount, "max count is null");
-        return this.setMaxCount((MobSpawnSettings.SpawnerData spawnerData) -> maxCount.multiplyBy(Fraction.getFraction(
-                spawnerData.maxCount(),
-                1)).intValue());
+        return this.setMaxCount((MobSpawnSettings.SpawnerData spawnerData) -> {
+            return maxCount.multiplyBy(Fraction.getFraction(spawnerData.count().maxInclusive(), 1)).intValue();
+        });
     }
 
     /**
@@ -121,8 +137,9 @@ public final class SpawnerDataBuilder {
      */
     public SpawnerDataBuilder setMaxCount(ToIntFunction<MobSpawnSettings.SpawnerData> maxCount) {
         Objects.requireNonNull(maxCount, "max count is null");
-        this.maxCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> Math.max(1,
-                maxCount.applyAsInt(spawnerData));
+        this.maxCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> {
+            return Math.max(1, maxCount.applyAsInt(spawnerData));
+        };
         return this;
     }
 
@@ -140,7 +157,8 @@ public final class SpawnerDataBuilder {
                         int maxCount = this.maxCountMapper.applyAsInt(data.value());
                         this.context.addSpawn(category,
                                 weight,
-                                new MobSpawnSettings.SpawnerData(entityType, Math.min(minCount, maxCount), maxCount));
+                                new MobSpawnSettings.SpawnerData(entityType,
+                                        UniformInt.of(Math.min(minCount, maxCount), maxCount)));
                     });
             MobSpawnSettings.MobSpawnCost cost = this.context.getSpawnCost(entityType);
             if (cost != null) {
@@ -152,9 +170,8 @@ public final class SpawnerDataBuilder {
     }
 
     private Optional<Weighted<MobSpawnSettings.SpawnerData>> getSpawnerDataForType(MobSpawnSettingsContext context, MobCategory mobCategory, EntityType<?> entityType) {
-        return context.getSpawnerData(mobCategory)
-                .stream()
-                .filter((Weighted<MobSpawnSettings.SpawnerData> data) -> data.value().type() == entityType)
-                .findAny();
+        return context.getSpawnerData(mobCategory).stream().filter((Weighted<MobSpawnSettings.SpawnerData> data) -> {
+            return data.value().type() == entityType;
+        }).findAny();
     }
 }

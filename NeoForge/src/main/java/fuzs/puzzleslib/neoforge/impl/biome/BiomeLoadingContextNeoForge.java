@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -34,9 +34,9 @@ public record BiomeLoadingContextNeoForge(RegistryAccess registryAccess,
     }
 
     @Override
-    public Optional<ResourceKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature) {
-        Registry<ConfiguredFeature<?, ?>> registry = this.registryAccess.lookupOrThrow(Registries.CONFIGURED_FEATURE);
-        return registry.getResourceKey(configuredFeature);
+    public Optional<ResourceKey<Feature>> getFeatureKey(Feature feature) {
+        Registry<Feature> registry = this.registryAccess.lookupOrThrow(Registries.FEATURE);
+        return registry.getResourceKey(feature);
     }
 
     @Override

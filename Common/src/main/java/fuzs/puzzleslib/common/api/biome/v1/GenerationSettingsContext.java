@@ -3,14 +3,16 @@ package fuzs.puzzleslib.common.api.biome.v1;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 /**
  * The modification context for the biomes generation settings.
  *
- * <p>Mostly copied from Fabric API's Biome API, specifically <code>net.fabricmc.fabric.api.biome.v1.BiomeModificationContext$WeatherContext</code>
- * to allow for use in common project and to allow reimplementation on Forge using Forge's native biome modification system.
+ * <p>Mostly copied from Fabric API's Biome API, specifically
+ * <code>net.fabricmc.fabric.api.biome.v1.BiomeModificationContext$WeatherContext</code>
+ * to allow for use in common project and to allow reimplementation on Forge using Forge's native biome modification
+ * system.
  *
  * <p>Copyright (c) FabricMC
  * <p>SPDX-License-Identifier: Apache-2.0
@@ -42,16 +44,16 @@ public interface GenerationSettingsContext {
     void addFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> featureKey);
 
     /**
-     * Adds a configured carver to one of this biomes generation steps.
+     * Adds a carver to one of this biomes generation steps.
      */
-    void addCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey);
+    void addCarver(ResourceKey<WorldCarver> carverKey);
 
     /**
      * Removes all carvers with the given key from one of this biomes generation steps.
      *
      * @return True if any carvers were removed.
      */
-    boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey);
+    boolean removeCarver(ResourceKey<WorldCarver> carverKey);
 
     /**
      * @param stage decoration stage
@@ -62,5 +64,5 @@ public interface GenerationSettingsContext {
     /**
      * @return all carvers registered for the given <code>stage</code>
      */
-    Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers();
+    Iterable<Holder<WorldCarver>> getCarvers();
 }

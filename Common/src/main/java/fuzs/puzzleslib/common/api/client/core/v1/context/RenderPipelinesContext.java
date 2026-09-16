@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.common.api.client.core.v1.context;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 /**
  * Register new render pipelines to {@link net.minecraft.client.renderer.RenderPipelines}.

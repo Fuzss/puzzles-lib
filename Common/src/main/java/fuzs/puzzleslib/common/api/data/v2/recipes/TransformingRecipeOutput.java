@@ -32,9 +32,4 @@ public interface TransformingRecipeOutput extends RecipeOutput {
     default Advancement.Builder advancement() {
         return this.recipeOutput().advancement();
     }
-
-    @Override
-    default void includeRootAdvancement() {
-        this.recipeOutput().includeRootAdvancement();
-    }
 }

@@ -7,18 +7,18 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.world.BiomeGenerationSettingsBuilder;
 
 import java.util.Collections;
 
-public record GenerationSettingsContextNeoForge(Registry<ConfiguredWorldCarver<?>> carvers,
+public record GenerationSettingsContextNeoForge(Registry<WorldCarver> carvers,
                                                 Registry<PlacedFeature> features,
                                                 BiomeGenerationSettingsBuilder context) implements GenerationSettingsContext {
 
     public GenerationSettingsContextNeoForge(RegistryAccess registryAccess, BiomeGenerationSettingsBuilder context) {
-        this(registryAccess.lookupOrThrow(Registries.CONFIGURED_CARVER),
+        this(registryAccess.lookupOrThrow(Registries.CARVER),
                 registryAccess.lookupOrThrow(Registries.PLACED_FEATURE),
                 context);
     }
@@ -35,13 +35,13 @@ public record GenerationSettingsContextNeoForge(Registry<ConfiguredWorldCarver<?
     }
 
     @Override
-    public void addCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey) {
+    public void addCarver(ResourceKey<WorldCarver> carverKey) {
         this.context.addCarver(this.carvers.getOrThrow(carverKey));
     }
 
     @Override
-    public boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey) {
-        ConfiguredWorldCarver<?> carver = this.carvers.getValueOrThrow(carverKey);
+    public boolean removeCarver(ResourceKey<WorldCarver> carverKey) {
+        WorldCarver carver = this.carvers.getValueOrThrow(carverKey);
         return this.context.getCarvers().removeIf(carverHolder -> carverHolder.value() == carver);
     }
 
@@ -52,7 +52,7 @@ public record GenerationSettingsContextNeoForge(Registry<ConfiguredWorldCarver<?
     }
 
     @Override
-    public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers() {
+    public Iterable<Holder<WorldCarver>> getCarvers() {
         // immutable just as Fabric, as biome modifications happen after biomes are built over there where everything is already immutable
         return Collections.unmodifiableList(this.context.getCarvers());
     }

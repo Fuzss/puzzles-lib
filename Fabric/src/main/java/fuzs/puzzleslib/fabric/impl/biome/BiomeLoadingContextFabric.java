@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -31,8 +31,8 @@ public record BiomeLoadingContextFabric(BiomeSelectionContext context) implement
     }
 
     @Override
-    public Optional<ResourceKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature) {
-        return this.context.getFeatureKey(configuredFeature);
+    public Optional<ResourceKey<Feature>> getFeatureKey(Feature feature) {
+        return this.context.getFeatureKey(feature);
     }
 
     @Override

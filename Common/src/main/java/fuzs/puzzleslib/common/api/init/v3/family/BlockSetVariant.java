@@ -1,6 +1,7 @@
 package fuzs.puzzleslib.common.api.init.v3.family;
 
 import fuzs.puzzleslib.common.impl.init.VanillaBlockSetVariant;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.BlockFamily;
@@ -181,7 +182,7 @@ public interface BlockSetVariant extends StringRepresentable {
                                     () -> {
                                         return BlockBehaviour.Properties.ofFullCopy(context.getBaseBlock().value())
                                                 .noOcclusion()
-                                                .pushReaction(PushReaction.DESTROY);
+                                                .pushReaction(PushReaction.POPPED);
                                     }));
         }
 
@@ -220,7 +221,7 @@ public interface BlockSetVariant extends StringRepresentable {
                                     () -> {
                                         return BlockBehaviour.Properties.ofFullCopy(context.getBaseBlock().value())
                                                 .noCollision()
-                                                .pushReaction(PushReaction.DESTROY);
+                                                .pushReaction(PushReaction.POPPED);
                                     }));
         }
     };
@@ -237,7 +238,7 @@ public interface BlockSetVariant extends StringRepresentable {
                                         return BlockBehaviour.Properties.ofFullCopy(context.getBaseBlock().value())
                                                 .forceSolidOn()
                                                 .noCollision()
-                                                .pushReaction(PushReaction.DESTROY);
+                                                .pushReaction(PushReaction.POPPED);
                                     }));
         }
     };
@@ -271,10 +272,11 @@ public interface BlockSetVariant extends StringRepresentable {
             context.registerItem(this,
                     context.getRegistries()
                             .registerBlockItem(signHolder,
-                                    (Block block, Item.Properties properties) -> new SignItem(block,
+                                    (Block block, Item.Properties properties) -> new StandingAndWallBlockItem(block,
                                             context.getBlock(WALL_SIGN).value(),
+                                            Direction.DOWN,
                                             properties),
-                                    () -> new Item.Properties().stacksTo(16)));
+                                    () -> new Item.Properties().stacksTo(16).signText()));
         }
     };
     BlockSetVariant WALL_SIGN = new StandaloneBlockSetVariant(BlockFamily.Variant.WALL_SIGN) {

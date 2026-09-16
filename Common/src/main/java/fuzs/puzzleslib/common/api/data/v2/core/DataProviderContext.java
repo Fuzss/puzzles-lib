@@ -76,7 +76,7 @@ public class DataProviderContext {
     public static DataProviderContext ofPath(String modId, Path path) {
         return new DataProviderContext(modId,
                 new PackOutput(path),
-                Suppliers.memoize(() -> CompletableFuture.supplyAsync(VanillaRegistries::createLookup,
+                Suppliers.memoize(() -> CompletableFuture.supplyAsync(VanillaRegistries::createWorldLookup,
                         Util.backgroundExecutor())));
     }
 

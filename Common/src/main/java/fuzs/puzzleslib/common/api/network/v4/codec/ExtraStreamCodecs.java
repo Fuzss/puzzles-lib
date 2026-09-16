@@ -7,9 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
-import java.time.Instant;
 import java.util.BitSet;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -25,16 +23,6 @@ public final class ExtraStreamCodecs {
     public static final StreamCodec<ByteBuf, Character> CHAR = StreamCodec.of((ByteBuf buf, Character character) -> {
         buf.writeChar(character);
     }, ByteBuf::readChar);
-    /**
-     * {@link Instant} stream codec
-     */
-    public static final StreamCodec<FriendlyByteBuf, Instant> INSTANT = StreamCodec.of(FriendlyByteBuf::writeInstant,
-            FriendlyByteBuf::readInstant);
-    /**
-     * {@link BlockHitResult} stream codec
-     */
-    public static final StreamCodec<FriendlyByteBuf, BlockHitResult> BLOCK_HIT_RESULT = StreamCodec.of(FriendlyByteBuf::writeBlockHitResult,
-            FriendlyByteBuf::readBlockHitResult);
     /**
      * {@link BitSet} stream codec
      */

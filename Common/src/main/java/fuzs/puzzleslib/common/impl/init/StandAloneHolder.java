@@ -15,7 +15,7 @@ public final class StandAloneHolder<T> extends Holder.Reference<T> {
     public StandAloneHolder(ResourceKey<T> key, T value) {
         super(Type.STAND_ALONE, new HolderOwner<>() {
             @Override
-            public boolean canSerializeIn(HolderOwner<T> context) {
+            public boolean canSerialize(HolderOwner<T> context) {
                 return true;
             }
         }, key, value);
