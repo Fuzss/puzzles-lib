@@ -1,9 +1,10 @@
-package fuzs.puzzleslib.common.api.data.v2;
+package fuzs.puzzleslib.common.api.data.v3.recipes;
 
 import com.google.common.collect.ImmutableMap;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetFamily;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
+import fuzs.puzzleslib.common.impl.data.DataGenerationScopes;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,7 +29,9 @@ public abstract class AbstractRecipeProvider extends RecipeProvider {
 
     public AbstractRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
         super(recipeOutput, advancementOutput);
-        this.output = ProxyImpl.get().getIdBoundRecipeOutput("minecraft", recipeOutput, advancementOutput);
+        this.output = ProxyImpl.get().getIdBoundRecipeOutput(DataGenerationScopes.MOD_ID.get(),
+                recipeOutput,
+                advancementOutput);
     }
 
     /**

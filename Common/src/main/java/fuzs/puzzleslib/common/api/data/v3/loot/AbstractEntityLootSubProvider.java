@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.common.api.data.v3.loot;
 
-import fuzs.puzzleslib.common.impl.data.NamedLootContext;
+import fuzs.puzzleslib.common.impl.data.DataGenerationScopes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.EntityLootSubProvider;
@@ -11,11 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,12 +22,14 @@ import java.util.stream.Collectors;
  * and are generated as well, all remaining entities are skipped.
  */
 public abstract class AbstractEntityLootSubProvider extends EntityLootSubProvider {
+    private final String modId;
 
     /**
      * @param output the context used for registering generated loot tables
      */
     public AbstractEntityLootSubProvider(LootTableSubProvider.Context output) {
         super(FeatureFlags.REGISTRY.allFlags(), output);
+        this.modId = DataGenerationScopes.MOD_ID.get();
     }
 
     /**
@@ -45,7 +43,6 @@ public abstract class AbstractEntityLootSubProvider extends EntityLootSubProvide
     public void run() {
         this.generate();
         Set<ResourceKey<LootTable>> seen = new HashSet<>();
-        String modId = ((NamedLootContext) this.output).getModId();
 
         BuiltInRegistries.ENTITY_TYPE.listElements().forEach((Holder.Reference<EntityType<?>> holder) -> {
             EntityType<?> entityType = holder.value();
@@ -55,7 +52,7 @@ public abstract class AbstractEntityLootSubProvider extends EntityLootSubProvide
                 if (builders == null || !builders.containsKey(defaultLootTable.get())) {
                     // Only our own loot tables are required to be generated here.
                     // Everything else is provided by vanilla or other mods and is simply skipped.
-                    if (defaultLootTable.get().identifier().getNamespace().equals(modId)) {
+                    if (defaultLootTable.get().identifier().getNamespace().equals(this.modId)) {
                         throw new IllegalStateException(String.format(Locale.ROOT,
                                 "Missing loot table '%s' for '%s'",
                                 defaultLootTable.get(),

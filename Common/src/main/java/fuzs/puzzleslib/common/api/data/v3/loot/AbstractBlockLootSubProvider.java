@@ -3,7 +3,7 @@ package fuzs.puzzleslib.common.api.data.v3.loot;
 import com.google.common.collect.ImmutableMap;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetFamily;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
-import fuzs.puzzleslib.common.impl.data.NamedLootContext;
+import fuzs.puzzleslib.common.impl.data.DataGenerationScopes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -70,11 +70,14 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
             .put(BlockSetVariant.SHELF, BlockLootSubProvider::dropSelf)
             .build();
 
+    private final String modId;
+
     /**
      * @param output the context used for registering generated loot tables
      */
     public AbstractBlockLootSubProvider(LootTableSubProvider.Context output) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), output);
+        this.modId = DataGenerationScopes.MOD_ID.get();
     }
 
     /**
@@ -88,7 +91,6 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
     public void run() {
         this.generate();
         Set<ResourceKey<LootTable>> seen = new HashSet<>();
-        String modId = ((NamedLootContext) this.output).getModId();
 
         for (Block block : BuiltInRegistries.BLOCK) {
             block.getLootTable().ifPresent((ResourceKey<LootTable> lootTable) -> {
@@ -97,7 +99,7 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
                     if (builder == null) {
                         // Only our own loot tables are required to be generated here.
                         // Everything else is provided by vanilla or other mods and is simply skipped.
-                        if (lootTable.identifier().getNamespace().equals(modId)) {
+                        if (lootTable.identifier().getNamespace().equals(this.modId)) {
                             throw new IllegalStateException(String.format(Locale.ROOT,
                                     "Missing loot table '%s' for '%s'",
                                     lootTable.identifier(),

@@ -5,6 +5,7 @@ import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.common.api.data.v2.ModPackMetadataProvider;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.resources.v2.PackResourcesHelper;
+import fuzs.puzzleslib.common.impl.data.DataGenerationScopes;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.mixin.accessor.GatherDataEventNeoForgeAccessor;
@@ -190,7 +191,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         Objects.requireNonNull(entry, "loot table sub-provider entry is null");
         LootTableSubProvider.Factory factory = entry.bootstrap();
         this.lootTableSubProviders.add(new LootTableProvider.SubProviderEntry((LootTableSubProvider.Context context) -> {
-            return factory.create(new NamedLootContextImpl(this.modId, context));
+            return ScopedValue.where(DataGenerationScopes.MOD_ID, this.modId).call(() -> factory.create(context));
         }, entry.paramSet()));
         return this;
     }
@@ -223,8 +224,11 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
 
     @Override
     public DataProviderBuilder addRecipeProvider(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, ? extends RecipeProvider> provider) {
-        return this.addReloadable(RecipeProvider.asBootstrap(Objects.requireNonNull(provider,
-                "recipe provider is null")));
+        Objects.requireNonNull(provider, "recipe provider is null");
+        return this.addReloadable(RecipeProvider.asBootstrap((recipeOutput, advancementOutput) -> {
+            return ScopedValue.where(DataGenerationScopes.MOD_ID, this.modId)
+                    .call(() -> provider.apply(recipeOutput, advancementOutput));
+        }));
     }
 
     /**
