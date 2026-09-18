@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.resources.v1;
+package fuzs.puzzleslib.common.api.resources.v2;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;

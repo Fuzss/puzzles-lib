@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.common.api.data.v2;
 
 import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
-import fuzs.puzzleslib.common.api.resources.v1.PackResourcesHelper;
+import fuzs.puzzleslib.common.api.resources.v2.PackResourcesHelper;
 import net.minecraft.DetectedVersion;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.metadata.PackMetadataGenerator;

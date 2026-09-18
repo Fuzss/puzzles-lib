@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.resources.v1;
+package fuzs.puzzleslib.common.api.resources.v2;
 
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;

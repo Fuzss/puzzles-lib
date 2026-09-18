@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.resources.v1;
+package fuzs.puzzleslib.common.api.resources.v2;
 
 import fuzs.puzzleslib.common.api.core.v1.ModContainer;
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
