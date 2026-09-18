@@ -23,16 +23,16 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -454,54 +454,23 @@ public final class NeoForgeClientEventInvokers {
                     event.getPoseStack(),
                     event.getSubmitNodeCollector());
         });
-        INSTANCE.register(RenderHandEvents.MainHand.class,
+        INSTANCE.register(SubmitArmWithItemCallback.class,
                 RenderHandEvent.class,
-                (RenderHandEvents.MainHand callback, RenderHandEvent event) -> {
-                    if (event.getHand() != InteractionHand.MAIN_HAND) {
-                        return;
-                    }
-
-                    Minecraft minecraft = Minecraft.getInstance();
-                    ItemInHandRenderer itemInHandRenderer = minecraft.getEntityRenderDispatcher()
-                            .getItemInHandRenderer();
-                    EventResult eventResult = callback.onRenderMainHand(itemInHandRenderer,
-                            event.getHand(),
-                            minecraft.player,
-                            minecraft.player.getMainArm(),
-                            event.getItemStack(),
-                            event.getPoseStack(),
-                            event.getSubmitNodeCollector(),
-                            event.getPackedLight(),
+                (SubmitArmWithItemCallback callback, RenderHandEvent event) -> {
+                    GameRenderer gameRenderer = Minecraft.getInstance().gameRenderer;
+                    PlayerRenderState playerState = gameRenderer.gameRenderState().levelRenderState.playerRenderState;
+                    EventResult eventResult = callback.onSubmitArmWithItem(gameRenderer.firstPersonHandsAndItemsRenderer,
+                            playerState,
+                            playerState.firstPersonHandsAndItems,
                             event.getPartialTick(),
                             event.getInterpolatedPitch(),
-                            event.getSwingProgress(),
-                            event.getEquipProgress());
-                    if (eventResult.isInterrupt()) {
-                        event.setCanceled(true);
-                    }
-                });
-        INSTANCE.register(RenderHandEvents.OffHand.class,
-                RenderHandEvent.class,
-                (RenderHandEvents.OffHand callback, RenderHandEvent event) -> {
-                    if (event.getHand() != InteractionHand.OFF_HAND) {
-                        return;
-                    }
-
-                    Minecraft minecraft = Minecraft.getInstance();
-                    ItemInHandRenderer itemInHandRenderer = minecraft.getEntityRenderDispatcher()
-                            .getItemInHandRenderer();
-                    EventResult eventResult = callback.onRenderOffHand(itemInHandRenderer,
                             event.getHand(),
-                            minecraft.player,
-                            minecraft.player.getMainArm().getOpposite(),
+                            event.getSwingProgress(),
                             event.getItemStack(),
+                            event.getEquipProgress(),
                             event.getPoseStack(),
                             event.getSubmitNodeCollector(),
-                            event.getPackedLight(),
-                            event.getPartialTick(),
-                            event.getInterpolatedPitch(),
-                            event.getSwingProgress(),
-                            event.getEquipProgress());
+                            event.getPackedLight());
                     if (eventResult.isInterrupt()) {
                         event.setCanceled(true);
                     }

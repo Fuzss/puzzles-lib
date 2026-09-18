@@ -12,7 +12,7 @@ public interface AddLivingEntityRenderLayersCallback {
     EventInvoker<AddLivingEntityRenderLayersCallback> EVENT = EventInvoker.lookup(AddLivingEntityRenderLayersCallback.class);
 
     /**
-     * Called after entity renderers have been created, and allows for attaching new
+     * Called after entity renderers have been created and allows for attaching new
      * {@link net.minecraft.client.renderer.entity.layers.RenderLayer RenderLayers}.
      *
      * @param entityType     the entity type

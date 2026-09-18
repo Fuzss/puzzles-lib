@@ -32,15 +32,10 @@ public final class FabricRendererEvents {
     public static final Event<SubmitLivingEntityEvents.After> AFTER_SUBMIT_LIVING_ENTITY = FabricEventFactory.create(
             SubmitLivingEntityEvents.After.class);
     /**
-     * Called before the player's main hand is rendered in first-person mode.
+     * Called before the player's arm holding an item is rendered in first-person mode.
      */
-    public static final Event<RenderHandEvents.MainHand> RENDER_MAIN_HAND = FabricEventFactory.createResult(
-            RenderHandEvents.MainHand.class);
-    /**
-     * Called before the player's off-hand is rendered in first-person mode.
-     */
-    public static final Event<RenderHandEvents.OffHand> RENDER_OFF_HAND = FabricEventFactory.createResult(
-            RenderHandEvents.OffHand.class);
+    public static final Event<SubmitArmWithItemCallback> SUBMIT_ARM_WITH_ITEM = FabricEventFactory.createResult(
+            SubmitArmWithItemCallback.class);
     /**
      * Runs before camera angle setup is done, allows for additional control over roll (which vanilla itself does not
      * support) in addition to pitch and yaw.

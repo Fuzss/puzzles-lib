@@ -362,8 +362,7 @@ public final class FabricClientEventInvokers {
         INSTANCE.register(ClientInputEvents.KeyPress.class, FabricClientEvents.KEY_PRESS);
         INSTANCE.register(SubmitLivingEntityEvents.Before.class, FabricRendererEvents.BEFORE_SUBMIT_LIVING_ENTITY);
         INSTANCE.register(SubmitLivingEntityEvents.After.class, FabricRendererEvents.AFTER_SUBMIT_LIVING_ENTITY);
-        INSTANCE.register(RenderHandEvents.MainHand.class, FabricRendererEvents.RENDER_MAIN_HAND);
-        INSTANCE.register(RenderHandEvents.OffHand.class, FabricRendererEvents.RENDER_OFF_HAND);
+        INSTANCE.register(SubmitArmWithItemCallback.class, FabricRendererEvents.SUBMIT_ARM_WITH_ITEM);
         INSTANCE.register(ComputeCameraAnglesCallback.class, FabricRendererEvents.COMPUTE_CAMERA_ANGLES);
         INSTANCE.register(ClientLevelTickEvents.Start.class,
                 net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.START_LEVEL_TICK,
