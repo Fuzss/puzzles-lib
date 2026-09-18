@@ -5,7 +5,7 @@ import fuzs.puzzleslib.common.impl.config.ConfigHolderImpl;
 import fuzs.puzzleslib.common.impl.core.ModContext;
 import fuzs.puzzleslib.common.impl.init.RegistryManagerImpl;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
-import fuzs.puzzleslib.neoforge.api.data.v2.core.DataProviderHelper;
+import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.impl.config.NeoForgeConfigHolderImpl;
 import fuzs.puzzleslib.neoforge.impl.init.NeoForgeRegistryManager;
 import net.minecraft.client.Minecraft;
@@ -23,7 +23,7 @@ public final class NeoForgeModContext extends ModContext {
 
     public NeoForgeModContext(String modId) {
         super(modId);
-        DataProviderHelper.registerDataProviders(modId, ModPackMetadataProvider::new);
+        DataProviderBuilder.of(modId, ModPackMetadataProvider::new);
     }
 
     @Override
