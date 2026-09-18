@@ -2,7 +2,6 @@ package fuzs.puzzleslib.neoforge.api.data.v2.core;
 
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.common.api.data.v2.ModPackMetadataProvider;
-import fuzs.puzzleslib.common.api.data.v2.core.RegistriesDataProvider;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
 import fuzs.puzzleslib.neoforge.mixin.accessor.GatherDataEventNeoForgeAccessor;
 import net.minecraft.core.HolderLookup;
@@ -17,7 +16,6 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.function.Consumers;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -163,16 +161,10 @@ public final class DataProviderHelper {
             ((GatherDataEventNeoForgeAccessor) event).puzzleslib$setRegistriesWithModdedEntries(registries.getRegistryProvider());
         }
 
-        MutableObject<CompletableFuture<HolderLookup.Provider>> lookupProvider = new MutableObject<>(event.getLookupProvider());
         for (T dataProviderFactory : dataProviders) {
             factory.apply((PackOutput packOutput) -> {
-                DataProvider dataProvider = factoryTransformer.apply(dataProviderFactory)
-                        .apply(event, packOutput, lookupProvider.get());
-                if (dataProvider instanceof RegistriesDataProvider registriesDataProvider) {
-                    lookupProvider.setValue(registriesDataProvider.getRegistries());
-                }
-
-                return dataProvider;
+                return factoryTransformer.apply(dataProviderFactory)
+                        .apply(event, packOutput, event.getLookupProvider());
             });
         }
     }

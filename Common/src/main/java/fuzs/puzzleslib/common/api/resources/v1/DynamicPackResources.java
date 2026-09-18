@@ -5,9 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.hash.HashCode;
 import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
-import fuzs.puzzleslib.common.api.data.v2.core.RegistriesDataProvider;
 import fuzs.puzzleslib.common.impl.PuzzlesLib;
-import net.minecraft.data.DataProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -79,11 +77,7 @@ public class DynamicPackResources extends AbstractModPackResources {
                     .collect(Collectors.toMap(Function.identity(), (PackType packType) -> new ConcurrentHashMap<>()));
             DataProviderContext context = DataProviderContext.ofPath(modId);
             for (DataProviderContext.Factory factory : factories) {
-                DataProvider dataProvider = factory.apply(context);
-                if (dataProvider instanceof RegistriesDataProvider registriesDataProvider) {
-                    context = context.withRegistries(registriesDataProvider.getRegistries());
-                }
-                dataProvider.run((Path filePath, byte[] data, HashCode hashCode) -> {
+                factory.apply(context).run((Path filePath, byte[] data, HashCode hashCode) -> {
                     // good times with Windows...
                     List<String> strings = FileUtil.decomposePath(filePath.normalize()
                             .toString()
@@ -134,7 +128,8 @@ public class DynamicPackResources extends AbstractModPackResources {
         return generatePathsFromProviders(this.getNamespace(), this.factories);
     }
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public IoSupplier<InputStream> getResource(PackType packType, Identifier location) {
         return this.getPathsForType(packType).get(location);
     }
