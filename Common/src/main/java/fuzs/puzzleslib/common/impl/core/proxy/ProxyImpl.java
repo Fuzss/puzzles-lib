@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
@@ -60,7 +59,7 @@ public interface ProxyImpl extends SidedProxy, FactoriesProxy, NetworkingProxy, 
 
     <T> void openMenu(Player player, MenuProvider menuProvider, T data);
 
-    Pack.Metadata createPackInfo(Identifier identifier, Component descriptionComponent, PackCompatibility packCompatibility, FeatureFlagSet featureFlagSet, boolean isHidden);
+    Pack.Metadata createPackInfo(Component description, PackCompatibility packCompatibility, FeatureFlagSet featureFlagSet, boolean isHidden);
 
     boolean isPackHidden(Pack pack);
 

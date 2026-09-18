@@ -1,22 +1,14 @@
 package fuzs.puzzleslib.common.api.resources.v1;
 
-import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
-import fuzs.puzzleslib.common.api.client.core.v1.context.ResourcePackReloadListenersContext;
-import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.common.api.core.v1.ModContainer;
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
-import fuzs.puzzleslib.common.api.core.v1.context.DataPackReloadListenersContext;
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
-import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraft.world.flag.FeatureFlagSet;
-
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * This class provides some simple helper methods for constructing simple
@@ -71,189 +63,18 @@ public final class PackResourcesHelper {
     }
 
     /**
-     * Creates a new resource pack repository source (for the client).
-     * <p>
-     * Can be added via
-     * {@link
-     * ClientModConstructor#onAddResourcePackReloadListeners(ResourcePackReloadListenersContext)}.
-     *
-     * @param id      id for the pack, used for internal references and is stored in <code>options.txt</code>
-     * @param factory {@link net.minecraft.server.packs.PackResources} implementation supplier
-     * @param hidden  controls whether the pack is hidden from user-facing screens like the resource pack and data pack
-     *                selection screens
-     * @return the {@link RepositorySource} to be added to the
-     *         {@link net.minecraft.server.packs.repository.PackRepository}
-     */
-    public static RepositorySource buildClientPack(Identifier id, Supplier<AbstractModPackResources> factory, boolean hidden) {
-        return buildClientPack(id, factory, true, Pack.Position.TOP, hidden, hidden);
-    }
-
-    /**
-     * Creates a new resource pack repository source (for the client).
-     * <p>
-     * Can be added via
-     * {@link
-     * ClientModConstructor#onAddResourcePackReloadListeners(ResourcePackReloadListenersContext)}.
-     *
-     * @param id            id for the pack, used for internal references and is stored in <code>options.txt</code>
-     * @param factory       {@link net.minecraft.server.packs.PackResources} implementation supplier
-     * @param required      a required pack cannot be disabled, like in the pack selection screen the pack cannot be
-     *                      moved to the left side; this is used for the vanilla resource pack
-     * @param position      insertion end in the pack list, new packs are usually inserted at the top above vanilla
-     * @param fixedPosition a fixed pack cannot be moved up or down, like a server or world resource pack
-     * @param hidden        controls whether the pack is hidden from user-facing screens like the resource pack and data
-     *                      pack selection screens
-     * @return the {@link RepositorySource} to be added to the
-     *         {@link net.minecraft.server.packs.repository.PackRepository}
-     */
-    public static RepositorySource buildClientPack(Identifier id, Supplier<AbstractModPackResources> factory, boolean required, Pack.Position position, boolean fixedPosition, boolean hidden) {
-        return (Consumer<Pack> consumer) -> {
-            consumer.accept(AbstractModPackResources.buildPack(PackType.CLIENT_RESOURCES,
-                    id,
-                    factory,
-                    getPackTitle(PackType.CLIENT_RESOURCES),
-                    getPackDescription(id.getNamespace()),
-                    required,
-                    position,
-                    fixedPosition,
-                    hidden,
-                    FeatureFlagSet.of()));
-        };
-    }
-
-    /**
-     * Creates a new resource pack repository source (for the client).
-     * <p>
-     * Can be added via
-     * {@link
-     * ClientModConstructor#onAddResourcePackReloadListeners(ResourcePackReloadListenersContext)}.
-     *
-     * @param id            id for the pack, used for internal references and is stored in <code>options.txt</code>
-     * @param factory       {@link net.minecraft.server.packs.PackResources} implementation supplier
-     * @param title         the title of this pack shown in the pack selection screen
-     * @param description   the description for this pack shown in the pack selection screen
-     * @param required      a required pack cannot be disabled, like in the pack selection screen the pack cannot be
-     *                      moved to the left side; this is used for the vanilla resource pack
-     * @param position      insertion end in the pack list, new packs are usually inserted at the top above vanilla
-     * @param fixedPosition a fixed pack cannot be moved up or down, like a server or world resource pack
-     * @param hidden        controls whether the pack is hidden from user-facing screens like the resource pack and data
-     *                      pack selection screens
-     * @return the {@link RepositorySource} to be added to the
-     *         {@link net.minecraft.server.packs.repository.PackRepository}
-     */
-    public static RepositorySource buildClientPack(Identifier id, Supplier<AbstractModPackResources> factory, Component title, Component description, boolean required, Pack.Position position, boolean fixedPosition, boolean hidden) {
-        return (Consumer<Pack> consumer) -> {
-            consumer.accept(AbstractModPackResources.buildPack(PackType.CLIENT_RESOURCES,
-                    id,
-                    factory,
-                    title,
-                    description,
-                    required,
-                    position,
-                    fixedPosition,
-                    hidden,
-                    FeatureFlagSet.of()));
-        };
-    }
-
-    /**
-     * Creates a new hidden data pack repository source (for the server).
-     * <p>
-     * Can be added via
-     * {@link ModConstructor#onAddDataPackReloadListeners(DataPackReloadListenersContext)}.
-     *
-     * @param id      id for the pack, used for internal references and is stored in <code>options.txt</code>
-     * @param factory {@link net.minecraft.server.packs.PackResources} implementation supplier
-     * @param hidden  controls whether the pack is hidden from user-facing screens like the resource pack and data pack
-     *                selection screens
-     * @return the {@link RepositorySource} to be added to the
-     *         {@link net.minecraft.server.packs.repository.PackRepository}
-     */
-    public static RepositorySource buildServerPack(Identifier id, Supplier<AbstractModPackResources> factory, boolean hidden) {
-        return buildServerPack(id, factory, true, Pack.Position.TOP, hidden, hidden);
-    }
-
-    /**
-     * Creates a new data pack repository source (for the server).
-     * <p>
-     * Can be added via
-     * {@link ModConstructor#onAddDataPackReloadListeners(DataPackReloadListenersContext)}.
-     *
-     * @param id            id for the pack, used for internal references and is stored in <code>options.txt</code>
-     * @param factory       {@link net.minecraft.server.packs.PackResources} implementation supplier
-     * @param required      a required pack cannot be disabled, like in the pack selection screen the pack cannot be
-     *                      moved to the left side; this is used for the vanilla resource pack
-     * @param position      insertion end in the pack list, new packs are usually inserted at the top above vanilla
-     * @param fixedPosition a fixed pack cannot be moved up or down, like a server or world resource pack
-     * @param hidden        controls whether the pack is hidden from user-facing screens like the resource pack and data
-     *                      pack selection screens, only available on Forge
-     * @return the {@link RepositorySource} to be added to the
-     *         {@link net.minecraft.server.packs.repository.PackRepository}
-     */
-    public static RepositorySource buildServerPack(Identifier id, Supplier<AbstractModPackResources> factory, boolean required, Pack.Position position, boolean fixedPosition, boolean hidden) {
-        return (Consumer<Pack> consumer) -> {
-            consumer.accept(AbstractModPackResources.buildPack(PackType.SERVER_DATA,
-                    id,
-                    factory,
-                    getPackTitle(PackType.SERVER_DATA),
-                    getPackDescription(id.getNamespace()),
-                    required,
-                    position,
-                    fixedPosition,
-                    hidden,
-                    FeatureFlagSet.of()));
-        };
-    }
-
-    /**
-     * Creates a new data pack repository source (for the server).
-     * <p>
-     * Can be added via
-     * {@link ModConstructor#onAddDataPackReloadListeners(DataPackReloadListenersContext)}.
-     *
-     * @param id            id for the pack, used for internal references and is stored in <code>options.txt</code>
-     * @param factory       {@link net.minecraft.server.packs.PackResources} implementation supplier
-     * @param title         the title of this pack shown in the pack selection screen
-     * @param description   the description for this pack shown in the pack selection screen
-     * @param required      a required pack cannot be disabled, like in the pack selection screen the pack cannot be
-     *                      moved to the left side; this is used for the vanilla resource pack
-     * @param position      insertion end in the pack list, new packs are usually inserted at the top above vanilla
-     * @param fixedPosition a fixed pack cannot be moved up or down, like a server or world resource pack
-     * @param hidden        controls whether the pack is hidden from user-facing screens like the resource pack and data
-     *                      pack selection screens, only available on Forge
-     * @return the {@link RepositorySource} to be added to the
-     *         {@link net.minecraft.server.packs.repository.PackRepository}
-     */
-    public static RepositorySource buildServerPack(Identifier id, Supplier<AbstractModPackResources> factory, Component title, Component description, boolean required, Pack.Position position, boolean fixedPosition, boolean hidden) {
-        return (Consumer<Pack> consumer) -> {
-            consumer.accept(AbstractModPackResources.buildPack(PackType.SERVER_DATA,
-                    id,
-                    factory,
-                    title,
-                    description,
-                    required,
-                    position,
-                    fixedPosition,
-                    hidden,
-                    FeatureFlagSet.of()));
-        };
-    }
-
-    /**
      * Creates a new {@link Pack.Metadata} instance with additional parameters only supported on NeoForge.
      *
-     * @param identifier           the pack identifier
-     * @param descriptionComponent the pack description component
-     * @param packCompatibility    the pack version, ideally retrieved from
-     *                             {@link net.minecraft.WorldVersion#packVersion(PackType)}
-     * @param featureFlagSet       the feature flags provided by this pack
-     * @param isHidden             controls whether the pack is hidden from user-facing screens like the resource pack
-     *                             and data pack selection screens
+     * @param description       the pack description component
+     * @param packCompatibility the pack version, ideally retrieved from
+     *                          {@link net.minecraft.WorldVersion#packVersion(PackType)}
+     * @param featureFlagSet    the feature flags provided by this pack
+     * @param isHidden          controls whether the pack is hidden from user-facing screens like the resource pack and
+     *                          data pack selection screens
      * @return the created pack info instance
      */
-    public static Pack.Metadata createPackInfo(Identifier identifier, Component descriptionComponent, PackCompatibility packCompatibility, FeatureFlagSet featureFlagSet, boolean isHidden) {
-        return ProxyImpl.get()
-                .createPackInfo(identifier, descriptionComponent, packCompatibility, featureFlagSet, isHidden);
+    public static Pack.Metadata createPackInfo(Component description, PackCompatibility packCompatibility, FeatureFlagSet featureFlagSet, boolean isHidden) {
+        return ProxyImpl.get().createPackInfo(description, packCompatibility, featureFlagSet, isHidden);
     }
 
     /**

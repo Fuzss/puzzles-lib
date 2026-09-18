@@ -47,7 +47,6 @@ import net.minecraft.network.protocol.common.ServerCommonPacketListener;
 import net.minecraft.network.protocol.common.custom.BrandPayload;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -123,8 +122,8 @@ public class FabricCommonProxy implements FabricProxy {
     }
 
     @Override
-    public Pack.Metadata createPackInfo(Identifier identifier, Component descriptionComponent, PackCompatibility packCompatibility, FeatureFlagSet featureFlagSet, boolean isHidden) {
-        return new Pack.Metadata(descriptionComponent, packCompatibility, featureFlagSet, Collections.emptyList());
+    public Pack.Metadata createPackInfo(Component description, PackCompatibility packCompatibility, FeatureFlagSet featureFlagSet, boolean isHidden) {
+        return new Pack.Metadata(description, packCompatibility, featureFlagSet, Collections.emptyList());
     }
 
     @SuppressWarnings("UnstableApiUsage")
