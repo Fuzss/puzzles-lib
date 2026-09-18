@@ -24,8 +24,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+/**
+ * A base implementation of {@link BlockLootSubProvider} for generating block loot tables.
+ * <p>
+ * Unlike vanilla, only loot tables belonging to the generating mod are required to be generated, meaning loot table ids
+ * whose namespace matches the mod id. Loot tables for blocks of vanilla or other mods can still be added and are
+ * generated as well, all remaining blocks are skipped.
+ */
 public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider {
     /**
+     * The default variant providers used by {@link #generateFor(BlockSetFamily)}.
+     *
      * @see #generateFor(BlockSetFamily, Map)
      */
     public static final Map<BlockSetVariant, BiConsumer<AbstractBlockLootSubProvider, Block>> VARIANT_PROVIDERS = ImmutableMap.<BlockSetVariant, BiConsumer<AbstractBlockLootSubProvider, Block>>builder()
@@ -60,10 +69,17 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
             .put(BlockSetVariant.SHELF, BlockLootSubProvider::dropSelf)
             .build();
 
+    /**
+     * @param output the context used for registering generated loot tables
+     */
     public AbstractBlockLootSubProvider(LootTableSubProvider.Context output) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), output);
     }
 
+    /**
+     * Adds all loot tables of this provider via the various {@code add} methods inherited from
+     * {@link BlockLootSubProvider}, which are then emitted to the reloadable registry by {@link #run()}.
+     */
     @Override
     public abstract void generate();
 
@@ -98,14 +114,31 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
         }
     }
 
+    /**
+     * Adds a loot table for the given block that drops nothing.
+     *
+     * @param block the block to add a loot table for
+     */
     public void dropNothing(Block block) {
         this.add(block, noDrop());
     }
 
+    /**
+     * Adds a loot table for the given block that drops itself while copying over the custom name of the block entity.
+     *
+     * @param block the block to add a loot table for
+     */
     public void dropNameable(Block block) {
         this.add(block, this::createNameableBlockEntityTable);
     }
 
+    /**
+     * Creates a loot table for the given block that preserves the note block sound and custom name of the block entity,
+     * similar to the drops of vanilla heads.
+     *
+     * @param block the block to create a loot table for
+     * @return the created loot table builder
+     */
     public LootTable.Builder createHeadDrop(Block block) {
         // The explosion condition is not applied on purpose; all vanilla heads are explosion-resistant.
         return LootTable.lootTable()
@@ -118,10 +151,21 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
                         .unwrap());
     }
 
+    /**
+     * Generates loot tables for all blocks of the given block set family using {@link #VARIANT_PROVIDERS}.
+     *
+     * @param blockSetFamily the block set family
+     */
     public final void generateFor(BlockSetFamily blockSetFamily) {
         this.generateFor(blockSetFamily, VARIANT_PROVIDERS);
     }
 
+    /**
+     * Generates loot tables for all blocks of the given block set family using the given variant providers.
+     *
+     * @param blockSetFamily the block set family
+     * @param variants       the variant providers to apply
+     */
     public final void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, BiConsumer<AbstractBlockLootSubProvider, Block>> variants) {
         blockSetFamily.getBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> block) -> {
             BiConsumer<AbstractBlockLootSubProvider, Block> provider = variants.get(variant);

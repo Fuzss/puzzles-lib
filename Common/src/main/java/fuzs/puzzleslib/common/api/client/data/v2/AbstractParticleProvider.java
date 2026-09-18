@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.common.api.client.data.v2;
 
 import com.mojang.serialization.Codec;
-import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import net.minecraft.client.particle.ParticleDescription;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;

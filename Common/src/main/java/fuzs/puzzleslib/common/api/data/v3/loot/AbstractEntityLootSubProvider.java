@@ -10,15 +10,33 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A base implementation of {@link EntityLootSubProvider} for generating entity loot tables.
+ * <p>
+ * Unlike vanilla, only loot tables belonging to the generating mod are required to be generated, meaning default loot
+ * table ids whose namespace matches the mod id. Loot tables for entities of vanilla or other mods can still be added
+ * and are generated as well, all remaining entities are skipped.
+ */
 public abstract class AbstractEntityLootSubProvider extends EntityLootSubProvider {
 
+    /**
+     * @param output the context used for registering generated loot tables
+     */
     public AbstractEntityLootSubProvider(LootTableSubProvider.Context output) {
         super(FeatureFlags.REGISTRY.allFlags(), output);
     }
 
+    /**
+     * Adds all loot tables of this provider via the various {@code add} methods inherited from
+     * {@link EntityLootSubProvider}, which are then emitted to the reloadable registry by {@link #run()}.
+     */
     @Override
     public abstract void generate();
 

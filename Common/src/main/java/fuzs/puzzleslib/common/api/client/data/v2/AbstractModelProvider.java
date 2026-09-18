@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.common.api.client.data.v2;
 
 import com.google.common.collect.ImmutableMap;
-import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetFamily;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
 import net.minecraft.client.data.models.BlockModelGenerators;

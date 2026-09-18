@@ -9,7 +9,7 @@ import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingContext;
 import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingPhase;
 import fuzs.puzzleslib.common.api.biome.v1.BiomeModificationContext;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
-import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.impl.biome.*;
 import net.minecraft.core.Holder;

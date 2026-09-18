@@ -3,7 +3,7 @@ package fuzs.puzzleslib.neoforge.impl.data;
 import com.google.common.base.Preconditions;
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.common.api.data.v2.ModPackMetadataProvider;
-import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.resources.v2.PackResourcesHelper;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;

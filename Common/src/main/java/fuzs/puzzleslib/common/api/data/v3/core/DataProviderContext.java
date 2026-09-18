@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.data.v2.core;
+package fuzs.puzzleslib.common.api.data.v3.core;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataProvider;

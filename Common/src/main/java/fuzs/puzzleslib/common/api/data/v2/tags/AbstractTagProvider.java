@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import fuzs.puzzleslib.common.api.config.v3.serialization.KeyedValueProvider;
-import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
 import fuzs.puzzleslib.common.api.init.v3.tags.TagFactory;
 import fuzs.puzzleslib.common.api.util.v1.CodecExtras;
