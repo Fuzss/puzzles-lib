@@ -159,9 +159,7 @@ public class FabricClientProxy extends FabricCommonProxy implements ClientProxyI
 
     @Override
     public MutableBakedQuad getMutableBakedQuad(BakedQuad bakedQuad) {
-        return new MutableBakedQuad(bakedQuad) {
-            // NO-OP
-        };
+        return new MutableBakedQuad(bakedQuad);
     }
 
     @Override

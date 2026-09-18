@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-public abstract class MutableBakedQuad {
+public class MutableBakedQuad {
     protected Vector3fc position0;
     protected Vector3fc position1;
     protected Vector3fc position2;
@@ -25,8 +25,10 @@ public abstract class MutableBakedQuad {
     protected TextureAtlasSprite sprite;
     protected ChunkSectionLayer layer;
     protected RenderType itemRenderType;
+    protected RenderType itemGlintRenderType;
+    protected RenderType itemGlintSpecialRenderType;
     protected int tintIndex;
-    protected boolean shade;
+    protected Direction shadeDirectionOverride;
     protected int lightEmission;
 
     public MutableBakedQuad(BakedQuad bakedQuad) {
@@ -45,8 +47,10 @@ public abstract class MutableBakedQuad {
         this.sprite = bakedQuad.materialInfo().sprite();
         this.layer = bakedQuad.materialInfo().layer();
         this.itemRenderType = bakedQuad.materialInfo().itemRenderType();
+        this.itemGlintRenderType = bakedQuad.materialInfo().itemGlintRenderType();
+        this.itemGlintSpecialRenderType = bakedQuad.materialInfo().itemGlintSpecialRenderType();
         this.tintIndex = bakedQuad.materialInfo().tintIndex();
-        this.shade = bakedQuad.materialInfo().shade();
+        this.shadeDirectionOverride = bakedQuad.materialInfo().shadeDirectionOverride();
         this.lightEmission = bakedQuad.materialInfo().lightEmission();
     }
 
@@ -114,8 +118,10 @@ public abstract class MutableBakedQuad {
         return this.materialInfo != null ? this.materialInfo : new BakedQuad.MaterialInfo(this.sprite(),
                 this.layer(),
                 this.itemRenderType(),
+                this.itemGlintRenderType(),
+                this.itemGlintSpecialRenderType(),
                 this.tintIndex(),
-                this.shade(),
+                this.shadeDirectionOverride(),
                 this.lightEmission());
     }
 
@@ -131,12 +137,20 @@ public abstract class MutableBakedQuad {
         return this.itemRenderType;
     }
 
+    public RenderType itemGlintRenderType() {
+        return this.itemGlintRenderType;
+    }
+
+    public RenderType itemGlintSpecialRenderType() {
+        return this.itemGlintSpecialRenderType;
+    }
+
     public int tintIndex() {
         return this.tintIndex;
     }
 
-    public boolean shade() {
-        return this.shade;
+    public Direction shadeDirectionOverride() {
+        return this.shadeDirectionOverride;
     }
 
     public int lightEmission() {
@@ -145,22 +159,22 @@ public abstract class MutableBakedQuad {
 
     public MutableBakedQuad position0(Vector3fc position) {
         this.position0 = position;
-        return this;
+        return this.computeQuadNormals();
     }
 
     public MutableBakedQuad position1(Vector3fc position) {
         this.position1 = position;
-        return this;
+        return this.computeQuadNormals();
     }
 
     public MutableBakedQuad position2(Vector3fc position) {
         this.position2 = position;
-        return this;
+        return this.computeQuadNormals();
     }
 
     public MutableBakedQuad position3(Vector3fc position) {
         this.position3 = position;
-        return this;
+        return this.computeQuadNormals();
     }
 
     public MutableBakedQuad position(int vertexIndex, Vector3fc position) {
@@ -224,15 +238,27 @@ public abstract class MutableBakedQuad {
         this.itemRenderType = itemRenderType;
     }
 
+    public MutableBakedQuad itemGlintRenderType(RenderType itemGlintRenderType) {
+        this.materialInfo = null;
+        this.itemGlintRenderType = itemGlintRenderType;
+        return this;
+    }
+
+    public MutableBakedQuad itemGlintSpecialRenderType(RenderType itemGlintSpecialRenderType) {
+        this.materialInfo = null;
+        this.itemGlintSpecialRenderType = itemGlintSpecialRenderType;
+        return this;
+    }
+
     public MutableBakedQuad tintIndex(int tintIndex) {
         this.materialInfo = null;
         this.tintIndex = tintIndex;
         return this;
     }
 
-    public MutableBakedQuad shade(boolean shade) {
+    public MutableBakedQuad shadeDirectionOverride(Direction shadeDirectionOverride) {
         this.materialInfo = null;
-        this.shade = shade;
+        this.shadeDirectionOverride = shadeDirectionOverride;
         return this;
     }
 
@@ -242,74 +268,8 @@ public abstract class MutableBakedQuad {
         return this;
     }
 
-    public MutableBakedQuad packedNormal0(int packedNormal) {
-        return this;
-    }
-
-    public MutableBakedQuad packedNormal1(int packedNormal) {
-        return this;
-    }
-
-    public MutableBakedQuad packedNormal2(int packedNormal) {
-        return this;
-    }
-
-    public MutableBakedQuad packedNormal3(int packedNormal) {
-        return this;
-    }
-
-    public MutableBakedQuad packedNormal(int vertexIndex, int packedNormal) {
-        return switch (vertexIndex) {
-            case 0 -> this.packedNormal0(packedNormal);
-            case 1 -> this.packedNormal1(packedNormal);
-            case 2 -> this.packedNormal2(packedNormal);
-            case 3 -> this.packedNormal3(packedNormal);
-            default -> throw new IndexOutOfBoundsException(vertexIndex);
-        };
-    }
-
-    public MutableBakedQuad packedNormal(int packedNormal) {
-        return this.packedNormal0(packedNormal)
-                .packedNormal1(packedNormal)
-                .packedNormal2(packedNormal)
-                .packedNormal3(packedNormal);
-    }
-
     public MutableBakedQuad computeQuadNormals() {
         return this;
-    }
-
-    public MutableBakedQuad packedColor0(int packedColor) {
-        return this;
-    }
-
-    public MutableBakedQuad packedColor1(int packedColor) {
-        return this;
-    }
-
-    public MutableBakedQuad packedColor2(int packedColor) {
-        return this;
-    }
-
-    public MutableBakedQuad packedColor3(int packedColor) {
-        return this;
-    }
-
-    public MutableBakedQuad packedColor(int vertexIndex, int packedColor) {
-        return switch (vertexIndex) {
-            case 0 -> this.packedColor0(packedColor);
-            case 1 -> this.packedColor1(packedColor);
-            case 2 -> this.packedColor2(packedColor);
-            case 3 -> this.packedColor3(packedColor);
-            default -> throw new IndexOutOfBoundsException(vertexIndex);
-        };
-    }
-
-    public MutableBakedQuad packedColor(int packedColor) {
-        return this.packedColor0(packedColor)
-                .packedColor1(packedColor)
-                .packedColor2(packedColor)
-                .packedColor3(packedColor);
     }
 
     public BakedQuad toImmutable() {

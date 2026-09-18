@@ -4,12 +4,12 @@ import fuzs.puzzleslib.common.api.client.renderer.v1.model.MutableBakedQuad;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
 import net.neoforged.neoforge.client.model.quad.BakedNormals;
-import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 public class NeoForgeMutableBakedQuad extends MutableBakedQuad {
+    protected boolean ambientOcclusion;
     @Nullable
     protected BakedNormals bakedNormals;
     @Nullable
@@ -20,7 +20,7 @@ public class NeoForgeMutableBakedQuad extends MutableBakedQuad {
     protected Integer packedNormal2;
     @Nullable
     protected Integer packedNormal3;
-    protected boolean computeQuadNormals;
+    @Nullable
     protected BakedColors bakedColors;
     @Nullable
     protected Integer packedColor0;
@@ -33,124 +33,148 @@ public class NeoForgeMutableBakedQuad extends MutableBakedQuad {
 
     public NeoForgeMutableBakedQuad(BakedQuad bakedQuad) {
         super(bakedQuad);
+        this.ambientOcclusion = bakedQuad.materialInfo().ambientOcclusion();
         this.bakedNormals = bakedQuad.bakedNormals();
         this.bakedColors = bakedQuad.bakedColors();
     }
 
+    @Override
+    public BakedQuad.MaterialInfo materialInfo() {
+        return this.materialInfo != null ? this.materialInfo : new BakedQuad.MaterialInfo(this.sprite(),
+                this.layer(),
+                this.itemRenderType(),
+                this.itemGlintRenderType(),
+                this.itemGlintSpecialRenderType(),
+                this.tintIndex(),
+                this.shadeDirectionOverride(),
+                this.lightEmission(),
+                this.ambientOcclusion());
+    }
+
+    public boolean ambientOcclusion() {
+        return this.ambientOcclusion;
+    }
+
+    public MutableBakedQuad ambientOcclusion(boolean ambientOcclusion) {
+        this.materialInfo = null;
+        this.ambientOcclusion = ambientOcclusion;
+        return this;
+    }
+
     public BakedNormals bakedNormals() {
-        if (this.computeQuadNormals) {
-            return BakedNormals.of(BakedNormals.computeQuadNormal(this.position0,
-                    this.position1,
-                    this.position2,
-                    this.position3));
-        } else if (this.packedNormal0 != null && this.packedNormal1 != null && this.packedNormal2 != null
-                && this.packedNormal3 != null) {
-            // the values all being equal is handled automatically
-            return BakedNormals.of(this.packedNormal0, this.packedNormal1, this.packedNormal2, this.packedNormal3);
+        // Custom normals win over any existing or automatically computed.
+        if (this.packedNormal0 != null || this.packedNormal1 != null || this.packedNormal2 != null
+                || this.packedNormal3 != null) {
+            return BakedNormals.of(Objects.requireNonNull(this.packedNormal0),
+                    Objects.requireNonNull(this.packedNormal1),
+                    Objects.requireNonNull(this.packedNormal2),
+                    Objects.requireNonNull(this.packedNormal3));
         } else {
-            Objects.requireNonNull(this.bakedNormals, "baked normals is null");
-            return this.bakedNormals;
+            return this.bakedNormals != null ? this.bakedNormals :
+                    BakedNormals.of(BakedNormals.computeQuadNormal(this.position0(),
+                            this.position1(),
+                            this.position2(),
+                            this.position3()));
         }
     }
 
     public BakedColors bakedColors() {
-        if (this.packedColor0 != null && this.packedColor1 != null && this.packedColor2 != null
-                && this.packedColor3 != null) {
-            // the values all being equal is handled automatically
-            return BakedColors.of(this.packedColor0, this.packedColor1, this.packedColor2, this.packedColor3);
-        } else {
-            return this.bakedColors;
-        }
+        return this.bakedColors != null ? this.bakedColors : BakedColors.of(Objects.requireNonNull(this.packedColor0),
+                Objects.requireNonNull(this.packedColor1),
+                Objects.requireNonNull(this.packedColor2),
+                Objects.requireNonNull(this.packedColor3));
     }
 
     @Override
-    public MutableBakedQuad position0(Vector3fc position) {
+    public NeoForgeMutableBakedQuad computeQuadNormals() {
+        // Leave as unspecified if the normals already are.
         if (this.bakedNormals != BakedNormals.UNSPECIFIED) {
             this.bakedNormals = null;
         }
 
-        return super.position0(position);
+        return this;
     }
 
-    @Override
-    public MutableBakedQuad position1(Vector3fc position) {
-        if (this.bakedNormals != BakedNormals.UNSPECIFIED) {
-            this.bakedNormals = null;
-        }
-
-        return super.position1(position);
-    }
-
-    @Override
-    public MutableBakedQuad position2(Vector3fc position) {
-        if (this.bakedNormals != BakedNormals.UNSPECIFIED) {
-            this.bakedNormals = null;
-        }
-
-        return super.position2(position);
-    }
-
-    @Override
-    public MutableBakedQuad position3(Vector3fc position) {
-        if (this.bakedNormals != BakedNormals.UNSPECIFIED) {
-            this.bakedNormals = null;
-        }
-
-        return super.position3(position);
-    }
-
-    @Override
-    public MutableBakedQuad packedNormal0(int packedNormal) {
+    public NeoForgeMutableBakedQuad packedNormal0(int packedNormal) {
+        this.bakedNormals = null;
         this.packedNormal0 = packedNormal;
         return this;
     }
 
-    @Override
-    public MutableBakedQuad packedNormal1(int packedNormal) {
+    public NeoForgeMutableBakedQuad packedNormal1(int packedNormal) {
+        this.bakedNormals = null;
         this.packedNormal1 = packedNormal;
         return this;
     }
 
-    @Override
-    public MutableBakedQuad packedNormal2(int packedNormal) {
+    public NeoForgeMutableBakedQuad packedNormal2(int packedNormal) {
+        this.bakedNormals = null;
         this.packedNormal2 = packedNormal;
         return this;
     }
 
-    @Override
-    public MutableBakedQuad packedNormal3(int packedNormal) {
+    public NeoForgeMutableBakedQuad packedNormal3(int packedNormal) {
+        this.bakedNormals = null;
         this.packedNormal3 = packedNormal;
         return this;
     }
 
-    @Override
-    public MutableBakedQuad computeQuadNormals() {
-        this.computeQuadNormals = true;
-        return super.computeQuadNormals();
+    public NeoForgeMutableBakedQuad packedNormal(int vertexIndex, int packedNormal) {
+        return switch (vertexIndex) {
+            case 0 -> this.packedNormal0(packedNormal);
+            case 1 -> this.packedNormal1(packedNormal);
+            case 2 -> this.packedNormal2(packedNormal);
+            case 3 -> this.packedNormal3(packedNormal);
+            default -> throw new IndexOutOfBoundsException(vertexIndex);
+        };
     }
 
-    @Override
-    public MutableBakedQuad packedColor0(int packedColor) {
+    public NeoForgeMutableBakedQuad packedNormal(int packedNormal) {
+        return this.packedNormal0(packedNormal)
+                .packedNormal1(packedNormal)
+                .packedNormal2(packedNormal)
+                .packedNormal3(packedNormal);
+    }
+
+    public NeoForgeMutableBakedQuad packedColor0(int packedColor) {
+        this.bakedColors = null;
         this.packedColor0 = packedColor;
         return this;
     }
 
-    @Override
-    public MutableBakedQuad packedColor1(int packedColor) {
+    public NeoForgeMutableBakedQuad packedColor1(int packedColor) {
+        this.bakedColors = null;
         this.packedColor1 = packedColor;
         return this;
     }
 
-    @Override
-    public MutableBakedQuad packedColor2(int packedColor) {
+    public NeoForgeMutableBakedQuad packedColor2(int packedColor) {
+        this.bakedColors = null;
         this.packedColor2 = packedColor;
         return this;
     }
 
-    @Override
-    public MutableBakedQuad packedColor3(int packedColor) {
+    public NeoForgeMutableBakedQuad packedColor3(int packedColor) {
+        this.bakedColors = null;
         this.packedColor3 = packedColor;
         return this;
+    }
+
+    public NeoForgeMutableBakedQuad packedColor(int vertexIndex, int packedColor) {
+        return switch (vertexIndex) {
+            case 0 -> this.packedColor0(packedColor);
+            case 1 -> this.packedColor1(packedColor);
+            case 2 -> this.packedColor2(packedColor);
+            case 3 -> this.packedColor3(packedColor);
+            default -> throw new IndexOutOfBoundsException(vertexIndex);
+        };
+    }
+
+    public NeoForgeMutableBakedQuad packedColor(int packedColor) {
+        return this.packedColor0(packedColor)
+                .packedColor1(packedColor)
+                .packedColor2(packedColor)
+                .packedColor3(packedColor);
     }
 
     @Override
