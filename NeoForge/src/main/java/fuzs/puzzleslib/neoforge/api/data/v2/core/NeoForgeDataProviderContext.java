@@ -19,23 +19,23 @@ public class NeoForgeDataProviderContext extends DataProviderContext {
     /**
      * The client resource manager.
      */
-    private final ResourceManager clientResourceManager;
+    private final ResourceManager clientResources;
     /**
      * The server resource manager.
      */
-    private final ResourceManager serverResourceManager;
+    private final ResourceManager serverResources;
 
     /**
-     * @param modId                 the generating mod id
-     * @param packOutput            the pack output instance
-     * @param registries            the registry lookup provider
-     * @param clientResourceManager the client resource manager
-     * @param serverResourceManager the server resource manager
+     * @param modId           the generating mod id
+     * @param packOutput      the pack output instance
+     * @param registries      the registry lookup provider
+     * @param clientResources the client resource manager
+     * @param serverResources the server resource manager
      */
-    public NeoForgeDataProviderContext(String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, ResourceManager clientResourceManager, ResourceManager serverResourceManager) {
+    public NeoForgeDataProviderContext(String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, ResourceManager clientResources, ResourceManager serverResources) {
         super(modId, packOutput, registries);
-        this.clientResourceManager = clientResourceManager;
-        this.serverResourceManager = serverResourceManager;
+        this.clientResources = clientResources;
+        this.serverResources = serverResources;
     }
 
     /**
@@ -65,13 +65,13 @@ public class NeoForgeDataProviderContext extends DataProviderContext {
     }
 
     @Override
-    public ResourceManager getClientResourceManager() {
-        return this.clientResourceManager;
+    public ResourceManager getClientResources() {
+        return this.clientResources;
     }
 
     @Override
-    public ResourceManager getServerResourceManager() {
-        return this.serverResourceManager;
+    public ResourceManager getServerResources() {
+        return this.serverResources;
     }
 
     @Override
@@ -79,8 +79,8 @@ public class NeoForgeDataProviderContext extends DataProviderContext {
         return new NeoForgeDataProviderContext(this.getModId(),
                 this.getPackOutput(),
                 registries,
-                this.clientResourceManager,
-                this.serverResourceManager);
+                this.clientResources,
+                this.serverResources);
     }
 
     /**

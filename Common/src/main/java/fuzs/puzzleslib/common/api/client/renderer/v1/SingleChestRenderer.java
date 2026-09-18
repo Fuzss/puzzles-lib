@@ -114,8 +114,19 @@ public abstract class SingleChestRenderer<T extends BlockEntity & LidBlockEntity
                     -1,
                     sprite,
                     this.sprites,
-                    0,
-                    state.breakProgress);
+                    0);
+            if (state.breakProgress != null) {
+                submitNodeCollector.order(1)
+                        .submitCrumblingOverlay(this.model,
+                                ((S) state).getOpenness(),
+                                poseStack,
+                                sprite.renderType(this.model.renderType()),
+                                state.lightCoords,
+                                OverlayTexture.NO_OVERLAY,
+                                -1,
+                                state.breakProgress);
+            }
+
             poseStack.popPose();
         } else {
             super.submit(state, poseStack, submitNodeCollector, camera);

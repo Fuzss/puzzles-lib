@@ -1006,9 +1006,9 @@ public final class NeoForgeEventInvokers {
                     callback.onContainerClose(serverPlayer, event.getContainer());
                 });
         INSTANCE.register(LookingAtEndermanCallback.class,
-                EnderManAngerEvent.class,
-                (LookingAtEndermanCallback callback, EnderManAngerEvent event) -> {
-                    if (callback.onLookingAtEnderManCallback(event.getEntity(), event.getPlayer()).isInterrupt()) {
+                EndermanAngerEvent.class,
+                (LookingAtEndermanCallback callback, EndermanAngerEvent event) -> {
+                    if (callback.onLookingAtEndermanCallback(event.getEntity(), event.getPlayer()).isInterrupt()) {
                         event.setCanceled(true);
                     }
                 });

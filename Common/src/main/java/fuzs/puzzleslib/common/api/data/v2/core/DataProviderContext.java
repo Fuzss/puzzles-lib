@@ -55,8 +55,7 @@ public class DataProviderContext {
     }
 
     /**
-     * Creates a data provider context useful for runtime generation in conjunction with
-     * {@link DynamicPackResources}.
+     * Creates a data provider context useful for runtime generation in conjunction with {@link DynamicPackResources}.
      *
      * @param modId the generating mod id
      * @return the new data provider context
@@ -66,8 +65,7 @@ public class DataProviderContext {
     }
 
     /**
-     * Creates a data provider context useful for runtime generation in conjunction with
-     * {@link DynamicPackResources}.
+     * Creates a data provider context useful for runtime generation in conjunction with {@link DynamicPackResources}.
      *
      * @param modId the generating mod id
      * @param path  output path
@@ -104,14 +102,16 @@ public class DataProviderContext {
     /**
      * @return the client resource manager
      */
-    @Nullable public ResourceManager getClientResourceManager() {
+    @Nullable
+    public ResourceManager getClientResources() {
         return null;
     }
 
     /**
      * @return the server resource manager
      */
-    @Nullable public ResourceManager getServerResourceManager() {
+    @Nullable
+    public ResourceManager getServerResources() {
         return null;
     }
 
