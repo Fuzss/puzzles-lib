@@ -138,7 +138,7 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .build();
 
     public AbstractTagProvider(ResourceKey<? extends Registry<T>> registryKey, DataProviderContext context) {
-        this(registryKey, context.getModId(), context.getPackOutput(), context.getRegistries());
+        this(registryKey, context.getModId(), context.getPackOutput(), context.getWorldRegistries());
     }
 
     public AbstractTagProvider(ResourceKey<? extends Registry<T>> registryKey, String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {

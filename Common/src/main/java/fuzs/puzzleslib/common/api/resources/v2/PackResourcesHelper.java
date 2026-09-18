@@ -53,13 +53,24 @@ public final class PackResourcesHelper {
      *     <li>Resource pack path: {@code assets/<modId>/resourcepacks/<path>}</li>
      * </ul>
      *
-     * @param identifier the identifier for the pack
-     * @param packType   the pack type
+     * @param packId   the identifier for the pack
+     * @param packType the pack type
      * @return the pack location inside {@code resources}
      */
-    public static Identifier getBuiltInPack(Identifier identifier, PackType packType) {
-        return identifier.withPrefix(packType.getDirectory() + "/" + identifier.getNamespace() + "/" + (
-                packType == PackType.CLIENT_RESOURCES ? "resourcepacks" : "datapacks") + "/");
+    public static Identifier getBuiltInPack(Identifier packId, PackType packType) {
+        return packId.withPrefix(
+                packType.getDirectory() + "/" + packId.getNamespace() + "/" + getBuiltInDomain(packType) + "/");
+    }
+
+    /**
+     * Get the directory name used for built-in packs of the given {@link PackType}, used by
+     * {@link #getBuiltInPack(Identifier, PackType)}.
+     *
+     * @param packType the pack type
+     * @return the built-in directory name, either {@code resourcepacks} or {@code datapacks}
+     */
+    public static String getBuiltInDomain(PackType packType) {
+        return packType == PackType.CLIENT_RESOURCES ? "resourcepacks" : "datapacks";
     }
 
     /**

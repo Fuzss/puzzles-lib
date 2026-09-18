@@ -29,7 +29,7 @@ public abstract class AbstractAdvancementProvider implements DataProvider, Advan
     private final CompletableFuture<HolderLookup.Provider> registries;
 
     public AbstractAdvancementProvider(DataProviderContext context) {
-        this(context.getModId(), context.getPackOutput(), context.getRegistries());
+        this(context.getModId(), context.getPackOutput(), context.getWorldRegistries());
     }
 
     public AbstractAdvancementProvider(String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {

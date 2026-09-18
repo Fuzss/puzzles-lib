@@ -9,6 +9,9 @@ import java.util.concurrent.CompletableFuture;
 
 @Mixin(GatherDataEvent.class)
 public interface GatherDataEventNeoForgeAccessor {
-    @Accessor("registriesWithModdedEntries")
-    void puzzleslib$setRegistriesWithModdedEntries(CompletableFuture<HolderLookup.Provider> registriesWithModdedEntries);
+    @Accessor("worldRegistriesWithModdedEntries")
+    void puzzleslib$setWorldRegistriesWithModdedEntries(CompletableFuture<HolderLookup.Provider> registries);
+
+    @Accessor("reloadableRegistriesWithModdedEntries")
+    void puzzleslib$setReloadableRegistriesWithModdedEntries(CompletableFuture<HolderLookup.Provider> registries);
 }

@@ -93,7 +93,7 @@ public final class AbstractLootProvider {
         private final String modId;
 
         public Blocks(DataProviderContext context) {
-            this(context.getModId(), context.getPackOutput(), context.getRegistries());
+            this(context.getModId(), context.getPackOutput(), context.getWorldRegistries());
         }
 
         public Blocks(String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
@@ -233,7 +233,7 @@ public final class AbstractLootProvider {
         private final String modId;
 
         public EntityTypes(DataProviderContext context) {
-            this(context.getModId(), context.getPackOutput(), context.getRegistries());
+            this(context.getModId(), context.getPackOutput(), context.getWorldRegistries());
         }
 
         public EntityTypes(String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
@@ -368,7 +368,7 @@ public final class AbstractLootProvider {
         private HolderLookup.Provider registryAccess;
 
         public Simple(ContextKeySet paramSet, DataProviderContext context) {
-            this(paramSet, context.getPackOutput(), context.getRegistries());
+            this(paramSet, context.getPackOutput(), context.getWorldRegistries());
         }
 
         public Simple(ContextKeySet paramSet, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {

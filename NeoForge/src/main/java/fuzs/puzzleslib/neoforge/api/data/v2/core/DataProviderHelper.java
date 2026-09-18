@@ -2,7 +2,10 @@ package fuzs.puzzleslib.neoforge.api.data.v2.core;
 
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.common.api.data.v2.ModPackMetadataProvider;
+import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.resources.v2.PackResourcesHelper;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
+import fuzs.puzzleslib.neoforge.impl.data.EventBackedDataProviderContext;
 import fuzs.puzzleslib.neoforge.mixin.accessor.GatherDataEventNeoForgeAccessor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -15,7 +18,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.function.Consumers;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -38,7 +40,7 @@ public final class DataProviderHelper {
      * @param modId         the mod id
      * @param dataProviders the data provider factories
      */
-    public static void registerDataProviders(String modId, NeoForgeDataProviderContext.Factory... dataProviders) {
+    public static void registerDataProviders(String modId, DataProviderContext.Factory... dataProviders) {
         registerDataProviders(modId, new RegistrySetBuilder(), dataProviders);
     }
 
@@ -54,7 +56,7 @@ public final class DataProviderHelper {
      * @param packType      the pack type
      * @param dataProviders the data provider factories to run
      */
-    public static void registerDataProviders(Identifier id, PackType packType, NeoForgeDataProviderContext.Factory... dataProviders) {
+    public static void registerDataProviders(Identifier id, PackType packType, DataProviderContext.Factory... dataProviders) {
         registerDataProviders(id, packType, new RegistrySetBuilder(), dataProviders);
     }
 
@@ -65,15 +67,12 @@ public final class DataProviderHelper {
      * @param registrySetBuilder the optional registry set builder
      * @param dataProviders      the data provider factories
      */
-    public static void registerDataProviders(String modId, RegistrySetBuilder registrySetBuilder, NeoForgeDataProviderContext.Factory... dataProviders) {
-        registerDataProviders(modId,
-                registrySetBuilder,
-                dataProviders,
-                (NeoForgeDataProviderContext.Factory factory) -> {
-                    return (GatherDataEvent event, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) -> {
-                        return factory.apply(NeoForgeDataProviderContext.fromEvent(event, packOutput, lookupProvider));
-                    };
-                });
+    public static void registerDataProviders(String modId, RegistrySetBuilder registrySetBuilder, DataProviderContext.Factory... dataProviders) {
+        registerDataProviders(modId, registrySetBuilder, dataProviders, (DataProviderContext.Factory factory) -> {
+            return (GatherDataEvent event, PackOutput packOutput) -> {
+                return factory.apply(new EventBackedDataProviderContext(event, packOutput));
+            };
+        });
     }
 
     /**
@@ -89,16 +88,16 @@ public final class DataProviderHelper {
      * @param registrySetBuilder the optional registry set builder
      * @param dataProviders      the data provider factories to run
      */
-    public static void registerDataProviders(Identifier id, PackType packType, RegistrySetBuilder registrySetBuilder, NeoForgeDataProviderContext.Factory... dataProviders) {
+    public static void registerDataProviders(Identifier id, PackType packType, RegistrySetBuilder registrySetBuilder, DataProviderContext.Factory... dataProviders) {
         registerDataProviders(id,
                 packType,
                 registrySetBuilder,
-                ArrayUtils.add(dataProviders, (NeoForgeDataProviderContext context) -> {
+                ArrayUtils.add(dataProviders, (DataProviderContext context) -> {
                     return new ModPackMetadataProvider(packType, context);
                 }),
-                (NeoForgeDataProviderContext.Factory factory) -> {
-                    return (GatherDataEvent event, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) -> {
-                        return factory.apply(NeoForgeDataProviderContext.fromEvent(event, packOutput, lookupProvider));
+                (DataProviderContext.Factory factory) -> {
+                    return (GatherDataEvent event, PackOutput packOutput) -> {
+                        return factory.apply(new EventBackedDataProviderContext(event, packOutput));
                     };
                 });
     }
@@ -133,7 +132,7 @@ public final class DataProviderHelper {
             eventBus.addListener((final GatherDataEvent.Client event) -> {
                 Path outputFolder = Path.of(packType.getDirectory(),
                         id.getNamespace(),
-                        packType == PackType.CLIENT_RESOURCES ? "resourcepacks" : "datapacks",
+                        PackResourcesHelper.getBuiltInDomain(packType),
                         id.getPath());
                 DataGenerator.PackGenerator packGenerator = event.getGenerator()
                         .getPackGenerator(true, id.toString(), outputFolder.toString());
@@ -146,25 +145,39 @@ public final class DataProviderHelper {
         });
     }
 
-    @SuppressWarnings("RedundantCast")
     private static <T> void addDataProviders(GatherDataEvent event, RegistrySetBuilder registrySetBuilder, T[] dataProviders, Function<T, DataProviderFactory> factoryTransformer, RootDataProviderFactory factory) {
         if (!registrySetBuilder.getEntryKeys().isEmpty()) {
             // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
             // Also, run this manually so it is added to the correct generator.
-            DatapackBuiltinEntriesProvider registries = factory.apply((PackOutput packOutput) -> {
-                return new DatapackBuiltinEntriesProvider(packOutput,
-                        event.getLookupProvider(),
+            CompletableFuture<HolderLookup.Provider> worldRegistries = factory.apply((PackOutput packOutput) -> {
+                return DatapackBuiltinEntriesProvider.forWorldLayer(packOutput,
+                        "world",
+                        event.getWorldLookupProvider(),
                         registrySetBuilder,
-                        Consumers.nop(),
                         (Set<String>) null);
-            });
-            ((GatherDataEventNeoForgeAccessor) event).puzzleslib$setRegistriesWithModdedEntries(registries.getRegistryProvider());
+            }).getRegistryProvider();
+            ((GatherDataEventNeoForgeAccessor) event).puzzleslib$setWorldRegistriesWithModdedEntries(worldRegistries);
+        }
+
+        // FIXME this must use its own correct registry set builder, which will be solved when migrating to a builder implementation
+        if (!registrySetBuilder.getEntryKeys().isEmpty()) {
+            // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
+            // Also, run this manually so it is added to the correct generator.
+            CompletableFuture<HolderLookup.Provider> reloadableRegistries = factory.apply((PackOutput packOutput) -> {
+                return DatapackBuiltinEntriesProvider.forReloadableLayer(packOutput,
+                        "reloadable",
+                        event.getWorldLookupProvider(),
+                        event.getReloadableLookupProvider(),
+                        registrySetBuilder,
+                        (Set<String>) null);
+            }).getRegistryProvider();
+            ((GatherDataEventNeoForgeAccessor) event).puzzleslib$setReloadableRegistriesWithModdedEntries(
+                    reloadableRegistries);
         }
 
         for (T dataProviderFactory : dataProviders) {
             factory.apply((PackOutput packOutput) -> {
-                return factoryTransformer.apply(dataProviderFactory)
-                        .apply(event, packOutput, event.getLookupProvider());
+                return factoryTransformer.apply(dataProviderFactory).apply(event, packOutput);
             });
         }
     }
@@ -176,6 +189,6 @@ public final class DataProviderHelper {
 
     @FunctionalInterface
     private interface DataProviderFactory {
-        DataProvider apply(GatherDataEvent event, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider);
+        DataProvider apply(GatherDataEvent event, PackOutput packOutput);
     }
 }
