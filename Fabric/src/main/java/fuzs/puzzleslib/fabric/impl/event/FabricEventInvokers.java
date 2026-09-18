@@ -14,7 +14,6 @@ import fuzs.puzzleslib.common.api.init.v3.registry.LookupHelper;
 import fuzs.puzzleslib.common.impl.PuzzlesLib;
 import fuzs.puzzleslib.fabric.api.event.v1.*;
 import fuzs.puzzleslib.fabric.impl.core.FabricProxy;
-import fuzs.puzzleslib.fabric.impl.init.FabricPotionBrewingBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
@@ -45,7 +44,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -440,13 +438,6 @@ public final class FabricEventInvokers {
         INSTANCE.register(ContainerEvents.Open.class, FabricPlayerEvents.CONTAINER_OPEN);
         INSTANCE.register(ContainerEvents.Close.class, FabricPlayerEvents.CONTAINER_CLOSE);
         INSTANCE.register(LookingAtEndermanCallback.class, FabricLivingEvents.LOOKING_AT_ENDERMAN);
-        INSTANCE.register(RegisterPotionBrewingMixesCallback.class,
-                net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder.BUILD,
-                (RegisterPotionBrewingMixesCallback callback) -> {
-                    return (PotionBrewing.Builder builder) -> {
-                        callback.onRegisterPotionBrewingMixes(new FabricPotionBrewingBuilder(builder));
-                    };
-                });
         INSTANCE.register(RefreshEntityDimensionsCallback.class, FabricEntityEvents.REFRESH_ENTITY_DIMENSIONS);
         INSTANCE.register(PickProjectileCallback.class, FabricLivingEvents.PICK_PROJECTILE);
         INSTANCE.register(EnderPearlTeleportCallback.class, FabricEntityEvents.ENDER_PEARL_TELEPORT);

@@ -18,7 +18,6 @@ import fuzs.puzzleslib.common.impl.event.data.DefaultedFloat;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedInt;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedValue;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
-import fuzs.puzzleslib.neoforge.impl.init.NeoForgePotionBrewingBuilder;
 import fuzs.puzzleslib.neoforge.mixin.accessor.EntityNeoForgeAccessor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -47,7 +46,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.event.*;
-import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.*;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
@@ -1011,11 +1009,6 @@ public final class NeoForgeEventInvokers {
                     if (callback.onLookingAtEndermanCallback(event.getEntity(), event.getPlayer()).isInterrupt()) {
                         event.setCanceled(true);
                     }
-                });
-        INSTANCE.register(RegisterPotionBrewingMixesCallback.class,
-                RegisterBrewingRecipesEvent.class,
-                (RegisterPotionBrewingMixesCallback callback, RegisterBrewingRecipesEvent event) -> {
-                    callback.onRegisterPotionBrewingMixes(new NeoForgePotionBrewingBuilder(event.getBuilder()));
                 });
         INSTANCE.register(RefreshEntityDimensionsCallback.class,
                 EntityEvent.Size.class,
