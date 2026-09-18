@@ -1,5 +1,6 @@
 package fuzs.puzzleslib.common.api.data.v3.loot;
 
+import fuzs.puzzleslib.common.impl.data.NamedLootContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.EntityLootSubProvider;

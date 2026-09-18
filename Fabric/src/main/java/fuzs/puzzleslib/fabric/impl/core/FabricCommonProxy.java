@@ -3,7 +3,6 @@ package fuzs.puzzleslib.fabric.impl.core;
 import com.google.common.base.Predicates;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
-import fuzs.puzzleslib.common.api.data.v2.AbstractRecipeProvider;
 import fuzs.puzzleslib.common.api.data.v2.recipes.TransformingRecipeOutput;
 import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagAppender;
 import fuzs.puzzleslib.common.api.event.v1.core.EventPhase;
@@ -14,6 +13,7 @@ import fuzs.puzzleslib.common.api.item.v2.crafting.CombinedIngredients;
 import fuzs.puzzleslib.common.impl.attachment.DataAttachmentRegistryImpl;
 import fuzs.puzzleslib.common.impl.core.ModContext;
 import fuzs.puzzleslib.common.impl.core.context.ModConstructorImpl;
+import fuzs.puzzleslib.common.impl.data.IdBoundRecipeOutput;
 import fuzs.puzzleslib.fabric.impl.attachment.FabricDataAttachmentRegistryImpl;
 import fuzs.puzzleslib.fabric.impl.core.context.PayloadTypesContextFabricImpl;
 import fuzs.puzzleslib.fabric.impl.data.FabricTagAppender;
@@ -30,13 +30,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.chat.Component;
@@ -47,7 +44,6 @@ import net.minecraft.network.protocol.common.ServerCommonPacketListener;
 import net.minecraft.network.protocol.common.custom.BrandPayload;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -88,7 +84,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -301,30 +296,8 @@ public class FabricCommonProxy implements FabricProxy {
     }
 
     @Override
-    public RecipeOutput getRecipeProviderOutput(CachedOutput output, String modId, PackOutput packOutput, HolderLookup.Provider registries, Consumer<CompletableFuture<?>> consumer) {
-        return new AbstractRecipeProvider.RecipeOutputImpl(output, modId, packOutput, registries, consumer) {
-            // NO-OP
-        };
-    }
-
-    @Override
-    public RecipeOutput getThrowingRecipeOutput() {
-        return new RecipeOutput() {
-            @Override
-            public void accept(ResourceKey<Recipe<?>> resourceKey, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public Advancement.Builder advancement() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void includeRootAdvancement() {
-                throw new UnsupportedOperationException();
-            }
-        };
+    public RecipeOutput getIdBoundRecipeOutput(String modId, BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        return new IdBoundRecipeOutput(modId, recipeOutput, advancementOutput);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.neoforge.impl.data;
 
-import fuzs.puzzleslib.common.api.data.v3.loot.NamedLootContext;
+import fuzs.puzzleslib.common.impl.data.NamedLootContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;

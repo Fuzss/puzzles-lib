@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.data.v3.loot;
+package fuzs.puzzleslib.common.impl.data;
 
 import net.minecraft.data.loot.LootTableSubProvider;
 

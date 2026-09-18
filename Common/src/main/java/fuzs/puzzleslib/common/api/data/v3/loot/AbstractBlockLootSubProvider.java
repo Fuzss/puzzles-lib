@@ -3,6 +3,7 @@ package fuzs.puzzleslib.common.api.data.v3.loot;
 import com.google.common.collect.ImmutableMap;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetFamily;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
+import fuzs.puzzleslib.common.impl.data.NamedLootContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;

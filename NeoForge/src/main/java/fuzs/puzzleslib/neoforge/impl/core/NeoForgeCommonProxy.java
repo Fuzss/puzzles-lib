@@ -2,7 +2,6 @@ package fuzs.puzzleslib.neoforge.impl.core;
 
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
-import fuzs.puzzleslib.common.api.data.v2.AbstractRecipeProvider;
 import fuzs.puzzleslib.common.api.data.v2.recipes.TransformingRecipeOutput;
 import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagAppender;
 import fuzs.puzzleslib.common.api.init.v3.registry.RegistryFactory;
@@ -11,6 +10,7 @@ import fuzs.puzzleslib.common.api.item.v2.crafting.CombinedIngredients;
 import fuzs.puzzleslib.common.impl.attachment.DataAttachmentRegistryImpl;
 import fuzs.puzzleslib.common.impl.core.ModContext;
 import fuzs.puzzleslib.common.impl.core.context.ModConstructorImpl;
+import fuzs.puzzleslib.common.impl.data.IdBoundRecipeOutput;
 import fuzs.puzzleslib.neoforge.api.event.v1.core.NeoForgeEventInvokerRegistry;
 import fuzs.puzzleslib.neoforge.impl.attachment.NeoForgeDataAttachmentRegistryImpl;
 import fuzs.puzzleslib.neoforge.impl.core.context.PayloadTypesContextNeoForgeImpl;
@@ -28,10 +28,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -82,7 +80,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -116,11 +113,7 @@ public class NeoForgeCommonProxy implements NeoForgeProxy {
 
     @Override
     public Pack.Metadata createPackInfo(Component description, PackCompatibility packCompatibility, FeatureFlagSet featureFlagSet, boolean isHidden) {
-        return new Pack.Metadata(description,
-                packCompatibility,
-                featureFlagSet,
-                Collections.emptyList(),
-                isHidden);
+        return new Pack.Metadata(description, packCompatibility, featureFlagSet, Collections.emptyList(), isHidden);
     }
 
     @Override
@@ -275,31 +268,11 @@ public class NeoForgeCommonProxy implements NeoForgeProxy {
     }
 
     @Override
-    public RecipeOutput getRecipeProviderOutput(CachedOutput output, String modId, PackOutput packOutput, HolderLookup.Provider registries, Consumer<CompletableFuture<?>> consumer) {
-        return new AbstractRecipeProvider.RecipeOutputImpl(output, modId, packOutput, registries, consumer) {
+    public RecipeOutput getIdBoundRecipeOutput(String modId, BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        return new IdBoundRecipeOutput(modId, recipeOutput, advancementOutput) {
             @Override
             public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
                 this.accept(key, recipe, advancement);
-            }
-        };
-    }
-
-    @Override
-    public RecipeOutput getThrowingRecipeOutput() {
-        return new RecipeOutput() {
-            @Override
-            public void accept(ResourceKey<Recipe<?>> resourceKey, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... conditions) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public Advancement.Builder advancement() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void includeRootAdvancement() {
-                throw new UnsupportedOperationException();
             }
         };
     }
