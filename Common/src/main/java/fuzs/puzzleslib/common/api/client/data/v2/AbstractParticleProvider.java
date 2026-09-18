@@ -25,10 +25,10 @@ public abstract class AbstractParticleProvider implements DataProvider {
 
     private final Map<Identifier, ParticleDescription> values = new LinkedHashMap<>();
     private final PackOutput.PathProvider pathProvider;
-    @Nullable private final ResourceManager clientResourceManager;
+    private final @Nullable ResourceManager clientResourceManager;
 
     public AbstractParticleProvider(DataProviderContext context) {
-        this(context.getPackOutput(), context.getClientResourceManager());
+        this(context.getPackOutput(), context.getClientResources());
     }
 
     public AbstractParticleProvider(PackOutput packOutput, @Nullable ResourceManager clientResourceManager) {
@@ -97,14 +97,11 @@ public abstract class AbstractParticleProvider implements DataProvider {
 
     protected void validate(Identifier id, ParticleDescription particleDescription, ResourceManager resourceManager) {
         Objects.requireNonNull(resourceManager, "resource manager is null");
-        List<String> missingTextures = particleDescription.getTextures()
-                .stream()
-                .filter((Identifier identifier) -> {
-                    return resourceManager.getResource(identifier.withPath((String string) -> "textures/particle/"
-                            + string + ".png")).isEmpty();
-                })
-                .map(Identifier::toString)
-                .toList();
+        List<String> missingTextures = particleDescription.getTextures().stream().filter((Identifier identifier) -> {
+            return resourceManager.getResource(identifier.withPath((String string) -> {
+                return "textures/particle/" + string + ".png";
+            })).isEmpty();
+        }).map(Identifier::toString).toList();
         if (!missingTextures.isEmpty()) {
             throw new IllegalArgumentException(
                     "Couldn't define particle description %s as it is missing following texture(s): %s".formatted(id,
