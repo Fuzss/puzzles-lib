@@ -3,8 +3,6 @@ package fuzs.puzzleslib.fabric.api.client.event.v1;
 import fuzs.puzzleslib.common.api.client.event.v1.renderer.*;
 import fuzs.puzzleslib.fabric.api.event.v1.core.FabricEventFactory;
 import net.fabricmc.fabric.api.event.Event;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
@@ -56,14 +54,6 @@ public final class FabricRendererEvents {
      * Called before fog is rendered, allows for controlling fog start and end distance.
      */
     public static final Event<FogEvents.Setup> SETUP_FOG = FabricEventFactory.create(FogEvents.Setup.class);
-    /**
-     * Fires before the game and level are rendered in {@link GameRenderer#render(DeltaTracker, boolean)}.
-     */
-    public static final Event<GameRenderEvents.Before> BEFORE_GAME_RENDER = FabricEventFactory.create(GameRenderEvents.Before.class);
-    /**
-     * Fires after the game and level are rendered in {@link GameRenderer#render(DeltaTracker, boolean)}.
-     */
-    public static final Event<GameRenderEvents.After> AFTER_GAME_RENDER = FabricEventFactory.create(GameRenderEvents.After.class);
     /**
      * Runs after field of view is calculated, based on the game setting, but before in-game effects such as nausea are
      * applied.

@@ -3,19 +3,15 @@ package fuzs.puzzleslib.fabric.mixin.client;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
 import fuzs.puzzleslib.fabric.api.client.event.v1.FabricClientLevelEvents;
 import fuzs.puzzleslib.fabric.api.client.event.v1.FabricClientPlayerEvents;
-import fuzs.puzzleslib.fabric.api.client.event.v1.FabricRendererEvents;
 import fuzs.puzzleslib.fabric.api.event.v1.FabricLifecycleEvents;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.Connection;
 import net.minecraft.world.phys.HitResult;
 import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,12 +22,6 @@ import java.util.Objects;
 
 @Mixin(Minecraft.class)
 abstract class MinecraftFabricMixin {
-    @Shadow
-    @Final
-    public GameRenderer gameRenderer;
-    @Shadow
-    @Final
-    private DeltaTracker.Timer deltaTracker;
     @Shadow
     @Nullable
     public ClientLevel level;
@@ -54,23 +44,6 @@ abstract class MinecraftFabricMixin {
         // run after Fabric Data Generation Api for same behavior as Forge where load complete does not run
         // during data generation (not that we use Fabric's data generation, but ¯\_(ツ)_/¯)
         FabricLifecycleEvents.LOAD_COMPLETE.invoker().onLoadComplete();
-    }
-
-    @Inject(method = "renderFrame",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/client/renderer/GameRenderer;render(Lnet/minecraft/client/DeltaTracker;Z)V"))
-    private void runTick$0(boolean advanceGameTime, CallbackInfo callback) {
-        FabricRendererEvents.BEFORE_GAME_RENDER.invoker()
-                .onBeforeGameRender(Minecraft.class.cast(this), this.gameRenderer, this.deltaTracker);
-    }
-
-    @Inject(method = "renderFrame",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/client/renderer/GameRenderer;render(Lnet/minecraft/client/DeltaTracker;Z)V",
-                     shift = At.Shift.AFTER))
-    private void runTick$1(boolean advanceGameTime, CallbackInfo callback) {
-        FabricRendererEvents.AFTER_GAME_RENDER.invoker()
-                .onAfterGameRender(Minecraft.class.cast(this), this.gameRenderer, this.deltaTracker);
     }
 
     @Inject(method = "setLevel", at = @At("HEAD"))

@@ -679,18 +679,6 @@ public final class NeoForgeClientEventInvokers {
                         }
                     });
                 });
-        INSTANCE.register(GameRenderEvents.Before.class,
-                RenderFrameEvent.Pre.class,
-                (GameRenderEvents.Before callback, RenderFrameEvent.Pre event) -> {
-                    Minecraft minecraft = Minecraft.getInstance();
-                    callback.onBeforeGameRender(minecraft, minecraft.gameRenderer, event.getPartialTick());
-                });
-        INSTANCE.register(GameRenderEvents.After.class,
-                RenderFrameEvent.Post.class,
-                (GameRenderEvents.After callback, RenderFrameEvent.Post event) -> {
-                    Minecraft minecraft = Minecraft.getInstance();
-                    callback.onAfterGameRender(minecraft, minecraft.gameRenderer, event.getPartialTick());
-                });
         INSTANCE.register(AddToastCallback.class,
                 ToastAddEvent.class,
                 (AddToastCallback callback, ToastAddEvent event) -> {
