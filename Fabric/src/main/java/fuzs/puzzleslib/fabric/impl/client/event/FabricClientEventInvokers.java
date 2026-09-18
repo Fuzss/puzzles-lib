@@ -226,13 +226,12 @@ public final class FabricClientEventInvokers {
                     return callback::onAfterBackground;
                 },
                 net.fabricmc.fabric.api.client.screen.v1.ScreenEvents::afterBackground);
-        // TODO invoke proper Fabric event when added
         registerScreenEvent(ScreenEvents.AfterForeground.class,
-                net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AfterBackground.class,
+                net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AfterForeground.class,
                 callback -> {
                     return callback::onAfterForeground;
                 },
-                net.fabricmc.fabric.api.client.screen.v1.ScreenEvents::afterBackground);
+                net.fabricmc.fabric.api.client.screen.v1.ScreenEvents::afterForeground);
         registerScreenEvent(ScreenEvents.AfterExtract.class,
                 net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AfterExtract.class,
                 callback -> {

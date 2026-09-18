@@ -96,7 +96,7 @@ public final class NeoForgeClientEventInvokers {
         INSTANCE.register(ExtractEntityRenderStateCallback.class,
                 RegisterRenderStateModifiersEvent.class,
                 (ExtractEntityRenderStateCallback callback, RegisterRenderStateModifiersEvent event) -> {
-                    event.registerEntityModifier((Class<? extends EntityRenderer<? extends Entity, ? extends EntityRenderState>>) (Class<?>) EntityRenderer.class,
+                    event.registerEntityModifier((Class<? extends EntityRenderer<? extends Entity, ? extends EntityRenderState>>) EntityRenderer.class,
                             (Entity entity, EntityRenderState entityRenderState) -> {
                                 callback.onExtractEntityRenderState(entity,
                                         entityRenderState,
@@ -437,7 +437,7 @@ public final class NeoForgeClientEventInvokers {
                     MutableFloat pitch = MutableFloat.fromEvent(event::setPitch, event::getPitch);
                     MutableFloat yaw = MutableFloat.fromEvent(event::setYaw, event::getYaw);
                     MutableFloat roll = MutableFloat.fromEvent(event::setRoll, event::getRoll);
-                    callback.onComputeCameraAngles(event.getCamera(), (float) event.getPartialTick(), pitch, yaw, roll);
+                    callback.onComputeCameraAngles(event.getCamera(), event.getPartialTick(), pitch, yaw, roll);
                 });
         INSTANCE.register(SubmitLivingEntityEvents.Before.class, RenderLivingEvent.Pre.class, (callback, event) -> {
             EventResult eventResult = callback.onBeforeSubmitLivingEntity(event.getRenderState(),
@@ -634,7 +634,7 @@ public final class NeoForgeClientEventInvokers {
                 ViewportEvent.RenderFog.class,
                 (FogEvents.Setup callback, ViewportEvent.RenderFog event) -> {
                     callback.onSetupFog(event.getCamera(),
-                            (float) event.getPartialTick(),
+                            event.getPartialTick(),
                             event.getEnvironment(),
                             event.getType(),
                             event.getFogData());
@@ -645,7 +645,7 @@ public final class NeoForgeClientEventInvokers {
                     MutableFloat red = MutableFloat.fromEvent(event::setRed, event::getRed);
                     MutableFloat green = MutableFloat.fromEvent(event::setGreen, event::getGreen);
                     MutableFloat blue = MutableFloat.fromEvent(event::setBlue, event::getBlue);
-                    callback.onComputeFogColor(event.getCamera(), (float) event.getPartialTick(), red, green, blue);
+                    callback.onComputeFogColor(event.getCamera(), event.getPartialTick(), red, green, blue);
                 });
         INSTANCE.register(RenderTooltipCallback.class,
                 RenderTooltipEvent.Pre.class,
@@ -704,7 +704,7 @@ public final class NeoForgeClientEventInvokers {
                 ViewportEvent.ComputeFov.class,
                 (ComputeFieldOfViewCallback callback, ViewportEvent.ComputeFov event) -> {
                     MutableFloat fieldOfView = MutableFloat.fromEvent(event::setFOV, event::getFOV);
-                    callback.onComputeFieldOfView(event.getCamera(), (float) event.getPartialTick(), fieldOfView);
+                    callback.onComputeFieldOfView(event.getCamera(), event.getPartialTick(), fieldOfView);
                 });
         INSTANCE.register(ChatMessageReceivedCallback.class,
                 ClientChatReceivedEvent.class,
