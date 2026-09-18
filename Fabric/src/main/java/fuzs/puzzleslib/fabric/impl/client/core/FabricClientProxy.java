@@ -17,6 +17,7 @@ import fuzs.puzzleslib.fabric.impl.core.context.PayloadTypesContextFabricImpl;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
 import net.minecraft.client.KeyMapping;
@@ -28,7 +29,6 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.multiplayer.*;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.Connection;
@@ -123,19 +123,19 @@ public class FabricClientProxy extends FabricCommonProxy implements ClientProxyI
     }
 
     @Override
-    public <T> @Nullable T getRenderProperty(EntityRenderState renderState, ContextKey<T> key) {
-        return renderState.getData(this.getRenderStateDataKey(key));
+    public <T> @Nullable T getRenderStateData(Object state, ContextKey<T> key) {
+        return ((FabricRenderState) state).getData(this.getRenderStateDataKey(key));
     }
 
     @Override
-    public <T> void setRenderProperty(EntityRenderState renderState, ContextKey<T> key, @Nullable T t) {
-        renderState.setData(this.getRenderStateDataKey(key), t);
+    public <T> void setRenderStateData(Object state, ContextKey<T> key, @Nullable T value) {
+        ((FabricRenderState) state).setData(this.getRenderStateDataKey(key), value);
     }
 
     @SuppressWarnings("unchecked")
     private <T> RenderStateDataKey<T> getRenderStateDataKey(ContextKey<T> key) {
         return (RenderStateDataKey<T>) this.entityRenderStateKeys.computeIfAbsent(key,
-                (ContextKey<?> keyX) -> RenderStateDataKey.create(keyX::toString));
+                (ContextKey<?> absentKey) -> RenderStateDataKey.create(absentKey::toString));
     }
 
     @Override

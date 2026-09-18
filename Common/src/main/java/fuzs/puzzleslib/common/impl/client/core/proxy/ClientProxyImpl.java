@@ -13,7 +13,6 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -40,9 +39,9 @@ public interface ClientProxyImpl extends ProxyImpl {
 
     KeyMappingHelper getKeyMappingActivationHelper();
 
-    @Nullable <T> T getRenderProperty(EntityRenderState entityRenderState, ContextKey<T> key);
+    @Nullable <T> T getRenderStateData(Object state, ContextKey<T> key);
 
-    <T> void setRenderProperty(EntityRenderState entityRenderState, ContextKey<T> key, @Nullable T t);
+    <T> void setRenderStateData(Object state, ContextKey<T> key, @Nullable T value);
 
     boolean isKeyActiveAndMatches(KeyMapping keyMapping, KeyEvent keyEvent);
 

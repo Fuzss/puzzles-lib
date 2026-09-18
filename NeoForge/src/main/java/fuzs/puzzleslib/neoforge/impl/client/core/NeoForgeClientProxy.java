@@ -22,7 +22,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextKey;
@@ -31,6 +30,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.extensions.IRenderStateExtension;
 import net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -68,13 +68,13 @@ public class NeoForgeClientProxy extends NeoForgeCommonProxy implements ClientPr
     }
 
     @Override
-    public <T> @Nullable T getRenderProperty(EntityRenderState entityRenderState, ContextKey<T> key) {
-        return entityRenderState.getRenderData(key);
+    public <T> @Nullable T getRenderStateData(Object state, ContextKey<T> key) {
+        return ((IRenderStateExtension) state).getRenderData(key);
     }
 
     @Override
-    public <T> void setRenderProperty(EntityRenderState entityRenderState, ContextKey<T> key, @Nullable T t) {
-        entityRenderState.setRenderData(key, t);
+    public <T> void setRenderStateData(Object state, ContextKey<T> key, @Nullable T value) {
+        ((IRenderStateExtension) state).setRenderData(key, value);
     }
 
     @Override
