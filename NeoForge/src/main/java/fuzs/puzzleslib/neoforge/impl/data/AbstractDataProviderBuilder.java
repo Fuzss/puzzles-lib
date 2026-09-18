@@ -187,7 +187,11 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
 
     @Override
     public DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry entry) {
-        this.lootTableSubProviders.add(Objects.requireNonNull(entry, "loot table sub-provider entry is null"));
+        Objects.requireNonNull(entry, "loot table sub-provider entry is null");
+        LootTableSubProvider.Factory factory = entry.bootstrap();
+        this.lootTableSubProviders.add(new LootTableProvider.SubProviderEntry((LootTableSubProvider.Context context) -> {
+            return factory.create(new NamedLootContextImpl(this.modId, context));
+        }, entry.paramSet()));
         return this;
     }
 
@@ -252,7 +256,6 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         // Accumulated loot table sub-providers are materialized into a single loot table provider right before the
         // reloadable layer is built, so they share one random sequence collision map.
         if (!this.lootTableSubProviders.isEmpty()) {
-            // TODO required tables are currently empty; derive the mod's loot tables once the provider bases are done
             this.addReloadable(Registries.LOOT_TABLE,
                     new LootTableProvider(Set.of(), List.copyOf(this.lootTableSubProviders)));
         }
