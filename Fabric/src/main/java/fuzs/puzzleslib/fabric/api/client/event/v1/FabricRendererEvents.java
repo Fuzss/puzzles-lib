@@ -41,11 +41,6 @@ public final class FabricRendererEvents {
     public static final Event<ComputeCameraAnglesCallback> COMPUTE_CAMERA_ANGLES = FabricEventFactory.create(
             ComputeCameraAnglesCallback.class);
     /**
-     * Called before a block overlay is rendered on the screen.
-     */
-    public static final Event<RenderBlockOverlayCallback> RENDER_BLOCK_OVERLAY = FabricEventFactory.createResult(
-            RenderBlockOverlayCallback.class);
-    /**
      * Called after the fog color is calculated from the current block overlay or biome. Allows for modifying the
      * color.
      */

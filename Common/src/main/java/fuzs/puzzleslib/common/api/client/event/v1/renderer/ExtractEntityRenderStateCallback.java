@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.common.api.client.event.v1.renderer;
 
-import fuzs.puzzleslib.common.api.client.renderer.v1.RenderStateExtraData;
+import fuzs.puzzleslib.common.api.client.renderer.v2.RenderStateExtraData;
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;

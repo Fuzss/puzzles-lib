@@ -483,7 +483,6 @@ public final class FabricClientEventInvokers {
         INSTANCE.register(ClientLevelEvents.Load.class, FabricClientLevelEvents.LOAD_LEVEL);
         INSTANCE.register(ClientLevelEvents.Unload.class, FabricClientLevelEvents.UNLOAD_LEVEL);
         INSTANCE.register(MovementInputUpdateCallback.class, FabricClientPlayerEvents.MOVEMENT_INPUT_UPDATE);
-        INSTANCE.register(RenderBlockOverlayCallback.class, FabricRendererEvents.RENDER_BLOCK_OVERLAY);
         INSTANCE.register(FogEvents.Setup.class, FabricRendererEvents.SETUP_FOG);
         INSTANCE.register(FogEvents.Color.class, FabricRendererEvents.FOG_COLOR);
         INSTANCE.register(RenderTooltipCallback.class, FabricGuiEvents.RENDER_TOOLTIP);

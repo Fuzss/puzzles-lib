@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.client.renderer.v1;
+package fuzs.puzzleslib.common.api.client.renderer.v2;
 
 import com.google.common.base.Preconditions;
 import fuzs.puzzleslib.common.impl.client.core.proxy.ClientProxyImpl;

@@ -76,7 +76,6 @@ multiloader {
             "MinecraftFabricMixin",
             "MouseHandlerFabricMixin",
             "OptionsFabricMixin",
-            "ScreenEffectRendererFabricMixin",
             "SkullBlockRendererFabricMixin",
             "ToastComponentFabricMixin"
         )
