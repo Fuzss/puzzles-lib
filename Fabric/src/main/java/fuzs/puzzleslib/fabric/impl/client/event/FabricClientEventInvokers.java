@@ -19,7 +19,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegist
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
@@ -487,7 +487,7 @@ public final class FabricClientEventInvokers {
         INSTANCE.register(FogEvents.Color.class, FabricRendererEvents.FOG_COLOR);
         INSTANCE.register(RenderTooltipCallback.class, FabricGuiEvents.RENDER_TOOLTIP);
         INSTANCE.register(ExtractBlockOutlineCallback.class,
-                LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION,
+                LevelExtractionEvents.AFTER_BLOCK_OUTLINE_EXTRACTION,
                 (ExtractBlockOutlineCallback callback) -> {
                     return (LevelExtractionContext context, @Nullable HitResult hitResult) -> {
                         if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) {
@@ -526,7 +526,7 @@ public final class FabricClientEventInvokers {
         INSTANCE.register(GatherEffectScreenTooltipCallback.class, FabricGuiEvents.GATHER_EFFECT_SCREEN_TOOLTIP);
         INSTANCE.register(ExtractEntityRenderStateCallback.class, FabricRendererEvents.EXTRACT_ENTITY_RENDER_STATE);
         INSTANCE.register(ExtractLevelRenderStateCallback.class,
-                LevelRenderEvents.END_EXTRACTION,
+                LevelExtractionEvents.END_EXTRACTION,
                 (ExtractLevelRenderStateCallback callback) -> {
                     return (LevelExtractionContext context) -> {
                         callback.onExtractLevelRenderState(Minecraft.getInstance().levelExtractor,

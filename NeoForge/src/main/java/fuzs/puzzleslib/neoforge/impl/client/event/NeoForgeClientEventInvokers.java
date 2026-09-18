@@ -618,18 +618,6 @@ public final class NeoForgeClientEventInvokers {
                 (MovementInputUpdateCallback callback, MovementInputUpdateEvent event) -> {
                     callback.onMovementInputUpdate((LocalPlayer) event.getEntity(), event.getInput());
                 });
-        INSTANCE.register(RenderBlockOverlayCallback.class,
-                RenderBlockScreenEffectEvent.class,
-                (RenderBlockOverlayCallback callback, RenderBlockScreenEffectEvent event) -> {
-                    EventResult eventResult = callback.onRenderBlockOverlay((LocalPlayer) event.getPlayer(),
-                            event.getPoseStack(),
-                            event.getSubmitNodeCollector(),
-                            event.getBlockState(),
-                            event.getSprites());
-                    if (eventResult.isInterrupt()) {
-                        event.setCanceled(true);
-                    }
-                });
         INSTANCE.register(FogEvents.Setup.class,
                 ViewportEvent.RenderFog.class,
                 (FogEvents.Setup callback, ViewportEvent.RenderFog event) -> {
