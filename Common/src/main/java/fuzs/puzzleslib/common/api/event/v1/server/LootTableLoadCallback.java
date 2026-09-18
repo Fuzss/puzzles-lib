@@ -2,7 +2,7 @@ package fuzs.puzzleslib.common.api.event.v1.server;
 
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -21,19 +21,19 @@ public interface LootTableLoadCallback {
      * @param lootTable  the loot table builder instance
      * @param registries the registry access
      */
-    void onLootTableLoad(Identifier identifier, LootTable.Builder lootTable, HolderLookup.Provider registries);
+    void onLootTableLoad(Identifier identifier, LootTable.Builder lootTable, HolderGetter.Provider registries);
 
     /**
      * Allows for modifying each existing loot pool in a loot table.
      * <p>
      * Can only be used inside {@link LootTableLoadCallback}.
      *
-     * @param lootTable        the loot table builder instance
-     * @param lootPoolConsumer the consumer to apply to each loot pool inside
+     * @param table        the loot table builder instance
+     * @param poolConsumer the consumer to apply to each loot pool inside
      */
-    static void forEachPool(LootTable.Builder lootTable, Consumer<? super LootPool.Builder> lootPoolConsumer) {
-        Objects.requireNonNull(lootTable, "loot table is null");
-        Objects.requireNonNull(lootPoolConsumer, "loot pool consumer is null");
-        ProxyImpl.get().forEachPool(lootTable, lootPoolConsumer);
+    static void forEachPool(LootTable.Builder table, Consumer<? super LootPool.Builder> poolConsumer) {
+        Objects.requireNonNull(table, "loot table is null");
+        Objects.requireNonNull(poolConsumer, "loot pool consumer is null");
+        ProxyImpl.get().forEachPool(table, poolConsumer);
     }
 }

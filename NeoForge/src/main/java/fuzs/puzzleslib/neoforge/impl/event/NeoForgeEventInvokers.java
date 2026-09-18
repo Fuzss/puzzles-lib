@@ -342,7 +342,7 @@ public final class NeoForgeEventInvokers {
                 LootTableLoadEvent.class,
                 (LootTableLoadCallback callback, LootTableLoadEvent event) -> {
                     callback.onLootTableLoad(event.getName(),
-                            new ForwardingLootTableBuilder(event.getTable()),
+                            new LootTableBackedBuilder(event.getTable()),
                             event.getRegistries());
                 });
         INSTANCE.register(ItemEntityEvents.Touch.class,

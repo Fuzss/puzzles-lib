@@ -15,8 +15,8 @@ import fuzs.puzzleslib.neoforge.api.event.v1.core.NeoForgeEventInvokerRegistry;
 import fuzs.puzzleslib.neoforge.impl.attachment.NeoForgeDataAttachmentRegistryImpl;
 import fuzs.puzzleslib.neoforge.impl.core.context.PayloadTypesContextNeoForgeImpl;
 import fuzs.puzzleslib.neoforge.impl.data.NeoForgeTagAppender;
-import fuzs.puzzleslib.neoforge.impl.event.ForwardingLootPoolBuilder;
-import fuzs.puzzleslib.neoforge.impl.event.ForwardingLootTableBuilder;
+import fuzs.puzzleslib.neoforge.impl.event.LootPoolBackedBuilder;
+import fuzs.puzzleslib.neoforge.impl.event.LootTableBackedBuilder;
 import fuzs.puzzleslib.neoforge.impl.event.NeoForgeEventInvokerRegistryImpl;
 import fuzs.puzzleslib.neoforge.impl.event.NeoForgeEventInvokers;
 import fuzs.puzzleslib.neoforge.impl.init.MenuTypeWithData;
@@ -152,9 +152,9 @@ public class NeoForgeCommonProxy implements NeoForgeProxy {
 
     @Override
     public void forEachPool(LootTable.Builder lootTable, Consumer<? super LootPool.Builder> lootPoolConsumer) {
-        if (lootTable instanceof ForwardingLootTableBuilder) {
+        if (lootTable instanceof LootTableBackedBuilder) {
             for (LootPool lootPool : lootTable.build().pools) {
-                lootPoolConsumer.accept(new ForwardingLootPoolBuilder(lootPool));
+                lootPoolConsumer.accept(new LootPoolBackedBuilder(lootPool));
             }
         } else {
             throw new UnsupportedOperationException("Must be ForwardingLootTableBuilder");
