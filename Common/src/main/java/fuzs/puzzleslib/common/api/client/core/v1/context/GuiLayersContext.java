@@ -106,29 +106,29 @@ public interface GuiLayersContext {
     /**
      * Register a new gui layer rendered after all existing layers.
      *
-     * @param id       the gui layer id
+     * @param layerId  the gui layer id
      * @param guiLayer the gui layer
      */
-    void registerGuiLayer(Identifier id, Layer guiLayer);
+    void registerGuiLayer(Identifier layerId, Layer guiLayer);
 
     /**
      * Register a new gui layer rendered before or after an existing vanilla gui layer.
      * <p>
      * The ordering depends on the order in which both id arguments are passed.
      *
-     * @param id              the gui layer id, either for the new layer or for the existing vanilla layer
-     * @param otherIdentifier the other gui layer id, either for the new layer or for the existing vanilla layer
-     * @param guiLayer        the gui layer
+     * @param layerId      the gui layer id, either for the new layer or for the existing vanilla layer
+     * @param otherLayerId the other gui layer id, either for the new layer or for the existing vanilla layer
+     * @param guiLayer     the gui layer
      */
-    void registerGuiLayer(Identifier id, Identifier otherIdentifier, Layer guiLayer);
+    void registerGuiLayer(Identifier layerId, Identifier otherLayerId, Layer guiLayer);
 
     /**
      * Replace an existing vanilla gui layer. Replacing custom layers is not supported.
      *
-     * @param id              the vanilla gui layer id
+     * @param layerId         the vanilla gui layer id
      * @param guiLayerFactory the gui layer factory, receiving the existing layer
      */
-    void replaceGuiLayer(Identifier id, UnaryOperator<Layer> guiLayerFactory);
+    void replaceGuiLayer(Identifier layerId, UnaryOperator<Layer> guiLayerFactory);
 
     /**
      * Register an additional height provider for a status bar layer rendered on the left side above the hotbar.
@@ -138,10 +138,10 @@ public interface GuiLayersContext {
      * To retrieve the render height for a status bar during rendering of the layer use
      * {@link ScreenHelper#getLeftStatusBarHeight(Identifier)}.
      *
-     * @param id             the gui layer id
+     * @param layerId        the gui layer id
      * @param heightProvider the status bar height provider
      */
-    void addLeftStatusBarHeightProvider(Identifier id, ToIntFunction<Player> heightProvider);
+    void addLeftStatusBarHeightProvider(Identifier layerId, ToIntFunction<Player> heightProvider);
 
     /**
      * Register an additional height provider for a status bar layer rendered on the right side above the hotbar.
@@ -151,10 +151,10 @@ public interface GuiLayersContext {
      * To retrieve the render height for a status bar during rendering of the layer use
      * {@link ScreenHelper#getRightStatusBarHeight(Identifier)}.
      *
-     * @param id             the gui layer id
+     * @param layerId        the gui layer id
      * @param heightProvider the status bar height provider
      */
-    void addRightStatusBarHeightProvider(Identifier id, ToIntFunction<Player> heightProvider);
+    void addRightStatusBarHeightProvider(Identifier layerId, ToIntFunction<Player> heightProvider);
 
     @FunctionalInterface
     interface Layer {

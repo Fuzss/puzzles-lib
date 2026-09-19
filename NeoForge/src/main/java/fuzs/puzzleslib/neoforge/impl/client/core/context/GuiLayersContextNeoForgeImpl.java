@@ -47,36 +47,36 @@ public record GuiLayersContextNeoForgeImpl(RegisterGuiLayersEvent event) impleme
             .build();
 
     @Override
-    public void registerGuiLayer(Identifier id, GuiLayersContext.Layer guiLayer) {
-        Objects.requireNonNull(id, "identifier is null");
+    public void registerGuiLayer(Identifier layerId, GuiLayersContext.Layer guiLayer) {
+        Objects.requireNonNull(layerId, "layer id is null");
         Objects.requireNonNull(guiLayer, "gui layer is null");
-        this.event.registerAboveAll(id, guiLayer::extractRenderState);
+        this.event.registerAboveAll(layerId, guiLayer::extractRenderState);
     }
 
     @Override
-    public void registerGuiLayer(Identifier id, Identifier otherResourceLocation, GuiLayersContext.Layer guiLayer) {
-        Objects.requireNonNull(id, "identifier is null");
-        Objects.requireNonNull(otherResourceLocation, "other identifier is null");
+    public void registerGuiLayer(Identifier layerId, Identifier otherLayerId, GuiLayersContext.Layer guiLayer) {
+        Objects.requireNonNull(layerId, "layer id is null");
+        Objects.requireNonNull(otherLayerId, "other layer id is null");
         Objects.requireNonNull(guiLayer, "gui layer is null");
         // only check for vanilla layers, it simplifies the implementation and is all we need
-        if (VANILLA_GUI_LAYERS.containsKey(id)) {
-            this.event.registerAbove(VANILLA_GUI_LAYERS.get(id), otherResourceLocation, guiLayer::extractRenderState);
-        } else if (VANILLA_GUI_LAYERS.containsKey(otherResourceLocation)) {
-            this.event.registerBelow(VANILLA_GUI_LAYERS.get(otherResourceLocation), id, guiLayer::extractRenderState);
+        if (VANILLA_GUI_LAYERS.containsKey(layerId)) {
+            this.event.registerAbove(VANILLA_GUI_LAYERS.get(layerId), otherLayerId, guiLayer::extractRenderState);
+        } else if (VANILLA_GUI_LAYERS.containsKey(otherLayerId)) {
+            this.event.registerBelow(VANILLA_GUI_LAYERS.get(otherLayerId), layerId, guiLayer::extractRenderState);
         } else {
-            throw new RuntimeException("Unknown gui layers: " + id + ", " + otherResourceLocation);
+            throw new RuntimeException("Unknown gui layers: " + layerId + ", " + otherLayerId);
         }
     }
 
     @Override
-    public void replaceGuiLayer(Identifier id, UnaryOperator<GuiLayersContext.Layer> guiLayerFactory) {
-        Objects.requireNonNull(id, "identifier is null");
+    public void replaceGuiLayer(Identifier layerId, UnaryOperator<GuiLayersContext.Layer> guiLayerFactory) {
+        Objects.requireNonNull(layerId, "layer id is null");
         Objects.requireNonNull(guiLayerFactory, "gui layer factory is null");
         // only check for vanilla layers, it simplifies the implementation and is all we need
-        if (VANILLA_GUI_LAYERS.containsKey(id)) {
-            id = VANILLA_GUI_LAYERS.get(id);
-            boolean isSleepOverlay = id.equals(VanillaGuiLayers.SLEEP_OVERLAY);
-            this.event.wrapLayer(id, (GuiLayer guiLayer) -> {
+        if (VANILLA_GUI_LAYERS.containsKey(layerId)) {
+            layerId = VANILLA_GUI_LAYERS.get(layerId);
+            boolean isSleepOverlay = layerId.equals(VanillaGuiLayers.SLEEP_OVERLAY);
+            this.event.wrapLayer(layerId, (GuiLayer guiLayer) -> {
                 return (GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) -> {
                     // render condition is not inherited from the parent, add it back manually,
                     // since all are known for vanilla layers
@@ -86,26 +86,26 @@ public record GuiLayersContextNeoForgeImpl(RegisterGuiLayersEvent event) impleme
                 };
             });
         } else {
-            throw new RuntimeException("Unknown gui layer: " + id);
+            throw new RuntimeException("Unknown gui layer: " + layerId);
         }
     }
 
     @Override
-    public void addLeftStatusBarHeightProvider(Identifier id, ToIntFunction<Player> heightProvider) {
-        this.addStatusBarHeight(id, heightProvider, (Hud hud, Integer height) -> {
+    public void addLeftStatusBarHeightProvider(Identifier layerId, ToIntFunction<Player> heightProvider) {
+        this.addStatusBarHeight(layerId, heightProvider, (Hud hud, Integer height) -> {
             hud.leftHeight += height;
         });
     }
 
     @Override
-    public void addRightStatusBarHeightProvider(Identifier id, ToIntFunction<Player> heightProvider) {
-        this.addStatusBarHeight(id, heightProvider, (Hud hud, Integer height) -> {
+    public void addRightStatusBarHeightProvider(Identifier layerId, ToIntFunction<Player> heightProvider) {
+        this.addStatusBarHeight(layerId, heightProvider, (Hud hud, Integer height) -> {
             hud.rightHeight += height;
         });
     }
 
     private void addStatusBarHeight(Identifier identifier, ToIntFunction<Player> heightProvider, BiConsumer<Hud, Integer> heightConsumer) {
-        Objects.requireNonNull(identifier, "identifier is null");
+        Objects.requireNonNull(identifier, "layer id is null");
         Objects.requireNonNull(heightProvider, "height provider is null");
         NeoForge.EVENT_BUS.addListener((final RenderGuiLayerEvent.Post event) -> {
             if (event.getName().equals(identifier)) {

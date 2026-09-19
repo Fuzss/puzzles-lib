@@ -55,9 +55,9 @@ public interface ClientProxyImpl extends ProxyImpl {
 
     boolean isEffectVisibleInGui(MobEffectInstance mobEffect);
 
-    int getLeftStatusBarHeight(Identifier identifier);
+    int getLeftStatusBarHeight(Identifier layerId);
 
-    int getRightStatusBarHeight(Identifier identifier);
+    int getRightStatusBarHeight(Identifier layerId);
 
     @Override
     default BlockableEventLoop<? super TickTask> getBlockableEventLoop(Level level) {

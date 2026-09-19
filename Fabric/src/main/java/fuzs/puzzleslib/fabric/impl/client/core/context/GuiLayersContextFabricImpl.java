@@ -40,62 +40,63 @@ public final class GuiLayersContextFabricImpl implements GuiLayersContext {
             .put(SUBTITLES, VanillaHudElements.SUBTITLES)
             .build();
 
-    public static Identifier getVanillaGuiLayer(Identifier identifier) {
-        return VANILLA_GUI_LAYERS.getOrDefault(identifier, identifier);
+    public static Identifier getVanillaGuiLayer(Identifier layerId) {
+        return VANILLA_GUI_LAYERS.getOrDefault(layerId, layerId);
     }
 
     @Override
-    public void registerGuiLayer(Identifier id, GuiLayersContext.Layer guiLayer) {
-        Objects.requireNonNull(id, "identifier is null");
+    public void registerGuiLayer(Identifier layerId, GuiLayersContext.Layer guiLayer) {
+        Objects.requireNonNull(layerId, "layer id is null");
         Objects.requireNonNull(guiLayer, "gui layer is null");
-        HudElementRegistry.addLast(id, guiLayer::extractRenderState);
+        HudElementRegistry.addLast(layerId, guiLayer::extractRenderState);
     }
 
     @Override
-    public void registerGuiLayer(Identifier id, Identifier otherIdentifier, GuiLayersContext.Layer guiLayer) {
-        Objects.requireNonNull(id, "identifier is null");
-        Objects.requireNonNull(otherIdentifier, "other identifier is null");
+    public void registerGuiLayer(Identifier layerId, Identifier otherLayerId, GuiLayersContext.Layer guiLayer) {
+        Objects.requireNonNull(layerId, "layer id is null");
+        Objects.requireNonNull(otherLayerId, "other layer id is null");
         Objects.requireNonNull(guiLayer, "gui layer is null");
         // only check for vanilla layers, it simplifies the implementation and is all we need
-        if (VANILLA_GUI_LAYERS.containsKey(id)) {
-            HudElementRegistry.attachElementAfter(VANILLA_GUI_LAYERS.get(id),
-                    otherIdentifier,
+        if (VANILLA_GUI_LAYERS.containsKey(layerId)) {
+            HudElementRegistry.attachElementAfter(VANILLA_GUI_LAYERS.get(layerId),
+                    otherLayerId,
                     guiLayer::extractRenderState);
-        } else if (VANILLA_GUI_LAYERS.containsKey(otherIdentifier)) {
-            HudElementRegistry.attachElementBefore(VANILLA_GUI_LAYERS.get(otherIdentifier), id,
+        } else if (VANILLA_GUI_LAYERS.containsKey(otherLayerId)) {
+            HudElementRegistry.attachElementBefore(VANILLA_GUI_LAYERS.get(otherLayerId),
+                    layerId,
                     guiLayer::extractRenderState);
         } else {
-            throw new RuntimeException("Unknown gui layers: " + id + ", " + otherIdentifier);
+            throw new RuntimeException("Unknown gui layers: " + layerId + ", " + otherLayerId);
         }
     }
 
     @Override
-    public void replaceGuiLayer(Identifier id, UnaryOperator<GuiLayersContext.Layer> guiLayerFactory) {
-        Objects.requireNonNull(id, "identifier is null");
+    public void replaceGuiLayer(Identifier layerId, UnaryOperator<GuiLayersContext.Layer> guiLayerFactory) {
+        Objects.requireNonNull(layerId, "layer id is null");
         Objects.requireNonNull(guiLayerFactory, "gui layer factory is null");
         // only check for vanilla layers, it simplifies the implementation and is all we need
-        if (VANILLA_GUI_LAYERS.containsKey(id)) {
-            HudElementRegistry.replaceElement(VANILLA_GUI_LAYERS.get(id), (HudElement hudElement) -> {
+        if (VANILLA_GUI_LAYERS.containsKey(layerId)) {
+            HudElementRegistry.replaceElement(VANILLA_GUI_LAYERS.get(layerId), (HudElement hudElement) -> {
                 return guiLayerFactory.apply(hudElement::extractRenderState)::extractRenderState;
             });
         } else {
-            throw new RuntimeException("Unknown gui layer: " + id);
+            throw new RuntimeException("Unknown gui layer: " + layerId);
         }
     }
 
     @Override
-    public void addLeftStatusBarHeightProvider(Identifier id, ToIntFunction<Player> heightProvider) {
-        Objects.requireNonNull(id, "identifier is null");
+    public void addLeftStatusBarHeightProvider(Identifier layerId, ToIntFunction<Player> heightProvider) {
+        Objects.requireNonNull(layerId, "layer id is null");
         Objects.requireNonNull(heightProvider, "height provider is null");
-        id = getVanillaGuiLayer(id);
-        HudStatusBarHeightRegistry.addLeft(id, heightProvider::applyAsInt);
+        layerId = getVanillaGuiLayer(layerId);
+        HudStatusBarHeightRegistry.addLeft(layerId, heightProvider::applyAsInt);
     }
 
     @Override
-    public void addRightStatusBarHeightProvider(Identifier id, ToIntFunction<Player> heightProvider) {
-        Objects.requireNonNull(id, "identifier is null");
+    public void addRightStatusBarHeightProvider(Identifier layerId, ToIntFunction<Player> heightProvider) {
+        Objects.requireNonNull(layerId, "layer id is null");
         Objects.requireNonNull(heightProvider, "height provider is null");
-        id = getVanillaGuiLayer(id);
-        HudStatusBarHeightRegistry.addRight(id, heightProvider::applyAsInt);
+        layerId = getVanillaGuiLayer(layerId);
+        HudStatusBarHeightRegistry.addRight(layerId, heightProvider::applyAsInt);
     }
 }
