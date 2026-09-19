@@ -5,7 +5,6 @@ import fuzs.puzzleslib.common.impl.PuzzlesLib;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.gamerules.GameRules;
 import org.objectweb.asm.Type;
-import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -20,9 +19,9 @@ public class PuzzlesLibDevelopment extends PuzzlesLib implements ModConstructor 
 
     @Override
     public void onCommonSetup() {
+//        MixinEnvironment.getCurrentEnvironment().audit();
         initializeGameRules();
         initializeCommands();
-        MixinEnvironment.getCurrentEnvironment().audit();
     }
 
     private static void initializeCommands() {
