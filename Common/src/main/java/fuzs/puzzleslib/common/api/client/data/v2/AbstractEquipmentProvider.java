@@ -15,12 +15,24 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
+/**
+ * A base implementation of {@link EquipmentAssetProvider} for generating equipment asset definitions for the mod.
+ * <p>
+ * Subclasses implement {@link #addEquipmentAssets(BiConsumer)} and register equipment client info via the provided
+ * consumer, mirroring the vanilla provider. The registered assets are emitted by {@link #run(CachedOutput)}.
+ */
 public abstract class AbstractEquipmentProvider extends EquipmentAssetProvider {
 
+    /**
+     * @param context the data provider context
+     */
     public AbstractEquipmentProvider(DataProviderContext context) {
         this(context.getPackOutput());
     }
 
+    /**
+     * @param packOutput the pack output instance
+     */
     public AbstractEquipmentProvider(PackOutput packOutput) {
         super(packOutput);
     }
@@ -37,9 +49,19 @@ public abstract class AbstractEquipmentProvider extends EquipmentAssetProvider {
         return DataProvider.saveAll(cachedOutput, EquipmentClientInfo.CODEC, this.pathProvider::json, values);
     }
 
+    /**
+     * Registers all equipment assets of this provider via the given consumer, mirroring the vanilla provider.
+     *
+     * @param equipmentAssetConsumer the consumer used for registering equipment client info
+     */
     public abstract void addEquipmentAssets(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> equipmentAssetConsumer);
 
     /**
+     * Creates equipment client info with only humanoid layers for the given texture identifier.
+     *
+     * @param identifier the equipment texture identifier
+     * @return the equipment client info
+     *
      * @see EquipmentAssetProvider#onlyHumanoid(String)
      */
     public static EquipmentClientInfo onlyHumanoid(Identifier identifier) {
@@ -47,6 +69,12 @@ public abstract class AbstractEquipmentProvider extends EquipmentAssetProvider {
     }
 
     /**
+     * Creates equipment client info with humanoid layers and a dyeable horse body layer for the given texture
+     * identifier.
+     *
+     * @param identifier the equipment texture identifier
+     * @return the equipment client info
+     *
      * @see EquipmentAssetProvider#humanoidAndMountArmor(String)
      */
     public static EquipmentClientInfo humanoidAndHorse(Identifier identifier) {
@@ -57,6 +85,13 @@ public abstract class AbstractEquipmentProvider extends EquipmentAssetProvider {
                 .build();
     }
 
+    /**
+     * Creates equipment client info with a single layer of the given type for the given texture identifier.
+     *
+     * @param layerType  the equipment layer type
+     * @param identifier the equipment texture identifier
+     * @return the equipment client info
+     */
     public static EquipmentClientInfo simple(EquipmentClientInfo.LayerType layerType, Identifier identifier) {
         return EquipmentClientInfo.builder().addLayers(layerType, new EquipmentClientInfo.Layer(identifier)).build();
     }
