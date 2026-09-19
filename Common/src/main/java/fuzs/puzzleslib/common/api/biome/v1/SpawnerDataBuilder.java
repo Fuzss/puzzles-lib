@@ -1,14 +1,12 @@
 package fuzs.puzzleslib.common.api.biome.v1;
 
+import fuzs.puzzleslib.common.api.biome.v2.MobSpawnsContext;
 import net.minecraft.util.random.Weighted;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import org.apache.commons.lang3.math.Fraction;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 
@@ -149,29 +147,19 @@ public final class SpawnerDataBuilder {
      * @param entityType the entity type to apply spawner data to
      */
     public void apply(EntityType<?> entityType) {
-        for (MobCategory category : this.context.getMobCategoriesWithSpawns()) {
-            this.getSpawnerDataForType(this.context, category, this.entityType)
-                    .ifPresent((Weighted<MobSpawnSettings.SpawnerData> data) -> {
-                        int weight = this.weightMapper.applyAsInt(data.weight());
-                        int minCount = this.minCountMapper.applyAsInt(data.value());
-                        int maxCount = this.maxCountMapper.applyAsInt(data.value());
-                        this.context.addSpawn(category,
-                                weight,
-                                new MobSpawnSettings.SpawnerData(entityType,
-                                        UniformInt.of(Math.min(minCount, maxCount), maxCount)));
-                    });
-            MobSpawnSettings.MobSpawnCost cost = this.context.getSpawnCost(entityType);
-            if (cost != null) {
-                // Just add this with the same values as the vanilla mob.
-                // The spawn data weight is what matters most.
-                this.context.setSpawnCost(entityType, cost.energyBudget(), cost.charge());
-            }
+        Weighted<MobSpawnSettings.SpawnerData> spawn = this.context.getSpawn(entityType);
+        if (spawn != null) {
+            int weight = this.weightMapper.applyAsInt(spawn.weight());
+            int minCount = this.minCountMapper.applyAsInt(spawn.value());
+            int maxCount = this.maxCountMapper.applyAsInt(spawn.value());
+            this.context.addSpawn(entityType, Math.min(minCount, maxCount), maxCount, weight);
         }
-    }
 
-    private Optional<Weighted<MobSpawnSettings.SpawnerData>> getSpawnerDataForType(MobSpawnsContext context, MobCategory mobCategory, EntityType<?> entityType) {
-        return context.getSpawnerData(mobCategory).stream().filter((Weighted<MobSpawnSettings.SpawnerData> data) -> {
-            return data.value().type() == entityType;
-        }).findAny();
+        MobSpawnSettings.MobSpawnCost cost = this.context.getSpawnCost(entityType);
+        if (cost != null) {
+            // Just add this with the same values as the vanilla mob.
+            // The spawn data weight is what matters most.
+            this.context.addSpawnCost(entityType, cost.energyBudget(), cost.charge());
+        }
     }
 }

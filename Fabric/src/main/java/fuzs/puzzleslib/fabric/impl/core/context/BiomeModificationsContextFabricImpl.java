@@ -2,12 +2,12 @@ package fuzs.puzzleslib.fabric.impl.core.context;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import fuzs.puzzleslib.common.api.biome.v1.*;
+import fuzs.puzzleslib.common.api.biome.v1.BiomeContext;
+import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingPhase;
+import fuzs.puzzleslib.common.api.biome.v1.BiomeSelector;
+import fuzs.puzzleslib.common.api.biome.v2.*;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
-import fuzs.puzzleslib.fabric.impl.biome.ClimateContextFabric;
-import fuzs.puzzleslib.fabric.impl.biome.GenerationContextFabric;
-import fuzs.puzzleslib.fabric.impl.biome.MobSpawnsContextFabric;
-import fuzs.puzzleslib.fabric.impl.biome.EffectsContextFabric;
+import fuzs.puzzleslib.fabric.impl.biome.*;
 import fuzs.puzzleslib.fabric.mixin.accessor.BiomeSelectionContextImplFabricAccessor;
 import net.fabricmc.fabric.api.biome.v1.*;
 import net.minecraft.core.Holder;
@@ -52,13 +52,15 @@ public final class BiomeModificationsContextFabricImpl implements BiomeModificat
     }
 
     private static BiomeContext createModificationContext(BiomeModificationContext context, Holder<Biome> biome) {
-        ClimateContext climate = new ClimateContextFabric(biome.value().climateSettings, context.getWeather());
-        EffectsContext specialEffects = new EffectsContextFabric(biome.value().getSpecialEffects(),
-                context.getEffects());
-        GenerationContext generation = new GenerationContextFabric(biome.value()
-                .getGenerationSettings(), context.getGenerationSettings());
-        MobSpawnsContext mobSpawns = new MobSpawnsContextFabric(biome.value().getAttributes(),
-                context.getMobSpawnSettings());
-        return new BiomeContext(biome, climate, specialEffects, generation, mobSpawns);
+        AttributesContext attributes = new AttributesContextFabricImpl(context.getAttributes(),
+                biome.value().getAttributes());
+        ClimateContext climate = new ClimateContextFabricImpl(context.getWeather(), biome.value().climateSettings);
+        EffectsContext specialEffects = new EffectsContextFabricImpl(context.getEffects(),
+                biome.value().getSpecialEffects());
+        GenerationContext generation = new GenerationContextFabricImpl(context.getGenerationSettings(),
+                biome.value().getGenerationSettings());
+        MobSpawnsContext mobSpawns = new MobSpawnsContextFabricImpl(context.getMobSpawnSettings(),
+                biome.value().getAttributes());
+        return new BiomeContext(biome, attributes, climate, specialEffects, generation, mobSpawns);
     }
 }

@@ -1,14 +1,13 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v1.ClimateContext;
+import fuzs.puzzleslib.common.api.biome.v2.ClimateContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.Objects;
 
-public record ClimateContextFabric(Biome.ClimateSettings settings,
-                                   BiomeModificationContext.WeatherContext context) implements ClimateContext {
-
+public record ClimateContextFabricImpl(BiomeModificationContext.WeatherContext context,
+                                       Biome.ClimateSettings biome) implements ClimateContext {
     @Override
     public void hasPrecipitation(boolean hasPrecipitation) {
         this.context.setPrecipitation(hasPrecipitation);
@@ -16,7 +15,7 @@ public record ClimateContextFabric(Biome.ClimateSettings settings,
 
     @Override
     public boolean hasPrecipitation() {
-        return this.settings.hasPrecipitation();
+        return this.biome.hasPrecipitation();
     }
 
     @Override
@@ -26,7 +25,7 @@ public record ClimateContextFabric(Biome.ClimateSettings settings,
 
     @Override
     public float getTemperature() {
-        return this.settings.temperature();
+        return this.biome.temperature();
     }
 
     @Override
@@ -37,7 +36,7 @@ public record ClimateContextFabric(Biome.ClimateSettings settings,
 
     @Override
     public Biome.TemperatureModifier getTemperatureModifier() {
-        return this.settings.temperatureModifier();
+        return this.biome.temperatureModifier();
     }
 
     @Override
@@ -47,6 +46,6 @@ public record ClimateContextFabric(Biome.ClimateSettings settings,
 
     @Override
     public float getDownfall() {
-        return this.settings.downfall();
+        return this.biome.downfall();
     }
 }

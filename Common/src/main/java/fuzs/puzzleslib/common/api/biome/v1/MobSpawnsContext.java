@@ -24,7 +24,7 @@ public interface MobSpawnsContext {
      * @see MobSpawnSettings#getMobs(MobCategory)
      * @see MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
      */
-    void addSpawn(MobCategory mobCategory, int weight, MobSpawnSettings.SpawnerData spawnerData);
+    void addSpawn(int weight, MobSpawnSettings.SpawnerData spawnerData);
 
     /**
      * Removes any spawns matching the given predicate from this biome, and returns true if any matched.
@@ -119,20 +119,4 @@ public interface MobSpawnsContext {
      *         <code>type</code>
      */
     MobSpawnSettings.@Nullable MobSpawnCost getSpawnCost(EntityType<?> entityType);
-
-    /**
-     * Associated JSON property: <code>creature_spawn_probability</code>.
-     *
-     * @see MobSpawnSettings#getCreatureProbability()
-     * @see MobSpawnSettings.Builder#creatureGenerationProbability(float)
-     */
-    float getCreatureGenerationProbability();
-
-    /**
-     * Associated JSON property: <code>creature_spawn_probability</code>.
-     *
-     * @see MobSpawnSettings#getCreatureProbability()
-     * @see MobSpawnSettings.Builder#creatureGenerationProbability(float)
-     */
-    void setCreatureGenerationProbability(float probability);
 }

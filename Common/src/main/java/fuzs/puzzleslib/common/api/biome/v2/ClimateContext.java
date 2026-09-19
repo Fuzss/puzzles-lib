@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.biome.v1;
+package fuzs.puzzleslib.common.api.biome.v2;
 
 import net.minecraft.world.level.biome.Biome;
 

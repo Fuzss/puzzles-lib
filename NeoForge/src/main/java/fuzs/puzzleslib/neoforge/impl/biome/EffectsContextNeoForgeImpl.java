@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.neoforge.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v1.EffectsContext;
+import fuzs.puzzleslib.common.api.biome.v2.EffectsContext;
 import fuzs.puzzleslib.neoforge.mixin.accessor.BiomeSpecialEffectsBuilderNeoForgeAccessor;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.neoforged.neoforge.common.world.BiomeSpecialEffectsBuilder;
@@ -13,8 +13,7 @@ import java.util.Optional;
  * clearing certain options that are already present. Resetting a value to an empty optional would otherwise not be
  * possible.
  */
-public record EffectsContextNeoForge(BiomeSpecialEffectsBuilder context) implements EffectsContext {
-
+public record EffectsContextNeoForgeImpl(BiomeSpecialEffectsBuilder context) implements EffectsContext {
     @Override
     public void setWaterColor(int waterColor) {
         this.context.waterColor(waterColor);

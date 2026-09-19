@@ -1,15 +1,14 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v1.EffectsContext;
+import fuzs.puzzleslib.common.api.biome.v2.EffectsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public record EffectsContextFabric(BiomeSpecialEffects specialEffects,
-                                   BiomeModificationContext.EffectsContext context) implements EffectsContext {
-
+public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext context,
+                                       BiomeSpecialEffects biome) implements EffectsContext {
     @Override
     public void setWaterColor(int waterColor) {
         this.context.setWaterColor(waterColor);
@@ -17,7 +16,7 @@ public record EffectsContextFabric(BiomeSpecialEffects specialEffects,
 
     @Override
     public int getWaterColor() {
-        return this.specialEffects.waterColor();
+        return this.biome.waterColor();
     }
 
     @Override
@@ -27,7 +26,7 @@ public record EffectsContextFabric(BiomeSpecialEffects specialEffects,
 
     @Override
     public Optional<Integer> getFoliageColorOverride() {
-        return this.specialEffects.foliageColorOverride();
+        return this.biome.foliageColorOverride();
     }
 
     @Override
@@ -37,7 +36,7 @@ public record EffectsContextFabric(BiomeSpecialEffects specialEffects,
 
     @Override
     public Optional<Integer> getDryFoliageColorOverride() {
-        return this.specialEffects.dryFoliageColorOverride();
+        return this.biome.dryFoliageColorOverride();
     }
 
     @Override
@@ -47,7 +46,7 @@ public record EffectsContextFabric(BiomeSpecialEffects specialEffects,
 
     @Override
     public Optional<Integer> getGrassColorOverride() {
-        return this.specialEffects.grassColorOverride();
+        return this.biome.grassColorOverride();
     }
 
     @Override
@@ -58,6 +57,6 @@ public record EffectsContextFabric(BiomeSpecialEffects specialEffects,
 
     @Override
     public BiomeSpecialEffects.GrassColorModifier getGrassColorModifier() {
-        return this.specialEffects.grassColorModifier();
+        return this.biome.grassColorModifier();
     }
 }

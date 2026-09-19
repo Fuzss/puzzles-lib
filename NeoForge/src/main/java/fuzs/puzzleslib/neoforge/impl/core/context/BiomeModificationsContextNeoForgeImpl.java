@@ -8,13 +8,11 @@ import com.mojang.serialization.MapCodec;
 import fuzs.puzzleslib.common.api.biome.v1.BiomeContext;
 import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingPhase;
 import fuzs.puzzleslib.common.api.biome.v1.BiomeSelector;
+import fuzs.puzzleslib.common.api.biome.v2.*;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
-import fuzs.puzzleslib.neoforge.impl.biome.ClimateContextNeoForge;
-import fuzs.puzzleslib.neoforge.impl.biome.GenerationContextNeoForge;
-import fuzs.puzzleslib.neoforge.impl.biome.MobSpawnsContextNeoForge;
-import fuzs.puzzleslib.neoforge.impl.biome.EffectsContextNeoForge;
+import fuzs.puzzleslib.neoforge.impl.biome.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.PackOutput;
@@ -104,7 +102,7 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
                     MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
                     Objects.requireNonNull(minecraftServer, "minecraft server is null");
                     RegistryAccess registryAccess = minecraftServer.registryAccess();
-                    BiomeContext biomeContext = createModificationContext(registryAccess, biome, builder);
+                    BiomeContext biomeContext = createModificationContext(biome, builder);
                     for (Map.Entry<BiomeSelector, Consumer<BiomeContext>> entry : biomeModification) {
                         if (entry.getKey().test(registryAccess, biome)) {
                             entry.getValue().accept(biomeContext);
@@ -114,14 +112,13 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
             }
         }
 
-        private static BiomeContext createModificationContext(RegistryAccess registryAccess, Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-            ClimateContextNeoForge climateSettings = new ClimateContextNeoForge(builder.getClimateSettings());
-            EffectsContextNeoForge specialEffects = new EffectsContextNeoForge(builder.getSpecialEffects());
-            GenerationContextNeoForge generationSettings = new GenerationContextNeoForge(registryAccess,
-                    builder.getGenerationSettings());
-            MobSpawnsContextNeoForge mobSpawnSettings = new MobSpawnsContextNeoForge(builder.getMobSpawnSettings(),
-                    builder.getAttributes());
-            return new BiomeContext(biome, climateSettings, specialEffects, generationSettings, mobSpawnSettings);
+        private static BiomeContext createModificationContext(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+            AttributesContext attributes = new AttributesContextNeoForgeImpl(builder.getAttributes());
+            ClimateContext climate = new ClimateContextNeoForgeImpl(builder.getClimateSettings());
+            EffectsContext effects = new EffectsContextNeoForgeImpl(builder.getSpecialEffects());
+            GenerationContext generation = new GenerationContextNeoForgeImpl(builder.getGenerationSettings());
+            MobSpawnsContext mobSpawns = new MobSpawnsContextNeoForgeImpl(builder.getMobSpawnSettings());
+            return new BiomeContext(biome, attributes, climate, effects, generation, mobSpawns);
         }
 
         @Override
