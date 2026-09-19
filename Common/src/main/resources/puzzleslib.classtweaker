@@ -354,6 +354,11 @@ mutable	field	net/minecraft/core/component/DataComponentMap$Builder	map	Lit/unim
 accessible	method	net/minecraft/core/component/DataComponentMap$Builder	<init>	()V
 accessible	method	net/minecraft/core/registries/PatchedRegistry$LazyHolder    bindValue	(Ljava/lang/Object;)V
 accessible	field	net/minecraft/data/loot/BlockLootSubProvider	map	Ljava/util/Map;
+accessible  field   net/minecraft/data/recipes/BrewingProvider  containerTransformations    Ljava/util/List;
+accessible  field   net/minecraft/data/recipes/BrewingProvider  output  Lnet/minecraft/data/recipes/RecipeOutput;
+accessible  field   net/minecraft/data/recipes/BrewingProvider  potions Ljava/util/Set;
+accessible  class   net/minecraft/data/recipes/BrewingProvider$ContainerTransformation
+accessible  method  net/minecraft/data/recipes/BrewingProvider$ContainerTransformation  <init>  (Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;)V
 accessible	field	net/minecraft/data/recipes/RecipeProvider	items	Lnet/minecraft/core/HolderGetter;
 mutable	field	net/minecraft/data/recipes/RecipeProvider	items	Lnet/minecraft/core/HolderGetter;
 accessible	field	net/minecraft/data/recipes/RecipeProvider	output	Lnet/minecraft/data/recipes/RecipeOutput;

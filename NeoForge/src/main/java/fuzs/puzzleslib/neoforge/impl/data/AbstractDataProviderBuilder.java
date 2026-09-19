@@ -23,7 +23,6 @@ import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -223,12 +222,22 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     }
 
     @Override
-    public DataProviderBuilder addRecipeProvider(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, ? extends RecipeProvider> provider) {
+    public DataProviderBuilder addRecipeProvider(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, ? extends Runnable> provider) {
         Objects.requireNonNull(provider, "recipe provider is null");
-        return this.addReloadable(RecipeProvider.asBootstrap((recipeOutput, advancementOutput) -> {
-            return ScopedValue.where(DataGenerationScopes.MOD_ID, this.modId)
-                    .call(() -> provider.apply(recipeOutput, advancementOutput));
-        }));
+        String modId = this.modId;
+        return this.addReloadable(new MultiRegistryBootstrap() {
+            @Override
+            public Set<ResourceKey<? extends Registry<?>>> requestedRegistries() {
+                return Set.of(Registries.RECIPE, Registries.ADVANCEMENT);
+            }
+
+            @Override
+            public void run(BootstrapGetter registries) {
+                ScopedValue.where(DataGenerationScopes.MOD_ID, modId)
+                        .run(() -> provider.apply(registries.get(Registries.RECIPE), registries.get(Registries.ADVANCEMENT))
+                                .run());
+            }
+        });
     }
 
     /**

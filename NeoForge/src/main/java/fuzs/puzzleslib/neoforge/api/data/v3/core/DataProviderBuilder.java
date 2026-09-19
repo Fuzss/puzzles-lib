@@ -10,7 +10,6 @@ import net.minecraft.core.registries.SingleRegistryBootstrap;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -210,10 +209,11 @@ public interface DataProviderBuilder {
     DataProviderBuilder addAdvancementProvider(AdvancementSubProvider.Factory... providers);
 
     /**
-     * Adds a recipe provider.
+     * Adds a recipe provider, covering both {@link net.minecraft.data.recipes.RecipeProvider} and
+     * {@link net.minecraft.data.recipes.BrewingProvider} implementations since both are {@link Runnable}.
      *
      * @param provider the recipe provider factory
      * @return this builder instance
      */
-    DataProviderBuilder addRecipeProvider(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, ? extends RecipeProvider> provider);
+    DataProviderBuilder addRecipeProvider(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, ? extends Runnable> provider);
 }

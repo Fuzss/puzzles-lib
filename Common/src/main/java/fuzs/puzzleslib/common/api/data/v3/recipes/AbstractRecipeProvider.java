@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class AbstractRecipeProvider extends RecipeProvider {
+public abstract class AbstractRecipeProvider extends RecipeProvider implements Runnable {
 
     public AbstractRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
         super(recipeOutput, advancementOutput);
@@ -83,6 +83,11 @@ public abstract class AbstractRecipeProvider extends RecipeProvider {
 
     public static String getHasName(TagKey<Item> tagKey) {
         return "has_" + tagKey.location().getPath();
+    }
+
+    @Override
+    public final void run() {
+        this.buildRecipes();
     }
 
     @Override

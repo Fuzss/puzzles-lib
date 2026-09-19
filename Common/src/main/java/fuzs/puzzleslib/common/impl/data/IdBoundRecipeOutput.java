@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * in both a criterion and a reward.
  */
 public class IdBoundRecipeOutput implements RecipeOutput {
-    private final String modId;
+    public final String modId;
     private final BootstrapContext<Recipe<?>> recipeOutput;
     private final BootstrapContext<Advancement> advancementOutput;
 
