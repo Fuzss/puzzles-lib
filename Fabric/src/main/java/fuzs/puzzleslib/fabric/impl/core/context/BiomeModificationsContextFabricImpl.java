@@ -2,32 +2,31 @@ package fuzs.puzzleslib.fabric.impl.core.context;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingContext;
-import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingPhase;
-import fuzs.puzzleslib.common.api.biome.v1.BiomeModificationContext;
+import fuzs.puzzleslib.common.api.biome.v1.*;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
-import fuzs.puzzleslib.fabric.impl.biome.*;
-import net.fabricmc.fabric.api.biome.v1.BiomeModification;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import fuzs.puzzleslib.fabric.impl.biome.ClimateContextFabric;
+import fuzs.puzzleslib.fabric.impl.biome.GenerationContextFabric;
+import fuzs.puzzleslib.fabric.impl.biome.MobSpawnsContextFabric;
+import fuzs.puzzleslib.fabric.impl.biome.EffectsContextFabric;
+import fuzs.puzzleslib.fabric.mixin.accessor.BiomeSelectionContextImplFabricAccessor;
+import net.fabricmc.fabric.api.biome.v1.*;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public final class BiomeModificationsContextFabricImpl implements BiomeModificationsContext {
     private static final Map<BiomeLoadingPhase, ModificationPhase> BIOME_PHASE_CONVERSIONS = Maps.immutableEnumMap(
-            ImmutableMap.of(BiomeLoadingPhase.ADDITIONS,
+            ImmutableMap.of(BiomeLoadingPhase.ADD,
                     ModificationPhase.ADDITIONS,
-                    BiomeLoadingPhase.REMOVALS,
+                    BiomeLoadingPhase.REMOVE,
                     ModificationPhase.REMOVALS,
-                    BiomeLoadingPhase.MODIFICATIONS,
+                    BiomeLoadingPhase.MODIFY,
                     ModificationPhase.REPLACEMENTS,
-                    BiomeLoadingPhase.POST_PROCESSING,
+                    BiomeLoadingPhase.POST,
                     ModificationPhase.POST_PROCESSING));
 
     private final BiomeModification biomeModification;
@@ -37,29 +36,29 @@ public final class BiomeModificationsContextFabricImpl implements BiomeModificat
     }
 
     @Override
-    public void registerBiomeModification(BiomeLoadingPhase biomeLoadingPhase, Predicate<BiomeLoadingContext> biomeSelector, Consumer<BiomeModificationContext> biomeModifier) {
-        Objects.requireNonNull(biomeLoadingPhase, "biome loading phase is null");
-        Objects.requireNonNull(biomeSelector, "biome selector is null");
+    public void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, Consumer<BiomeContext> biomeModifier) {
+        Objects.requireNonNull(loadingPhase, "biome loading phase is null");
+        Objects.requireNonNull(selector, "biome selector is null");
         Objects.requireNonNull(biomeModifier, "biome modifier is null");
-        ModificationPhase modificationPhase = BIOME_PHASE_CONVERSIONS.get(biomeLoadingPhase);
+        ModificationPhase modificationPhase = BIOME_PHASE_CONVERSIONS.get(loadingPhase);
         Objects.requireNonNull(modificationPhase, "modification phase is null");
         this.biomeModification.add(modificationPhase,
-                (BiomeSelectionContext selectionContext) -> biomeSelector.test(new BiomeLoadingContextFabric(
-                        selectionContext)),
-                (BiomeSelectionContext selectionContext, net.fabricmc.fabric.api.biome.v1.BiomeModificationContext modificationContext) -> {
-                    biomeModifier.accept(createModificationContext(modificationContext, selectionContext.getBiome()));
+                (BiomeSelectionContext context) -> selector.test(BiomeSelectionContextImplFabricAccessor.class.cast(
+                        context).puzzleslib$getDynamicRegistries(), context.getBiomeHolder()),
+                (BiomeSelectionContext selectionContext, BiomeModificationContext modificationContext) -> {
+                    biomeModifier.accept(createModificationContext(modificationContext,
+                            selectionContext.getBiomeHolder()));
                 });
     }
 
-    private static BiomeModificationContext createModificationContext(net.fabricmc.fabric.api.biome.v1.BiomeModificationContext modificationContext, Biome biome) {
-        ClimateSettingsContextFabric climateSettings = new ClimateSettingsContextFabric(biome,
-                modificationContext.getWeather());
-        SpecialEffectsContextFabric specialEffects = new SpecialEffectsContextFabric(biome.getSpecialEffects(),
-                modificationContext.getEffects());
-        GenerationSettingsContextFabric generationSettings = new GenerationSettingsContextFabric(biome.getGenerationSettings(),
-                modificationContext.getGenerationSettings());
-        MobSpawnSettingsContextFabric mobSpawnSettings = new MobSpawnSettingsContextFabric(biome.getMobSettings(),
-                modificationContext.getMobSpawnSettings());
-        return new BiomeModificationContext(climateSettings, specialEffects, generationSettings, mobSpawnSettings);
+    private static BiomeContext createModificationContext(BiomeModificationContext context, Holder<Biome> biome) {
+        ClimateContext climate = new ClimateContextFabric(biome.value().climateSettings, context.getWeather());
+        EffectsContext specialEffects = new EffectsContextFabric(biome.value().getSpecialEffects(),
+                context.getEffects());
+        GenerationContext generation = new GenerationContextFabric(biome.value()
+                .getGenerationSettings(), context.getGenerationSettings());
+        MobSpawnsContext mobSpawns = new MobSpawnsContextFabric(biome.value().getAttributes(),
+                context.getMobSpawnSettings());
+        return new BiomeContext(biome, climate, specialEffects, generation, mobSpawns);
     }
 }

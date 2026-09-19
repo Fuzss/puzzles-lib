@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.neoforge.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v1.GenerationSettingsContext;
+import fuzs.puzzleslib.common.api.biome.v1.GenerationContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -13,11 +13,11 @@ import net.neoforged.neoforge.common.world.BiomeGenerationSettingsBuilder;
 
 import java.util.Collections;
 
-public record GenerationSettingsContextNeoForge(Registry<WorldCarver> carvers,
-                                                Registry<PlacedFeature> features,
-                                                BiomeGenerationSettingsBuilder context) implements GenerationSettingsContext {
+public record GenerationContextNeoForge(Registry<WorldCarver> carvers,
+                                        Registry<PlacedFeature> features,
+                                        BiomeGenerationSettingsBuilder context) implements GenerationContext {
 
-    public GenerationSettingsContextNeoForge(RegistryAccess registryAccess, BiomeGenerationSettingsBuilder context) {
+    public GenerationContextNeoForge(RegistryAccess registryAccess, BiomeGenerationSettingsBuilder context) {
         this(registryAccess.lookupOrThrow(Registries.CARVER),
                 registryAccess.lookupOrThrow(Registries.PLACED_FEATURE),
                 context);

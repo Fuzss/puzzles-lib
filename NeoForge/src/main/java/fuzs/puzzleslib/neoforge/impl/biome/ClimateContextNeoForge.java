@@ -1,12 +1,12 @@
 package fuzs.puzzleslib.neoforge.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v1.ClimateSettingsContext;
+import fuzs.puzzleslib.common.api.biome.v1.ClimateContext;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.common.world.ClimateSettingsBuilder;
 
 import java.util.Objects;
 
-public record ClimateSettingsContextNeoForge(ClimateSettingsBuilder context) implements ClimateSettingsContext {
+public record ClimateContextNeoForge(ClimateSettingsBuilder context) implements ClimateContext {
 
     @Override
     public void hasPrecipitation(boolean hasPrecipitation) {
@@ -35,7 +35,17 @@ public record ClimateSettingsContextNeoForge(ClimateSettingsBuilder context) imp
     }
 
     @Override
+    public Biome.TemperatureModifier getTemperatureModifier() {
+        return this.context.getTemperatureModifier();
+    }
+
+    @Override
     public void setDownfall(float downfall) {
         this.context.setDownfall(downfall);
+    }
+
+    @Override
+    public float getDownfall() {
+        return this.context.getDownfall();
     }
 }

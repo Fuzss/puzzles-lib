@@ -1,11 +1,10 @@
 package fuzs.puzzleslib.common.api.core.v1.context;
 
-import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingContext;
 import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingPhase;
-import fuzs.puzzleslib.common.api.biome.v1.BiomeModificationContext;
+import fuzs.puzzleslib.common.api.biome.v1.BiomeSelector;
+import fuzs.puzzleslib.common.api.biome.v1.BiomeContext;
 
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Allows for registering modifications (including additions and removals) to biomes loaded from the current data pack.
@@ -15,9 +14,9 @@ public interface BiomeModificationsContext {
     /**
      * Add a modification to this context.
      *
-     * @param biomeLoadingPhase the loading phase, useful to separate additions and removals
-     * @param biomeSelector     the selection context for current biome
-     * @param biomeModifier     the modification context
+     * @param loadingPhase  the loading phase, useful to separate additions and removals
+     * @param selector      the selection context for current biome
+     * @param biomeModifier the modification context
      */
-    void registerBiomeModification(BiomeLoadingPhase biomeLoadingPhase, Predicate<BiomeLoadingContext> biomeSelector, Consumer<BiomeModificationContext> biomeModifier);
+    void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, Consumer<BiomeContext> biomeModifier);
 }

@@ -13,17 +13,10 @@ import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
 /**
- * The modification context for the biomes spawn settings.
- *
- * <p>Mostly copied from Fabric API's Biome API, specifically
- * <code>net.fabricmc.fabric.api.biome.v1.BiomeModificationContext$SpawnSettingsContext</code>
- * to allow for use in common project and to allow reimplementation on Forge using Forge's native biome modification
- * system.
- *
- * <p>Copyright (c) FabricMC
- * <p>SPDX-License-Identifier: Apache-2.0
+ * @see MobSpawnSettings
+ * @see MobSpawnSettings.Builder
  */
-public interface MobSpawnSettingsContext {
+public interface MobSpawnsContext {
 
     /**
      * Associated JSON property: <code>spawners</code>.

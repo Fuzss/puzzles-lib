@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
 import com.google.common.collect.Iterables;
-import fuzs.puzzleslib.common.api.biome.v1.GenerationSettingsContext;
+import fuzs.puzzleslib.common.api.biome.v1.GenerationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -13,8 +13,8 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.List;
 
-public record GenerationSettingsContextFabric(BiomeGenerationSettings generationSettings,
-                                              BiomeModificationContext.GenerationSettingsContext context) implements GenerationSettingsContext {
+public record GenerationContextFabric(BiomeGenerationSettings generationSettings,
+                                      BiomeModificationContext.GenerationSettingsContext context) implements GenerationContext {
 
     @Override
     public boolean removeFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> featureKey) {

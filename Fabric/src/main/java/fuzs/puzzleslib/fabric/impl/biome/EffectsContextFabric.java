@@ -1,14 +1,14 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v1.SpecialEffectsContext;
+import fuzs.puzzleslib.common.api.biome.v1.EffectsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public record SpecialEffectsContextFabric(BiomeSpecialEffects specialEffects,
-                                          BiomeModificationContext.EffectsContext context) implements SpecialEffectsContext {
+public record EffectsContextFabric(BiomeSpecialEffects specialEffects,
+                                   BiomeModificationContext.EffectsContext context) implements EffectsContext {
 
     @Override
     public void setWaterColor(int waterColor) {

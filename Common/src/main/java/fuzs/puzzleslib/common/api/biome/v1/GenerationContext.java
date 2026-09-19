@@ -7,17 +7,10 @@ import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 /**
- * The modification context for the biomes generation settings.
- *
- * <p>Mostly copied from Fabric API's Biome API, specifically
- * <code>net.fabricmc.fabric.api.biome.v1.BiomeModificationContext$WeatherContext</code>
- * to allow for use in common project and to allow reimplementation on Forge using Forge's native biome modification
- * system.
- *
- * <p>Copyright (c) FabricMC
- * <p>SPDX-License-Identifier: Apache-2.0
+ * @see net.minecraft.world.level.biome.BiomeGenerationSettings
+ * @see net.minecraft.world.level.biome.BiomeGenerationSettings.PlainBuilder
  */
-public interface GenerationSettingsContext {
+public interface GenerationContext {
     /**
      * Removes a feature from one of this biomes generation steps, and returns if any features were removed.
      */

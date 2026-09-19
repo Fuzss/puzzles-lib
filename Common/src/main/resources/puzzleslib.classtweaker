@@ -386,6 +386,9 @@ accessible	method	net/minecraft/world/inventory/AbstractContainerMenu	addSlot	(L
 accessible	method	net/minecraft/world/inventory/GrindstoneMenu	computeResult	(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;
 accessible	field	net/minecraft/world/item/BlockItem	block	Lnet/minecraft/world/level/block/Block;
 mutable	field	net/minecraft/world/item/BlockItem	block	Lnet/minecraft/world/level/block/Block;
+accessible  field   net/minecraft/world/level/biome/Biome   climateSettings Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
+accessible  class   net/minecraft/world/level/biome/Biome$ClimateSettings
+accessible  method  net/minecraft/world/level/biome/Biome$ClimateSettings   <init>  (ZFLnet/minecraft/world/level/biome/Biome$TemperatureModifier;F)V
 accessible	field	net/minecraft/world/level/block/Block	item	Lnet/minecraft/world/item/Item;
 accessible	method	net/minecraft/world/level/block/FireBlock	setFlammable	(Lnet/minecraft/world/level/block/Block;II)V
 accessible	field	net/minecraft/world/level/gamerules/GameRule	defaultValue	Ljava/lang/Object;

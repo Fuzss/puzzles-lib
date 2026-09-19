@@ -1,10 +1,14 @@
 package fuzs.puzzleslib.neoforge.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v1.MobSpawnSettingsContext;
+import fuzs.puzzleslib.common.api.biome.v1.MobSpawnsContext;
 import net.minecraft.util.random.Weighted;
+import net.minecraft.world.attribute.EnvironmentAttribute;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.neoforged.neoforge.common.world.EnvironmentAttributeMapBuilder;
 import net.neoforged.neoforge.common.world.MobSpawnSettingsBuilder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jspecify.annotations.Nullable;
@@ -13,16 +17,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 
-public record MobSpawnSettingsContextNeoForge(MobSpawnSettingsBuilder context) implements MobSpawnSettingsContext {
+public record MobSpawnsContextNeoForge(MobSpawnSettingsBuilder context,
+                                       EnvironmentAttributeMapBuilder attributes) implements MobSpawnsContext {
 
     @Override
     public void setCreatureGenerationProbability(float probability) {
-        this.context.creatureGenerationProbability(probability);
+        this.attributes.set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, probability);
     }
 
     @Override
     public void addSpawn(MobCategory mobCategory, int weight, MobSpawnSettings.SpawnerData spawnerData) {
-        this.context.addSpawn(mobCategory, weight, spawnerData);
+        this.context.addSpawn(spawnerData.type(), weight, spawnerData.count());
     }
 
     @Override
@@ -46,7 +51,7 @@ public record MobSpawnSettingsContextNeoForge(MobSpawnSettingsBuilder context) i
 
     @Override
     public void setSpawnCost(EntityType<?> entityType, double energyBudget, double charge) {
-        this.context.addMobCharge(entityType, charge, energyBudget);
+        this.context.addMobSpawnCost(entityType, charge, energyBudget);
     }
 
     @Override
@@ -76,6 +81,8 @@ public record MobSpawnSettingsContextNeoForge(MobSpawnSettingsBuilder context) i
 
     @Override
     public float getCreatureGenerationProbability() {
-        return this.context.getProbability();
+        EnvironmentAttribute<Float> attribute = EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY;
+        EnvironmentAttributeMap.Entry<Float, ?> entry = this.attributes.get(attribute);
+        return entry != null ? entry.applyModifier(attribute.defaultValue()) : attribute.defaultValue();
     }
 }

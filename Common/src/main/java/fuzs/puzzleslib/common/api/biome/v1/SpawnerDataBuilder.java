@@ -16,7 +16,7 @@ import java.util.function.ToIntFunction;
  * A builder for configuring mob spawner data in biome spawn settings.
  */
 public final class SpawnerDataBuilder {
-    private final MobSpawnSettingsContext context;
+    private final MobSpawnsContext context;
     private final EntityType<?> entityType;
     private IntUnaryOperator weightMapper = IntUnaryOperator.identity();
     private ToIntFunction<MobSpawnSettings.SpawnerData> minCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> {
@@ -26,7 +26,7 @@ public final class SpawnerDataBuilder {
         return spawnerData.count().maxInclusive();
     };
 
-    private SpawnerDataBuilder(MobSpawnSettingsContext context, EntityType<?> entityType) {
+    private SpawnerDataBuilder(MobSpawnsContext context, EntityType<?> entityType) {
         Objects.requireNonNull(context, "context is null");
         Objects.requireNonNull(entityType, "entity type is null");
         this.context = context;
@@ -40,7 +40,7 @@ public final class SpawnerDataBuilder {
      * @param entityType the entity type to configure spawning for
      * @return the builder
      */
-    public static SpawnerDataBuilder create(MobSpawnSettingsContext context, EntityType<?> entityType) {
+    public static SpawnerDataBuilder create(MobSpawnsContext context, EntityType<?> entityType) {
         return new SpawnerDataBuilder(context, entityType);
     }
 
@@ -169,7 +169,7 @@ public final class SpawnerDataBuilder {
         }
     }
 
-    private Optional<Weighted<MobSpawnSettings.SpawnerData>> getSpawnerDataForType(MobSpawnSettingsContext context, MobCategory mobCategory, EntityType<?> entityType) {
+    private Optional<Weighted<MobSpawnSettings.SpawnerData>> getSpawnerDataForType(MobSpawnsContext context, MobCategory mobCategory, EntityType<?> entityType) {
         return context.getSpawnerData(mobCategory).stream().filter((Weighted<MobSpawnSettings.SpawnerData> data) -> {
             return data.value().type() == entityType;
         }).findAny();

@@ -1,10 +1,13 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
 import com.google.common.collect.ImmutableSet;
-import fuzs.puzzleslib.common.api.biome.v1.MobSpawnSettingsContext;
+import fuzs.puzzleslib.common.api.biome.v1.MobSpawnsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.random.Weighted;
+import net.minecraft.world.attribute.EnvironmentAttribute;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -14,8 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 
-public record MobSpawnSettingsContextFabric(MobSpawnSettings mobSpawnSettings,
-                                            BiomeModificationContext.MobSpawnSettingsContext context) implements MobSpawnSettingsContext {
+public record MobSpawnsContextFabric(EnvironmentAttributeMap attributes,
+                                     BiomeModificationContext.MobSpawnSettingsContext context) implements MobSpawnsContext {
 
     @Override
     public void setCreatureGenerationProbability(float probability) {
@@ -24,7 +27,7 @@ public record MobSpawnSettingsContextFabric(MobSpawnSettings mobSpawnSettings,
 
     @Override
     public void addSpawn(MobCategory mobCategory, int weight, MobSpawnSettings.SpawnerData spawnerData) {
-        this.context.addSpawn(mobCategory, spawnerData, weight);
+        this.context.addSpawn(spawnerData.type().getCategory(), spawnerData, weight);
     }
 
     @Override
@@ -61,11 +64,16 @@ public record MobSpawnSettingsContextFabric(MobSpawnSettings mobSpawnSettings,
 
     @Override
     public MobSpawnSettings.@Nullable MobSpawnCost getSpawnCost(EntityType<?> entityType) {
-        return this.mobSpawnSettings.getMobSpawnCost(entityType);
+        return this.getAttributeValue(EnvironmentAttributes.NATURAL_MOB_SPAWNS).getMobSpawnCost(entityType);
     }
 
     @Override
     public float getCreatureGenerationProbability() {
-        return this.mobSpawnSettings.getCreatureProbability();
+        return this.getAttributeValue(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY);
+    }
+
+    private <T> T getAttributeValue(EnvironmentAttribute<T> attribute) {
+        EnvironmentAttributeMap.Entry<T, ?> entry = this.attributes.get(attribute);
+        return entry != null ? entry.applyModifier(attribute.defaultValue()) : attribute.defaultValue();
     }
 }
