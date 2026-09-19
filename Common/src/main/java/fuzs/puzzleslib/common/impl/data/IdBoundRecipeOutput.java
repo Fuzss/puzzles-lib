@@ -33,8 +33,17 @@ import java.util.stream.Stream;
  * in both a criterion and a reward.
  */
 public class IdBoundRecipeOutput implements RecipeOutput {
+    /**
+     * The mod id.
+     */
     public final String modId;
+    /**
+     * The bootstrap context recipes are registered to.
+     */
     private final BootstrapContext<Recipe<?>> recipeOutput;
+    /**
+     * The bootstrap context recipe unlock advancements are registered to.
+     */
     private final BootstrapContext<Advancement> advancementOutput;
 
     /**

@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
  * and are generated as well, all remaining entities are skipped.
  */
 public abstract class AbstractEntityLootSubProvider extends EntityLootSubProvider {
+    /**
+     * The mod id used for validating that loot tables of the generating mod are present.
+     */
     private final String modId;
 
     /**

@@ -70,6 +70,9 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
             .put(BlockSetVariant.SHELF, BlockLootSubProvider::dropSelf)
             .build();
 
+    /**
+     * The mod id used for validating that loot tables of the generating mod are present.
+     */
     private final String modId;
 
     /**
