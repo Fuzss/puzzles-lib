@@ -21,44 +21,44 @@ import java.util.Objects;
 public final class ItemModelsContextFabricImpl implements ItemModelsContext {
 
     @Override
-    public void registerItemModel(Identifier identifier, MapCodec<? extends ItemModel.Unbaked> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerItemModel(Identifier modelId, MapCodec<? extends ItemModel.Unbaked> codec) {
+        Objects.requireNonNull(modelId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
-        ItemModels.ID_MAPPER.put(identifier, codec);
+        ItemModels.ID_MAPPER.put(modelId, codec);
     }
 
     @Override
-    public void registerSpecialModelRenderer(Identifier identifier, MapCodec<? extends SpecialModelRenderer.Unbaked<?>> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerSpecialModelRenderer(Identifier modelId, MapCodec<? extends SpecialModelRenderer.Unbaked<?>> codec) {
+        Objects.requireNonNull(modelId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
-        SpecialModelRenderers.ID_MAPPER.put(identifier, codec);
+        SpecialModelRenderers.ID_MAPPER.put(modelId, codec);
     }
 
     @Override
-    public void registerItemTintSource(Identifier identifier, MapCodec<? extends ItemTintSource> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerItemTintSource(Identifier tintSourceId, MapCodec<? extends ItemTintSource> codec) {
+        Objects.requireNonNull(tintSourceId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
-        ItemTintSources.ID_MAPPER.put(identifier, codec);
+        ItemTintSources.ID_MAPPER.put(tintSourceId, codec);
     }
 
     @Override
-    public void registerSelectItemModelProperty(Identifier identifier, SelectItemModelProperty.Type<?, ?> type) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerSelectItemModelProperty(Identifier propertyId, SelectItemModelProperty.Type<?, ?> type) {
+        Objects.requireNonNull(propertyId, "identifier is null");
         Objects.requireNonNull(type, "type is null");
-        SelectItemModelProperties.ID_MAPPER.put(identifier, type);
+        SelectItemModelProperties.ID_MAPPER.put(propertyId, type);
     }
 
     @Override
-    public void registerConditionalItemModelProperty(Identifier identifier, MapCodec<? extends ConditionalItemModelProperty> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerConditionalItemModelProperty(Identifier propertyId, MapCodec<? extends ConditionalItemModelProperty> codec) {
+        Objects.requireNonNull(propertyId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
-        ConditionalItemModelProperties.ID_MAPPER.put(identifier, codec);
+        ConditionalItemModelProperties.ID_MAPPER.put(propertyId, codec);
     }
 
     @Override
-    public void registerRangeSelectItemModelProperty(Identifier identifier, MapCodec<? extends RangeSelectItemModelProperty> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerRangeSelectItemModelProperty(Identifier propertyId, MapCodec<? extends RangeSelectItemModelProperty> codec) {
+        Objects.requireNonNull(propertyId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
-        RangeSelectItemModelProperties.ID_MAPPER.put(identifier, codec);
+        RangeSelectItemModelProperties.ID_MAPPER.put(propertyId, codec);
     }
 }

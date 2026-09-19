@@ -15,10 +15,10 @@ public final class EntitySpectatorShadersContextFabricImpl implements EntitySpec
     private static final Map<EntityType<?>, Identifier> ENTITY_SPECTATOR_SHADERS = new LinkedHashMap<>();
 
     @Override
-    public void registerSpectatorShader(EntityType<?> entityType, Identifier identifier) {
+    public void registerSpectatorShader(EntityType<?> entityType, Identifier location) {
         Objects.requireNonNull(entityType, "entity type is null");
-        Objects.requireNonNull(identifier, "shader location is null");
-        ENTITY_SPECTATOR_SHADERS.put(entityType, identifier);
+        Objects.requireNonNull(location, "shader location is null");
+        ENTITY_SPECTATOR_SHADERS.put(entityType, location);
     }
 
     public static Optional<Identifier> getEntityShader(@Nullable Entity entity) {

@@ -10,9 +10,9 @@ import java.util.Objects;
 public record EntitySpectatorShadersContextNeoForgeImpl(RegisterEntitySpectatorShadersEvent event) implements EntitySpectatorShadersContext {
 
     @Override
-    public void registerSpectatorShader(EntityType<?> entityType, Identifier identifier) {
+    public void registerSpectatorShader(EntityType<?> entityType, Identifier location) {
         Objects.requireNonNull(entityType, "entity type is null");
-        Objects.requireNonNull(identifier, "identifier is null");
-        this.event.register(entityType, identifier);
+        Objects.requireNonNull(location, "identifier is null");
+        this.event.register(entityType, location);
     }
 }

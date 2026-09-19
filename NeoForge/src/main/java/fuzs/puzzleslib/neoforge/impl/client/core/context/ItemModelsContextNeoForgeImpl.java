@@ -17,60 +17,60 @@ import java.util.Objects;
 public final class ItemModelsContextNeoForgeImpl extends AbstractNeoForgeContext implements ItemModelsContext {
 
     @Override
-    public void registerItemModel(Identifier identifier, MapCodec<? extends ItemModel.Unbaked> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerItemModel(Identifier modelId, MapCodec<? extends ItemModel.Unbaked> codec) {
+        Objects.requireNonNull(modelId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
         this.registerForEvent(RegisterItemModelsEvent.class, (RegisterItemModelsEvent event) -> {
-            event.register(identifier, codec);
+            event.register(modelId, codec);
         });
     }
 
     @Override
-    public void registerSpecialModelRenderer(Identifier identifier, MapCodec<? extends SpecialModelRenderer.Unbaked<?>> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerSpecialModelRenderer(Identifier modelId, MapCodec<? extends SpecialModelRenderer.Unbaked<?>> codec) {
+        Objects.requireNonNull(modelId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
         this.registerForEvent(RegisterSpecialModelRendererEvent.class, (RegisterSpecialModelRendererEvent event) -> {
-            event.register(identifier, codec);
+            event.register(modelId, codec);
         });
     }
 
     @Override
-    public void registerItemTintSource(Identifier identifier, MapCodec<? extends ItemTintSource> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerItemTintSource(Identifier tintSourceId, MapCodec<? extends ItemTintSource> codec) {
+        Objects.requireNonNull(tintSourceId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
         this.registerForEvent(RegisterColorHandlersEvent.ItemTintSources.class,
                 (RegisterColorHandlersEvent.ItemTintSources event) -> {
-                    event.register(identifier, codec);
+                    event.register(tintSourceId, codec);
                 });
     }
 
     @Override
-    public void registerSelectItemModelProperty(Identifier identifier, SelectItemModelProperty.Type<?, ?> type) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerSelectItemModelProperty(Identifier propertyId, SelectItemModelProperty.Type<?, ?> type) {
+        Objects.requireNonNull(propertyId, "identifier is null");
         Objects.requireNonNull(type, "type is null");
         this.registerForEvent(RegisterSelectItemModelPropertyEvent.class,
                 (RegisterSelectItemModelPropertyEvent event) -> {
-                    event.register(identifier, type);
+                    event.register(propertyId, type);
                 });
     }
 
     @Override
-    public void registerConditionalItemModelProperty(Identifier identifier, MapCodec<? extends ConditionalItemModelProperty> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerConditionalItemModelProperty(Identifier propertyId, MapCodec<? extends ConditionalItemModelProperty> codec) {
+        Objects.requireNonNull(propertyId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
         this.registerForEvent(RegisterConditionalItemModelPropertyEvent.class,
                 (RegisterConditionalItemModelPropertyEvent event) -> {
-                    event.register(identifier, codec);
+                    event.register(propertyId, codec);
                 });
     }
 
     @Override
-    public void registerRangeSelectItemModelProperty(Identifier identifier, MapCodec<? extends RangeSelectItemModelProperty> codec) {
-        Objects.requireNonNull(identifier, "identifier is null");
+    public void registerRangeSelectItemModelProperty(Identifier propertyId, MapCodec<? extends RangeSelectItemModelProperty> codec) {
+        Objects.requireNonNull(propertyId, "identifier is null");
         Objects.requireNonNull(codec, "codec is null");
         this.registerForEvent(RegisterRangeSelectItemModelPropertyEvent.class,
                 (RegisterRangeSelectItemModelPropertyEvent event) -> {
-                    event.register(identifier, codec);
+                    event.register(propertyId, codec);
                 });
     }
 }
