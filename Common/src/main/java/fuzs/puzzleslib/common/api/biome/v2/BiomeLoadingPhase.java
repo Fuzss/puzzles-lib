@@ -1,52 +1,49 @@
 package fuzs.puzzleslib.common.api.biome.v2;
 
+import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
+
 /**
- * To achieve a predictable order for biome modifiers, and to aid with mod compatibility, modifiers need to declare the
- * phase in which they will be applied.
- *
- * <p>This will result in the following order:
+ * The phase of a biome modification, which determines the order in which modifications from various mods are applied.
+ * <p>
+ * Biomes are modified in the order the constants are declared in, so every phase can rely on all modifications from the
+ * preceding phases already having been applied:
  * <ol>
- *     <li>Additions to biomes</li>
- *     <li>Removals from biomes</li>
- *     <li>Replacements (removal + add) in biomes</li>
- *     <li>Generic post-processing of biomes</li>
+ *     <li>{@link #ADD}</li>
+ *     <li>{@link #REMOVE}</li>
+ *     <li>{@link #MODIFY}</li>
+ *     <li>{@link #POST}</li>
  * </ol>
  *
- * <p>Mostly copied from Fabric API's Biome API, specifically <code>net.fabricmc.fabric.api.biome.v1.ModificationPhase</code>
- * to allow for use in common project and to allow reimplementation on Forge using Forge's native biome modification system.
- *
- * <p>Copyright (c) FabricMC
- * <p>SPDX-License-Identifier: Apache-2.0
+ * @see BiomeTransformer
+ * @see BiomeModificationsContext
  */
 public enum BiomeLoadingPhase {
     /**
-     * The appropriate phase for enriching biomes by adding to them without relying on other information in the biome,
-     * or removing other features.
-     *
-     * <p><b>Examples:</b> New ores, new vegetation, new structures
+     * For enriching biomes by adding to them, without relying on other modifications or removing existing content.
+     * <p>
+     * Examples are new ores, new vegetation, and new structures.
      */
     ADD,
 
     /**
-     * The appropriate phase for modifiers that remove features or other aspects of biomes (i.e. removal of spawns,
-     * removal of features, etc.).
-     *
-     * <p><b>Examples:</b> Remove iron ore from plains, remove ghasts
+     * For removing content from biomes.
+     * <p>
+     * Examples are removing iron ore from plains, or removing ghasts.
      */
     REMOVE,
 
     /**
-     * The appropriate phase for modifiers that replace existing features with modified features.
-     *
-     * <p><b>Examples:</b> Replace mineshafts with biome-specific mineshafts
+     * For replacing existing biome content with modified content.
+     * <p>
+     * An example is replacing mineshafts with biome-specific mineshafts.
      */
     MODIFY,
 
     /**
-     * The appropriate phase for modifiers that perform wide-reaching biome postprocessing.
-     *
-     * <p><b>Examples:</b> Mods that allow modpack authors to customize world generation, changing biome
-     * properties (i.e. category) that other mods rely on.
+     * For wide-reaching post-processing of biomes.
+     * <p>
+     * This is intended for modifications that other mods rely upon, e.g. a mod that allows modpack authors to customize
+     * world generation by changing biome properties.
      */
     POST
 }

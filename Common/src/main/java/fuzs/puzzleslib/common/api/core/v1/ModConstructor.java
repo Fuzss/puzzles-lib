@@ -78,8 +78,7 @@ public interface ModConstructor {
     }
 
     /**
-     * @param context allows for registering modifications (including additions and removals) to biomes loaded from the
-     *                current data pack
+     * @param context register modifications to biomes loaded from the current data pack
      */
     default void onRegisterBiomeModifications(BiomeModificationsContext context) {
         // NO-OP

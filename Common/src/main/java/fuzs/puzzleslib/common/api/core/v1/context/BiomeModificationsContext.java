@@ -5,16 +5,16 @@ import fuzs.puzzleslib.common.api.biome.v2.BiomeSelector;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeTransformer;
 
 /**
- * Allows for registering modifications (including additions and removals) to biomes loaded from the current data pack.
+ * Register modifications to biomes loaded from the current data pack.
  */
 public interface BiomeModificationsContext {
 
     /**
-     * Add a modification to this context.
+     * Register a biome transformation to be applied to all biomes matching the given selector.
      *
-     * @param loadingPhase the loading phase, useful to separate additions and removals
-     * @param selector     the selection context for the current biome
-     * @param transformer  the modification context
+     * @param loadingPhase the loading phase, which determines the order in which transformations are applied
+     * @param selector     the selector for deciding which biomes the transformer should be applied to
+     * @param transformer  the transformer that modifies the selected biomes
      */
     void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, BiomeTransformer transformer);
 }
