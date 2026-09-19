@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rework `MutableBakedQuad`, removing NeoForge only method from the shared implementation surface
 - Deprecate and slim down `ShapesHelper` in favor of vanilla's shape rotation methods
 - Adjusted status bar heights registered via `GuiLayersContext` for changes in Fabric API
+- Rename `SimpleContainerImpl` as `ContainerTemplate`
 
 ### Fixed
 

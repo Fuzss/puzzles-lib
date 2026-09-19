@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 /**
  * A simple {@link Container} implementation taking care of slot range checks and container updates.
  */
-public interface SimpleContainerImpl extends Container {
+public interface ContainerTemplate extends Container {
 
     @Override
     default boolean isEmpty() {
