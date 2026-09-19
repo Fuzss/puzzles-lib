@@ -29,16 +29,15 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * A builder for providing translations to a language file, passed to
- * {@link AbstractLanguageProvider#addTranslations(TranslationBuilder)}.
+ * A builder for providing translations to a language file.
  * <p>
  * The builder is a functional interface: the single abstract {@link #add(String, String)} method accepts a raw
  * translation key and value, while all other methods are convenience overloads deriving the translation key from common
- * game objects like blocks, items, entity types, and registry keys.
+ * game objects like blocks, items, entity types, and registry keys. {@link AbstractLanguageProvider} implements this
+ * interface for registering translations.
  */
 @FunctionalInterface
 public interface TranslationBuilder {
-
     /**
      * Adds a translation for the given translation key.
      *

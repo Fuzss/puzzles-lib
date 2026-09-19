@@ -26,14 +26,14 @@ import java.util.function.UnaryOperator;
 /**
  * A base implementation of {@link DataProvider} for generating language files for the mod.
  * <p>
- * Subclasses implement {@link #addTranslations(TranslationBuilder)} and register translations via the various
- * {@code add} methods of the provided {@link TranslationBuilder}, mirroring the vanilla providers. Translations for the
- * common content of a {@link BlockSetFamily} can be generated automatically via
+ * Subclasses implement {@link #addTranslations()} and register translations via the various {@code add} methods of
+ * {@link TranslationBuilder}, which this class implements, mirroring the vanilla providers. Translations for the common
+ * content of a {@link BlockSetFamily} can be generated automatically via
  * {@link #generateFor(TranslationBuilder, BlockSetFamily, String)}. The translations of the mod are validated, so all
  * required translations must be provided by either adding them or overriding
  * {@link #mustHaveTranslationKey(Holder.Reference, String)}.
  */
-public abstract class AbstractLanguageProvider implements DataProvider {
+public abstract class AbstractLanguageProvider implements DataProvider, TranslationBuilder {
     /**
      * The default names for the sixteen vanilla dye colors.
      *
@@ -117,6 +117,7 @@ public abstract class AbstractLanguageProvider implements DataProvider {
      * The path provider for the language files.
      */
     private final PackOutput.PathProvider pathProvider;
+    private final JsonObject output = new JsonObject();
 
     /**
      * @param context the data provider context
@@ -152,12 +153,9 @@ public abstract class AbstractLanguageProvider implements DataProvider {
     }
 
     /**
-     * Registers all translations of this provider via the various {@code add} methods of the given translation
-     * builder.
-     *
-     * @param builder the translation builder translations are registered with
+     * Registers all translations of this provider via the various {@code add} methods.
      */
-    public abstract void addTranslations(TranslationBuilder builder);
+    public abstract void addTranslations();
 
     /**
      * Generates translations for all blocks, items, and entity types of the given block set family using the default
@@ -193,19 +191,20 @@ public abstract class AbstractLanguageProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        JsonObject languageOutput = new JsonObject();
-        this.addTranslations((String translationKey, String value) -> {
-            Objects.requireNonNull(translationKey, "translation key is null");
-            Objects.requireNonNull(value, "value is null");
-            if (languageOutput.has(translationKey)) {
-                throw new IllegalStateException("Created duplicate translation key: " + translationKey);
-            } else {
-                languageOutput.addProperty(translationKey, value);
-            }
-        });
+        this.addTranslations();
+        this.verifyRequiredTranslationKeys(this.output);
+        return DataProvider.saveStable(cache, this.output, this.pathProvider.json(this.filePath));
+    }
 
-        this.verifyRequiredTranslationKeys(languageOutput);
-        return DataProvider.saveStable(cache, languageOutput, this.pathProvider.json(this.filePath));
+    @Override
+    public void add(String translationKey, String value) {
+        Objects.requireNonNull(translationKey, "translation key is null");
+        Objects.requireNonNull(value, "value is null");
+        if (this.output.has(translationKey)) {
+            throw new IllegalStateException("Created duplicate translation key: " + translationKey);
+        } else {
+            this.output.addProperty(translationKey, value);
+        }
     }
 
     /**
