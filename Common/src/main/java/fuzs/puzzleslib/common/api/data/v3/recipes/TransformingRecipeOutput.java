@@ -52,25 +52,16 @@ public interface TransformingRecipeOutput extends RecipeOutput {
         this.output().accept(key, this.operator().apply(recipe), advancement);
     }
 
-    /**
-     * @see #output()
-     */
     @Override
     default Advancement.Builder advancement() {
         return this.output().advancement();
     }
 
-    /**
-     * @see #output()
-     */
     @Override
     default <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
         return this.output().lookup(key);
     }
 
-    /**
-     * @see #output()
-     */
     @SuppressWarnings("deprecation")
     @Override
     default <S> Stream<Holder.Reference<S>> listContextElements(ResourceKey<? extends Registry<? extends S>> key) {

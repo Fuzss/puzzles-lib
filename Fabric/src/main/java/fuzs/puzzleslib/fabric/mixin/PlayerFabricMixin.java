@@ -9,11 +9,9 @@ import fuzs.puzzleslib.fabric.api.event.v1.FabricLivingEvents;
 import fuzs.puzzleslib.fabric.api.event.v1.FabricPlayerEvents;
 import fuzs.puzzleslib.fabric.impl.event.FabricEventImplHelper;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
@@ -25,7 +23,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 abstract class PlayerFabricMixin extends LivingEntity {
@@ -42,19 +39,6 @@ abstract class PlayerFabricMixin extends LivingEntity {
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick$1(CallbackInfo callback) {
         FabricPlayerEvents.PLAYER_TICK_END.invoker().onEndPlayerTick(Player.class.cast(this));
-    }
-
-    @Inject(method = "drop", at = @At(value = "HEAD"), cancellable = true)
-    public void drop(ItemStack itemStack, boolean thrownFromHand, CallbackInfoReturnable<ItemEntity> callback) {
-        if (!ServerPlayer.class.isInstance(this)) {
-            return;
-        }
-
-        EventResult eventResult = FabricPlayerEvents.ITEM_TOSS.invoker()
-                .onItemToss(ServerPlayer.class.cast(this), itemStack);
-        if (eventResult.isInterrupt()) {
-            callback.setReturnValue(null);
-        }
     }
 
     @ModifyReturnValue(method = "getDestroySpeed", at = @At("TAIL"))

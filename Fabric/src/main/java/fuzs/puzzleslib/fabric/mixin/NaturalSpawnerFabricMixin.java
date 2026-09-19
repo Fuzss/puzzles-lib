@@ -4,18 +4,15 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import fuzs.puzzleslib.common.impl.event.PotentialSpawnsList;
 import fuzs.puzzleslib.fabric.api.event.v1.FabricLevelEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -26,7 +23,7 @@ import java.util.List;
 abstract class NaturalSpawnerFabricMixin {
 
     @ModifyReturnValue(method = "mobsAt", at = @At("RETURN"))
-    private static WeightedList<MobSpawnSettings.SpawnerData> mobsAt(WeightedList<MobSpawnSettings.SpawnerData> weightedList, ServerLevel level, StructureManager structureManager, ChunkGenerator generator, MobCategory mobCategory, BlockPos pos, @Nullable Holder<Biome> biome) {
+    private static WeightedList<MobSpawnSettings.SpawnerData> mobsAt(WeightedList<MobSpawnSettings.SpawnerData> weightedList, ServerLevel level, StructureManager structureManager, ChunkGenerator generator, MobCategory mobCategory, BlockPos pos) {
         MutableObject<List<Weighted<MobSpawnSettings.SpawnerData>>> holder = new MutableObject<>();
         List<Weighted<MobSpawnSettings.SpawnerData>> mobs = new PotentialSpawnsList<>(() -> {
             return holder.get() != null ? holder.get() : weightedList.unwrap();

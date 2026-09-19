@@ -22,7 +22,9 @@ abstract class KeyboardHandlerFabricMixin {
     public void keyPress(long handle, int action, KeyEvent event, CallbackInfo callback) {
         if (handle == this.minecraft.getWindow().handle()) {
             EventResult result = FabricClientEvents.KEY_PRESS.invoker().onKeyPress(event, action);
-            if (result.isInterrupt()) callback.cancel();
+            if (result.isInterrupt()) {
+                callback.cancel();
+            }
         }
     }
 }

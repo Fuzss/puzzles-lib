@@ -415,7 +415,6 @@ public final class FabricEventInvokers {
         INSTANCE.register(MobEffectEvents.Remove.class, FabricLivingEvents.MOB_EFFECT_REMOVE);
         INSTANCE.register(MobEffectEvents.Expire.class, FabricLivingEvents.MOB_EFFECT_EXPIRE);
         INSTANCE.register(LivingJumpCallback.class, FabricLivingEvents.LIVING_JUMP);
-        INSTANCE.register(CalculateLivingVisibilityCallback.class, FabricLivingEvents.CALCULATE_LIVING_VISIBILITY);
         INSTANCE.register(LivingChangeTargetCallback.class, FabricLivingEvents.LIVING_CHANGE_TARGET);
         INSTANCE.register(CheckMobDespawnCallback.class, FabricLivingEvents.CHECK_MOB_DESPAWN);
         INSTANCE.register(GatherPotentialSpawnsCallback.class, FabricLevelEvents.GATHER_POTENTIAL_SPAWNS);

@@ -5,9 +5,7 @@ import fuzs.puzzleslib.fabric.api.event.v1.FabricLevelEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -26,32 +24,27 @@ import java.util.Objects;
 @Mixin(Block.class)
 abstract class BlockFabricMixin extends BlockBehaviour {
     @Unique
-    @Nullable
-    private int[] puzzleslib$capturedExperience;
+    private int @Nullable [] puzzleslib$capturedExperience;
 
     public BlockFabricMixin(Properties properties) {
         super(properties);
     }
 
     @Inject(method = "playerDestroy", at = @At("HEAD"))
-    public void playerDestroy$0(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack destroyedWith, CallbackInfo callback) {
-        if (level instanceof ServerLevel) {
-            this.puzzleslib$capturedExperience = new int[1];
-        }
+    public void playerDestroy$0(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack destroyedWith, CallbackInfo callback) {
+        this.puzzleslib$capturedExperience = new int[1];
     }
 
     @Inject(method = "playerDestroy", at = @At("TAIL"))
-    public void playerDestroy$1(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack destroyedWith, CallbackInfo callback) {
-        if (!(level instanceof ServerLevel serverLevel)) return;
-        if (!(player instanceof ServerPlayer serverPlayer)) return;
+    public void playerDestroy$1(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack destroyedWith, CallbackInfo callback) {
         int[] capturedExperience = this.puzzleslib$capturedExperience;
         this.puzzleslib$capturedExperience = null;
         Objects.requireNonNull(capturedExperience, "captured experience is null");
         MutableInt experienceToDrop = MutableInt.fromValue(capturedExperience[0]);
         FabricLevelEvents.DROP_BLOCK_EXPERIENCE.invoker()
-                .onDropExperience(serverLevel, pos, state, serverPlayer, destroyedWith, experienceToDrop);
+                .onDropExperience(level, pos, state, player, destroyedWith, experienceToDrop);
         if (experienceToDrop.getAsInt() > 0) {
-            this.popExperience(serverLevel, pos, experienceToDrop.getAsInt());
+            this.popExperience(level, pos, experienceToDrop.getAsInt());
         }
     }
 

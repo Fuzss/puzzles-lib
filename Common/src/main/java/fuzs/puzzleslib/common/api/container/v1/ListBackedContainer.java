@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * A simple {@link Container} implementation with only default methods and an item list getter.
  */
+@Deprecated
 @FunctionalInterface
 public interface ListBackedContainer extends ContainerTemplate {
 

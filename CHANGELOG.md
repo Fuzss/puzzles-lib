@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v26.3.0-mc26.3.x] - 2026-09-19
+## [v26.3.0-mc26.3.x] - 2026-09-20
 
 ### Added
 
@@ -35,8 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Remove `BiomeLoadingContext`, `BiomeModificationContext`, `ClimateSettingsContext`, `GenerationSettingsContext` and
-  `MobSpawnSettingsContext` in favor of the new biome API
 - Remove `AbstractDatapackRegistriesProvider` while moving all helper methods to `ContentRegistrationHelper`
 - Remove `RegistriesDataProvider`
 - Remove `DynamicPackResources`
@@ -45,3 +43,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `ContentRegistrationHelper::registerContextKeySet`
 - Remove most of `ResourceKeyHelper`, while moving the remaining methods to `ContentRegistrationHelper`
 - Remove outdated trim support from `AbstractAtlasProvider`
+- Remove `CalculateLivingVisibilityCallback`

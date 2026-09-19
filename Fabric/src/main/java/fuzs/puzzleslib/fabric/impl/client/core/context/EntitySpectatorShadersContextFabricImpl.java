@@ -4,12 +4,10 @@ import fuzs.puzzleslib.common.api.client.core.v1.context.EntitySpectatorShadersC
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.jspecify.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public final class EntitySpectatorShadersContextFabricImpl implements EntitySpectatorShadersContext {
     private static final Map<EntityType<?>, Identifier> ENTITY_SPECTATOR_SHADERS = new LinkedHashMap<>();
@@ -21,11 +19,7 @@ public final class EntitySpectatorShadersContextFabricImpl implements EntitySpec
         ENTITY_SPECTATOR_SHADERS.put(entityType, location);
     }
 
-    public static Optional<Identifier> getEntityShader(@Nullable Entity entity) {
-        if (entity != null && ENTITY_SPECTATOR_SHADERS.containsKey(entity.getType())) {
-            return Optional.of(ENTITY_SPECTATOR_SHADERS.get(entity.getType()));
-        } else {
-            return Optional.empty();
-        }
+    public static Identifier getEntityPostEffect(Entity cameraEntity) {
+        return ENTITY_SPECTATOR_SHADERS.get(cameraEntity.getType());
     }
 }

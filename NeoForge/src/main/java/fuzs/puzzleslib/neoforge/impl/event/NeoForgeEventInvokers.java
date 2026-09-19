@@ -872,15 +872,6 @@ public final class NeoForgeEventInvokers {
                 (LivingJumpCallback callback, LivingEvent.LivingJumpEvent event) -> {
                     EventImplHelper.onLivingJump(callback, event.getEntity());
                 });
-        INSTANCE.register(CalculateLivingVisibilityCallback.class,
-                LivingEvent.LivingVisibilityEvent.class,
-                (CalculateLivingVisibilityCallback callback, LivingEvent.LivingVisibilityEvent event) -> {
-                    callback.onCalculateLivingVisibility(event.getEntity(),
-                            event.getLookingEntity(),
-                            MutableDouble.fromEvent((double visibilityModifier) -> {
-                                event.modifyVisibility(visibilityModifier / event.getVisibilityModifier());
-                            }, event::getVisibilityModifier));
-                });
         INSTANCE.register(LivingChangeTargetCallback.class,
                 LivingChangeTargetEvent.class,
                 (LivingChangeTargetCallback callback, LivingChangeTargetEvent event) -> {

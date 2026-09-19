@@ -80,7 +80,7 @@ public abstract class IdBoundRecipeOutput implements RecipeOutput {
         return this.recipeOutput.lookup(key);
     }
 
-    @Deprecated
+    @SuppressWarnings("deprecation")
     @Override
     public <S> Stream<Holder.Reference<S>> listContextElements(ResourceKey<? extends Registry<? extends S>> key) {
         return this.recipeOutput.listContextElements(key);

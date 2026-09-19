@@ -19,7 +19,7 @@ import java.util.List;
 abstract class GuiGraphicsExtractorFabricMixin {
 
     @Inject(method = "tooltip", at = @At("HEAD"), cancellable = true)
-    private void renderTooltip(Font font, List<ClientTooltipComponent> lines, int xo, int yo, ClientTooltipPositioner positioner, @Nullable Identifier style, CallbackInfo callback) {
+    private void renderTooltip(Font font, List<ClientTooltipComponent> lines, int xo, int yo, ClientTooltipPositioner positioner, @Nullable Identifier style, boolean extraSpaceAfterFirstLine, CallbackInfo callback) {
         if (!lines.isEmpty()) {
             EventResult result = FabricGuiEvents.RENDER_TOOLTIP.invoker()
                     .onRenderTooltip(GuiGraphicsExtractor.class.cast(this), font, xo, yo, lines, positioner);

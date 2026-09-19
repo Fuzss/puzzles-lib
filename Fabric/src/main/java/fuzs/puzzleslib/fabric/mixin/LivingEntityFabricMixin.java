@@ -14,7 +14,6 @@ import fuzs.puzzleslib.common.api.event.v1.data.MutableDouble;
 import fuzs.puzzleslib.common.api.event.v1.data.MutableFloat;
 import fuzs.puzzleslib.common.impl.PuzzlesLib;
 import fuzs.puzzleslib.common.impl.event.EventImplHelper;
-import fuzs.puzzleslib.common.impl.event.data.DefaultedDouble;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedFloat;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedInt;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedValue;
@@ -387,18 +386,6 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
     @Inject(method = "jumpFromGround", at = @At("TAIL"))
     protected void jumpFromGround(CallbackInfo callback) {
         EventImplHelper.onLivingJump(FabricLivingEvents.LIVING_JUMP.invoker(), LivingEntity.class.cast(this));
-    }
-
-    @ModifyVariable(method = "getVisibilityPercent", at = @At("TAIL"), ordinal = 0)
-    public double getVisibilityPercent(double visibilityPercent, @Nullable Entity targetingEntity) {
-        DefaultedDouble visibilityPercentage = DefaultedDouble.fromValue(visibilityPercent);
-        FabricLivingEvents.CALCULATE_LIVING_VISIBILITY.invoker()
-                .onCalculateLivingVisibility(LivingEntity.class.cast(this), targetingEntity, visibilityPercentage);
-        return visibilityPercentage.getAsOptionalDouble()
-                .stream()
-                .map((double visibilityPercentageValue) -> Math.max(visibilityPercentageValue, 0.0))
-                .findAny()
-                .orElse(visibilityPercent);
     }
 
     @ModifyReturnValue(method = "getProjectile", at = @At("RETURN"))

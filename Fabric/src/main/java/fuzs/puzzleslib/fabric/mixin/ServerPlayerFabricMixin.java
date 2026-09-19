@@ -1,12 +1,13 @@
 package fuzs.puzzleslib.fabric.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.authlib.GameProfile;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
 import fuzs.puzzleslib.fabric.api.event.v1.FabricLivingEvents;
 import fuzs.puzzleslib.fabric.api.event.v1.FabricPlayerEvents;
 import fuzs.puzzleslib.fabric.impl.event.CapturedDropsEntity;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,16 +31,11 @@ abstract class ServerPlayerFabricMixin extends Player implements CapturedDropsEn
         super(level, gameProfile);
     }
 
-    @Inject(method = "drop(Z)V",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/server/level/ServerPlayer;drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;"),
-            cancellable = true)
-    public void drop(CallbackInfo callback, @Local ItemStack removed) {
-        EventResult eventResult = FabricPlayerEvents.ITEM_TOSS.invoker()
-                .onItemToss(ServerPlayer.class.cast(this), removed);
-        if (eventResult.isInterrupt()) {
-            callback.cancel();
-        }
+    @WrapWithCondition(method = "drop(Z)V",
+                       at = @At(value = "INVOKE",
+                                target = "Lnet/minecraft/server/level/ServerPlayer;drop(Lnet/minecraft/world/item/ItemStack;ZLnet/minecraft/util/Prediction;)Lnet/minecraft/world/entity/item/ItemEntity;"))
+    public boolean drop(ServerPlayer player, ItemStack itemStack, boolean thrownFromHand, Prediction prediction) {
+        return FabricPlayerEvents.ITEM_TOSS.invoker().onItemToss(player, itemStack).isPass();
     }
 
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)

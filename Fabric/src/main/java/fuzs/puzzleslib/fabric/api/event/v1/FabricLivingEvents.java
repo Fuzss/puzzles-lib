@@ -114,12 +114,6 @@ public final class FabricLivingEvents {
      */
     public static final Event<LivingJumpCallback> LIVING_JUMP = FabricEventFactory.createResult(LivingJumpCallback.class);
     /**
-     * Called in {@link LivingEntity#getVisibilityPercent(Entity)} when an entity is trying to be targeted by another
-     * entity for applying a given percentage to the looking entity's original visibility range.
-     */
-    public static final Event<CalculateLivingVisibilityCallback> CALCULATE_LIVING_VISIBILITY = FabricEventFactory.create(
-            CalculateLivingVisibilityCallback.class);
-    /**
      * Called when a {@link Mob} sets a new target.
      */
     public static final Event<LivingChangeTargetCallback> LIVING_CHANGE_TARGET = FabricEventFactory.createResult(
