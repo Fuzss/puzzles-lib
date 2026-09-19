@@ -27,32 +27,29 @@ public interface DataProviderContext {
     PackOutput getPackOutput();
 
     /**
-     * @return the world registries lookup provider
+     * @return the reloadable registries lookup provider, this is the default lookup provider to be used by mods
+     *
+     * @see VanillaRegistries#RELOADABLE_BUILDER
+     */
+    CompletableFuture<HolderLookup.Provider> getRegistries();
+
+    /**
+     * @return the world registries lookup provider, only to be used when the reloadable lookup provider is not
+     *         sufficient
      *
      * @see VanillaRegistries#WORLD_BUILDER
      */
     CompletableFuture<HolderLookup.Provider> getWorldRegistries();
 
     /**
-     * @return the reloadable registries lookup provider
-     *
-     * @see VanillaRegistries#RELOADABLE_BUILDER
-     */
-    CompletableFuture<HolderLookup.Provider> getReloadableRegistries();
-
-    /**
      * @return the client resource manager
      */
-    default @Nullable ResourceManager getClientResources() {
-        return null;
-    }
+    @Nullable ResourceManager getClientResources();
 
     /**
      * @return the server resource manager
      */
-    default @Nullable ResourceManager getServerResources() {
-        return null;
-    }
+    @Nullable ResourceManager getServerResources();
 
     /**
      * A simple shortcut for a data provider factory requiring an instance of this context, which helps with complaints

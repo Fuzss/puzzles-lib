@@ -27,13 +27,13 @@ public record EventBackedDataProviderContext(GatherDataEvent event,
     }
 
     @Override
-    public CompletableFuture<HolderLookup.Provider> getWorldRegistries() {
-        return this.event.getWorldLookupProvider();
+    public CompletableFuture<HolderLookup.Provider> getRegistries() {
+        return this.event.getReloadableLookupProvider();
     }
 
     @Override
-    public CompletableFuture<HolderLookup.Provider> getReloadableRegistries() {
-        return this.event.getReloadableLookupProvider();
+    public CompletableFuture<HolderLookup.Provider> getWorldRegistries() {
+        return this.event.getWorldLookupProvider();
     }
 
     @Override

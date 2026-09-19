@@ -59,7 +59,7 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
                         PackOutput.Target.DATA_PACK,
                         NeoForgeRegistries.Keys.BIOME_MODIFIERS.identifier().toString().replace(':', '/'),
                         BiomeModifier.DIRECT_CODEC,
-                        context.getWorldRegistries(),
+                        context.getRegistries(),
                         context.getModId()) {
                     @Override
                     protected void gather() {
