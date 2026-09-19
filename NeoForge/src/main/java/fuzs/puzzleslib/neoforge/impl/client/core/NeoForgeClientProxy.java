@@ -3,7 +3,7 @@ package fuzs.puzzleslib.neoforge.impl.client.core;
 import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.common.api.client.key.v1.KeyMappingHelper;
-import fuzs.puzzleslib.common.api.client.renderer.v1.model.MutableBakedQuad;
+import fuzs.puzzleslib.common.api.client.renderer.v2.model.MutableBakedQuad;
 import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
 import fuzs.puzzleslib.common.impl.client.core.proxy.ClientProxyImpl;
 import fuzs.puzzleslib.common.impl.core.context.ModConstructorImpl;

@@ -8,7 +8,7 @@ import fuzs.puzzleslib.common.api.biome.v2.BiomeLoadingPhase;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeSelector;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeTransformer;
 import fuzs.puzzleslib.common.api.biome.v2.context.*;
-import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
+import fuzs.puzzleslib.common.api.core.v1.context.BiomeTransformationsContext;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.impl.biome.BiomeTransformerContextImpl;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
@@ -30,18 +30,18 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-public final class BiomeModificationsContextNeoForgeImpl implements BiomeModificationsContext {
+public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTransformationsContext {
     private final Multimap<BiomeLoadingPhase, BiomeTransformer> transformers = HashMultimap.create();
     private final String modId;
     private final IEventBus eventBus;
 
-    public BiomeModificationsContextNeoForgeImpl(String modId, IEventBus eventBus) {
+    public BiomeTransformationsContextNeoForgeImpl(String modId, IEventBus eventBus) {
         this.modId = modId;
         this.eventBus = eventBus;
     }
 
     @Override
-    public void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, BiomeTransformer transformer) {
+    public void registerBiomeTransformation(BiomeLoadingPhase loadingPhase, BiomeSelector selector, BiomeTransformer transformer) {
         Objects.requireNonNull(loadingPhase, "loading phase is null");
         Objects.requireNonNull(selector, "selector is null");
         Objects.requireNonNull(transformer, "transformer is null");
@@ -102,7 +102,7 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
             BiomeLoadingPhase loadingPhase = LOADING_PHASES.get(phase);
             // Not all phases may exist in our implementation, so this can be null.
             if (loadingPhase != null) {
-                Collection<BiomeTransformer> transformers = BiomeModificationsContextNeoForgeImpl.this.transformers.get(
+                Collection<BiomeTransformer> transformers = BiomeTransformationsContextNeoForgeImpl.this.transformers.get(
                         loadingPhase);
                 if (!transformers.isEmpty()) {
                     for (BiomeTransformer transformer : transformers) {

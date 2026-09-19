@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.common.api.biome.v2;
 
 import fuzs.puzzleslib.common.api.biome.v2.context.*;
-import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
+import fuzs.puzzleslib.common.api.core.v1.context.BiomeTransformationsContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
@@ -10,11 +10,11 @@ import net.minecraft.world.level.biome.Biome;
  * Modifies a biome in the current data pack.
  * <p>
  * A transformer is registered together with a {@link BiomeSelector} and a {@link BiomeLoadingPhase} in
- * {@link BiomeModificationsContext}, which decide the biomes the transformer is applied to and when it is applied.
+ * {@link BiomeTransformationsContext}, which decide the biomes the transformer is applied to and when it is applied.
  *
  * @see BiomeSelector
  * @see BiomeLoadingPhase
- * @see BiomeModificationsContext
+ * @see BiomeTransformationsContext
  */
 @FunctionalInterface
 public interface BiomeTransformer {
@@ -28,7 +28,7 @@ public interface BiomeTransformer {
     void accept(RegistryAccess registryAccess, Holder<Biome> biome, Context context);
 
     /**
-     * Context containing all biome-related information passed in {@link BiomeModificationsContext}.
+     * Context containing all biome-related information passed in {@link BiomeTransformationsContext}.
      */
     interface Context {
         /**

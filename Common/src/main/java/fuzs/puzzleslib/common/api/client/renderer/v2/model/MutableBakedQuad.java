@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.client.renderer.v1.model;
+package fuzs.puzzleslib.common.api.client.renderer.v2.model;
 
 import fuzs.puzzleslib.common.impl.client.core.proxy.ClientProxyImpl;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;

@@ -28,7 +28,7 @@ public final class NeoForgeModConstructor implements ModConstructorImpl<ModConst
             // these need to run immediately, as they register content for data generation,
             // which cannot be added during common setup, as it does not run during data generation
             modConstructor.onRegisterGameplayContent(new GameplayContentContextNeoForgeImpl(modId, eventBus));
-            modConstructor.onRegisterBiomeModifications(new BiomeModificationsContextNeoForgeImpl(modId, eventBus));
+            modConstructor.onRegisterBiomeTransformations(new BiomeTransformationsContextNeoForgeImpl(modId, eventBus));
             eventBus.addListener((final FMLCommonSetupEvent event) -> {
                 event.enqueueWork(modConstructor::onCommonSetup);
             });

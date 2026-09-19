@@ -5,7 +5,7 @@ import fuzs.puzzleslib.common.api.biome.v2.BiomeLoadingPhase;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeSelector;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeTransformer;
 import fuzs.puzzleslib.common.api.biome.v2.context.*;
-import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
+import fuzs.puzzleslib.common.api.core.v1.context.BiomeTransformationsContext;
 import fuzs.puzzleslib.common.impl.biome.BiomeTransformerContextImpl;
 import fuzs.puzzleslib.fabric.impl.biome.*;
 import fuzs.puzzleslib.fabric.mixin.accessor.BiomeFabricAccessor;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.biome.Biome;
 import java.util.Map;
 import java.util.Objects;
 
-public final class BiomeModificationsContextFabricImpl implements BiomeModificationsContext {
+public final class BiomeTransformationsContextFabricImpl implements BiomeTransformationsContext {
     private static final Map<BiomeLoadingPhase, ModificationPhase> MODIFICATION_PHASES = Maps.immutableEnumMap(Map.of(
             BiomeLoadingPhase.ADD,
             ModificationPhase.ADDITIONS,
@@ -32,12 +32,12 @@ public final class BiomeModificationsContextFabricImpl implements BiomeModificat
 
     private final BiomeModification modification;
 
-    public BiomeModificationsContextFabricImpl(String modId) {
+    public BiomeTransformationsContextFabricImpl(String modId) {
         this.modification = BiomeModifications.create(Identifier.fromNamespaceAndPath(modId, "transformers"));
     }
 
     @Override
-    public void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, BiomeTransformer transformer) {
+    public void registerBiomeTransformation(BiomeLoadingPhase loadingPhase, BiomeSelector selector, BiomeTransformer transformer) {
         Objects.requireNonNull(loadingPhase, "loading phase is null");
         Objects.requireNonNull(selector, "selector is null");
         Objects.requireNonNull(transformer, "transformer is null");

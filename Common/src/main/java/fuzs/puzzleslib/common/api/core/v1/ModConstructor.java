@@ -80,7 +80,7 @@ public interface ModConstructor {
     /**
      * @param context register modifications to biomes loaded from the current data pack
      */
-    default void onRegisterBiomeModifications(BiomeModificationsContext context) {
+    default void onRegisterBiomeTransformations(BiomeTransformationsContext context) {
         // NO-OP
     }
 

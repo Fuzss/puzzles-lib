@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.common.api.biome.v2;
 
-import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
+import fuzs.puzzleslib.common.api.core.v1.context.BiomeTransformationsContext;
 
 /**
  * The phase of a biome modification, which determines the order in which modifications from various mods are applied.
@@ -15,7 +15,7 @@ import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
  * </ol>
  *
  * @see BiomeTransformer
- * @see BiomeModificationsContext
+ * @see BiomeTransformationsContext
  */
 public enum BiomeLoadingPhase {
     /**

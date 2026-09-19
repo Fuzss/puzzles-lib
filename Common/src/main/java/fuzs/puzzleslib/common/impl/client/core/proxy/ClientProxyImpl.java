@@ -2,7 +2,7 @@ package fuzs.puzzleslib.common.impl.client.core.proxy;
 
 import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.common.api.client.key.v1.KeyMappingHelper;
-import fuzs.puzzleslib.common.api.client.renderer.v1.model.MutableBakedQuad;
+import fuzs.puzzleslib.common.api.client.renderer.v2.model.MutableBakedQuad;
 import fuzs.puzzleslib.common.impl.core.context.ModConstructorImpl;
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
 import net.minecraft.client.KeyMapping;
