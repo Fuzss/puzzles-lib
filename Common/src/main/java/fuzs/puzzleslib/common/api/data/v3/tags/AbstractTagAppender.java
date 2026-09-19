@@ -158,7 +158,7 @@ public abstract class AbstractTagAppender<T> implements TagAppender<T> {
      */
     public AbstractTagAppender<T> addOptional(Identifier... ids) {
         for (Identifier id : ids) {
-            this.add(id);
+            this.addOptional(id);
         }
 
         return this;
