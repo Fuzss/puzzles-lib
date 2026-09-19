@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.data.v2.recipes;
+package fuzs.puzzleslib.common.api.data.v3.recipes;
 
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
 import net.minecraft.advancements.Advancement;
@@ -15,33 +15,62 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 /**
- * Allows for using vanilla recipe builders with custom recipe implementations based on vanilla recipe types.
+ * A {@link RecipeOutput} decorator that transforms every recipe via an {@link UnaryOperator} before passing it on to
+ * the wrapped output.
+ * <p>
+ * This allows using the vanilla recipe builders with custom recipe implementations based on the corresponding vanilla
+ * recipe types, as done by {@link TransmuteShapedRecipeBuilder} and {@link TransmuteShapelessRecipeBuilder}.
  */
 public interface TransformingRecipeOutput extends RecipeOutput {
 
+    /**
+     * Wraps the given recipe output, applying the given operator to every recipe before it is passed on.
+     *
+     * @param recipeOutput the recipe output to wrap
+     * @param operator     the operator applied to every recipe
+     * @return the transforming recipe output
+     */
     static RecipeOutput transformed(RecipeOutput recipeOutput, UnaryOperator<Recipe<?>> operator) {
         return ProxyImpl.get().getTransformingRecipeOutput(recipeOutput, operator);
     }
 
+    /**
+     * @return the wrapped recipe output
+     */
     RecipeOutput output();
 
+    /**
+     * @return the operator applied to every recipe
+     */
     UnaryOperator<Recipe<?>> operator();
 
+    /**
+     * Transforms the recipe via {@link #operator()} before delegating to {@link #output()}.
+     */
     @Override
     default void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
         this.output().accept(key, this.operator().apply(recipe), advancement);
     }
 
+    /**
+     * @see #output()
+     */
     @Override
     default Advancement.Builder advancement() {
         return this.output().advancement();
     }
 
+    /**
+     * @see #output()
+     */
     @Override
     default <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
         return this.output().lookup(key);
     }
 
+    /**
+     * @see #output()
+     */
     @SuppressWarnings("deprecation")
     @Override
     default <S> Stream<Holder.Reference<S>> listContextElements(ResourceKey<? extends Registry<? extends S>> key) {

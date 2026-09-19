@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.data.v3;
+package fuzs.puzzleslib.common.api.data.v3.metadata;
 
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.resources.v2.PackResourcesHelper;

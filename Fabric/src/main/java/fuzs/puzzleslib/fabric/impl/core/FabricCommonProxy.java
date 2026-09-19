@@ -3,7 +3,7 @@ package fuzs.puzzleslib.fabric.impl.core;
 import com.google.common.base.Predicates;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
-import fuzs.puzzleslib.common.api.data.v2.recipes.TransformingRecipeOutput;
+import fuzs.puzzleslib.common.api.data.v3.recipes.TransformingRecipeOutput;
 import fuzs.puzzleslib.common.api.data.v3.tags.AbstractTagAppender;
 import fuzs.puzzleslib.common.api.event.v1.core.EventPhase;
 import fuzs.puzzleslib.common.api.event.v1.server.ServerLifecycleEvents;

@@ -1,6 +1,7 @@
 package fuzs.puzzleslib.neoforge.api.data.v3.core;
 
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.data.v3.metadata.ModPackMetadataProvider;
 import fuzs.puzzleslib.neoforge.impl.data.AbstractDataProviderBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Registry;
@@ -63,7 +64,7 @@ public interface DataProviderBuilder {
      *     <li>Data pack path: {@code data/<modId>/datapacks/<path>}</li>
      *     <li>Resource pack path: {@code assets/<modId>/resourcepacks/<path>}</li>
      * </ul>
-     * A {@link fuzs.puzzleslib.common.api.data.v3.ModPackMetadataProvider} is added automatically.
+     * A {@link ModPackMetadataProvider} is added automatically.
      *
      * @param id       the pack id
      * @param packType the pack type
@@ -80,7 +81,7 @@ public interface DataProviderBuilder {
      *     <li>Data pack path: {@code data/<modId>/datapacks/<path>}</li>
      *     <li>Resource pack path: {@code assets/<modId>/resourcepacks/<path>}</li>
      * </ul>
-     * A {@link fuzs.puzzleslib.common.api.data.v3.ModPackMetadataProvider} is added automatically.
+     * A {@link ModPackMetadataProvider} is added automatically.
      *
      * @param id            the pack id
      * @param packType      the pack type
