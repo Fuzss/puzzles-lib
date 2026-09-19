@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.client.data.v2.models;
+package fuzs.puzzleslib.common.api.client.data.v3.models;
 
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.TextureMapping;

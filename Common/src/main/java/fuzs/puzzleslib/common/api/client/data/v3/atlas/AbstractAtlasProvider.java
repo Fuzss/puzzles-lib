@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.client.data.v2;
+package fuzs.puzzleslib.common.api.client.data.v3.atlas;
 
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import net.minecraft.client.data.AtlasProvider;

@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.common.impl.client.data;
 
-import fuzs.puzzleslib.common.api.client.data.v2.models.CustomItemModelOutput;
+import fuzs.puzzleslib.common.api.client.data.v3.models.CustomItemModelOutput;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;

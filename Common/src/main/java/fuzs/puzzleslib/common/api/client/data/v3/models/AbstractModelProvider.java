@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.client.data.v2.models;
+package fuzs.puzzleslib.common.api.client.data.v3.models;
 
 import com.google.common.collect.ImmutableMap;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
