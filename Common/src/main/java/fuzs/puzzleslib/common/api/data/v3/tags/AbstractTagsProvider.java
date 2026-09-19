@@ -1,14 +1,10 @@
-package fuzs.puzzleslib.common.api.data.v2.tags;
+package fuzs.puzzleslib.common.api.data.v3.tags;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import fuzs.puzzleslib.common.api.config.v3.serialization.KeyedValueProvider;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
 import fuzs.puzzleslib.common.api.init.v3.tags.TagFactory;
-import fuzs.puzzleslib.common.api.util.v1.CodecExtras;
-import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
 import fuzs.puzzleslib.common.impl.data.SortingTagBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -21,29 +17,26 @@ import net.minecraft.tags.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.ApiStatus;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
+/**
+ * A base implementation of {@link TagsProvider} for generating tags for the mod.
+ * <p>
+ * Tags of the mod's namespace must be defined by this provider, while tags of other namespaces are always considered
+ * present, so they can be referenced without being generated here. Tag builders are created as
+ * {@link SortingTagBuilder} instances to yield consistent output, and are exposed as {@link AbstractTagAppender}
+ * instances which additionally support removals.
+ *
+ * @param <T> the type of value the tags are for
+ */
+public abstract class AbstractTagsProvider<T> extends TagsProvider<T> {
     /**
-     * A custom {@link Codec} for {@link TagFile} which adds both NeoForge and Fabric remove fields.
-     * <p>
-     * The respective codecs for those fields are directly copied from the corresponding loader.
-     */
-    @ApiStatus.Internal
-    public static final Codec<TagFile> TAG_FILE_CODEC = CodecExtras.encodeOnly(RecordCodecBuilder.create((RecordCodecBuilder.Instance<TagFile> instance) -> instance.group(
-                    TagEntry.CODEC.listOf().fieldOf("values").forGetter(TagFile::entries),
-                    Codec.BOOL.optionalFieldOf("replace", false).forGetter(TagFile::replace),
-                    TagEntry.CODEC.listOf().optionalFieldOf("remove", List.of()).forGetter(ProxyImpl.get()::getTagFileRemovals),
-                    TagEntry.CODEC.listOf()
-                            .lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
-                            .forGetter(ProxyImpl.get()::getTagFileRemovals))
-            .apply(instance,
-                    (List<TagEntry> entries, Boolean replace, List<TagEntry> _, List<TagEntry> _) -> new TagFile(entries,
-                            replace))));
-    /**
+     * The default block tags for the common {@link BlockSetVariant BlockSetVariants}.
+     *
      * @see #generateFor(Map, Map)
      */
     public static final Map<BlockSetVariant, TagKey<Block>> VARIANT_BLOCK_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Block>>builder()
@@ -62,6 +55,8 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .put(BlockSetVariant.WALL_HANGING_SIGN, BlockTags.WALL_HANGING_SIGNS)
             .build();
     /**
+     * The {@link #VARIANT_BLOCK_TAGS} extended by stone-specific block tags.
+     *
      * @see #generateFor(Map, Map)
      */
     public static final Map<BlockSetVariant, TagKey<Block>> VARIANT_STONE_BLOCK_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Block>>builder()
@@ -70,6 +65,8 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .put(BlockSetVariant.PRESSURE_PLATE, BlockTags.STONE_PRESSURE_PLATES)
             .buildKeepingLast();
     /**
+     * The {@link #VARIANT_BLOCK_TAGS} extended by wooden block tags.
+     *
      * @see #generateFor(Map, Map)
      */
     public static final Map<BlockSetVariant, TagKey<Block>> VARIANT_WOODEN_BLOCK_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Block>>builder()
@@ -88,6 +85,8 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .put(BlockSetVariant.SHELF, BlockItemTags.WOODEN_SHELVES.block())
             .buildKeepingLast();
     /**
+     * The default item tags for the common {@link BlockSetVariant BlockSetVariants}.
+     *
      * @see #generateFor(Map, Map)
      */
     public static final Map<BlockSetVariant, TagKey<Item>> VARIANT_ITEM_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Item>>builder()
@@ -105,6 +104,8 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .put(BlockSetVariant.CHEST_BOAT, ItemTags.CHEST_BOATS)
             .build();
     /**
+     * The {@link #VARIANT_ITEM_TAGS} extended by stone-specific item tags.
+     *
      * @see #generateFor(Map, Map)
      */
     public static final Map<BlockSetVariant, TagKey<Item>> VARIANT_STONE_ITEM_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Item>>builder()
@@ -112,6 +113,8 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .put(BlockSetVariant.BUTTON, BlockItemTags.STONE_BUTTONS.item())
             .buildKeepingLast();
     /**
+     * The {@link #VARIANT_ITEM_TAGS} extended by wooden item tags.
+     *
      * @see #generateFor(Map, Map)
      */
     public static final Map<BlockSetVariant, TagKey<Item>> VARIANT_WOODEN_ITEM_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Item>>builder()
@@ -130,6 +133,8 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .put(BlockSetVariant.SHELF, BlockItemTags.WOODEN_SHELVES.item())
             .buildKeepingLast();
     /**
+     * The default entity type tags for the common {@link BlockSetVariant BlockSetVariants}.
+     *
      * @see #generateFor(Map, Map)
      */
     public static final Map<BlockSetVariant, TagKey<EntityType<?>>> VARIANT_ENTITY_TYPE_TAGS = ImmutableMap.<BlockSetVariant, TagKey<EntityType<?>>>builder()
@@ -137,47 +142,97 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
             .put(BlockSetVariant.CHEST_BOAT, TagFactory.COMMON.registerEntityTypeTag("boats"))
             .build();
 
-    public AbstractTagProvider(ResourceKey<? extends Registry<T>> registryKey, DataProviderContext context) {
-        this(registryKey, context.getModId(), context.getPackOutput(), context.getWorldRegistries());
+    /**
+     * @param registryKey the registry key of the elements tags are generated for
+     * @param context     the data provider context
+     */
+    public AbstractTagsProvider(ResourceKey<? extends Registry<T>> registryKey, DataProviderContext context) {
+        this(registryKey, context.getModId(), context.getPackOutput(), context.getRegistries());
     }
 
-    public AbstractTagProvider(ResourceKey<? extends Registry<T>> registryKey, String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+    /**
+     * @param registryKey the registry key of the elements tags are generated for
+     * @param modId       the mod id used for determining whether a tag must be generated
+     * @param packOutput  the pack output
+     * @param registries  the registries used for looking up elements
+     */
+    public AbstractTagsProvider(ResourceKey<? extends Registry<T>> registryKey, String modId, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
         super(packOutput, registryKey, registries, CompletableFuture.completedFuture((TagKey<T> tagKey) -> {
             return Objects.equals(tagKey.location().getNamespace(), modId) ? Optional.empty() :
                     Optional.of(TagBuilder.create());
         }));
     }
 
+    /**
+     * Adds all tags of this provider via the various {@link #tag} methods, which are then emitted by
+     * {@link TagsProvider#run}.
+     */
     @Override
     public abstract void addTags(HolderLookup.Provider context);
 
+    /**
+     * Creates a {@link SortingTagBuilder}, so tag entries are sorted for consistent output.
+     */
     @Override
     protected TagBuilder getOrCreateRawBuilder(TagKey<T> tag) {
         return this.builders.computeIfAbsent(tag.location(), (Identifier id) -> new SortingTagBuilder());
     }
 
+    /**
+     * @see #tag(Identifier)
+     */
     public AbstractTagAppender<T> tag(String id) {
         return this.tag(Identifier.parse(id));
     }
 
+    /**
+     * @see #tag(Identifier, boolean)
+     */
     public AbstractTagAppender<T> tag(String id, boolean replace) {
         return this.tag(Identifier.parse(id), replace);
     }
 
+    /**
+     * Gets the appender for the tag with the given id, creating it if necessary.
+     *
+     * @param id the tag id
+     * @return the tag appender
+     */
     public AbstractTagAppender<T> tag(Identifier id) {
         return this.tag(TagKey.create(this.registryKey, id));
     }
 
+    /**
+     * Gets the appender for the tag with the given id, creating it if necessary, and sets whether it replaces the
+     * parent tag.
+     *
+     * @param id      the tag id
+     * @param replace if the tag replaces the parent tag
+     * @return the tag appender
+     */
     public AbstractTagAppender<T> tag(Identifier id, boolean replace) {
         return this.tag(TagKey.create(this.registryKey, id), replace);
     }
 
+    /**
+     * Gets the appender for the given tag, creating it if necessary.
+     *
+     * @param tag the tag key
+     * @return the tag appender
+     */
     @Override
     public AbstractTagAppender<T> tag(TagKey<T> tag) {
         TagBuilder builder = this.getOrCreateRawBuilder(tag);
         return KeyedValueProvider.tags(builder);
     }
 
+    /**
+     * Gets the appender for the given tag, creating it if necessary, and sets whether it replaces the parent tag.
+     *
+     * @param tag     the tag key
+     * @param replace if the tag replaces the parent tag
+     * @return the tag appender
+     */
     @Override
     public AbstractTagAppender<T> tag(TagKey<T> tag, boolean replace) {
         TagBuilder builder = this.getOrCreateRawBuilder(tag);
@@ -185,6 +240,12 @@ public abstract class AbstractTagProvider<T> extends TagsProvider<T> {
         return KeyedValueProvider.tags(builder);
     }
 
+    /**
+     * Adds the given holders to their corresponding variant tags.
+     *
+     * @param variants    the holders mapped by block set variant
+     * @param variantTags the tags mapped by block set variant
+     */
     public final void generateFor(Map<BlockSetVariant, Holder.Reference<T>> variants, Map<BlockSetVariant, TagKey<T>> variantTags) {
         variants.forEach((BlockSetVariant variant, Holder.Reference<T> holder) -> {
             TagKey<T> tag = variantTags.get(variant);

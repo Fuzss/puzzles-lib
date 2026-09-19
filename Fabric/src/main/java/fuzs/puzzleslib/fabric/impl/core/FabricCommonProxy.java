@@ -4,7 +4,7 @@ import com.google.common.base.Predicates;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
 import fuzs.puzzleslib.common.api.data.v2.recipes.TransformingRecipeOutput;
-import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagAppender;
+import fuzs.puzzleslib.common.api.data.v3.tags.AbstractTagAppender;
 import fuzs.puzzleslib.common.api.event.v1.core.EventPhase;
 import fuzs.puzzleslib.common.api.event.v1.server.ServerLifecycleEvents;
 import fuzs.puzzleslib.common.api.init.v3.registry.RegistryFactory;
@@ -271,8 +271,8 @@ public class FabricCommonProxy implements FabricProxy {
     }
 
     @Override
-    public <T> AbstractTagAppender<T> getTagAppender(TagBuilder tagBuilder) {
-        return new FabricTagAppender<>(tagBuilder);
+    public <T> AbstractTagAppender<T> getTagAppender(TagBuilder builder) {
+        return new FabricTagAppender<>(builder);
     }
 
     @Override
@@ -281,11 +281,11 @@ public class FabricCommonProxy implements FabricProxy {
     }
 
     @Override
-    public RecipeOutput getTransformingRecipeOutput(RecipeOutput recipeOutput, UnaryOperator<Recipe<?>> operator) {
+    public RecipeOutput getTransformingRecipeOutput(RecipeOutput output, UnaryOperator<Recipe<?>> operator) {
         return new TransformingRecipeOutput() {
             @Override
-            public RecipeOutput recipeOutput() {
-                return recipeOutput;
+            public RecipeOutput output() {
+                return output;
             }
 
             @Override

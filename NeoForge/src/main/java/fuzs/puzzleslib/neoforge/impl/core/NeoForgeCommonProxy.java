@@ -3,7 +3,7 @@ package fuzs.puzzleslib.neoforge.impl.core;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
 import fuzs.puzzleslib.common.api.data.v2.recipes.TransformingRecipeOutput;
-import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagAppender;
+import fuzs.puzzleslib.common.api.data.v3.tags.AbstractTagAppender;
 import fuzs.puzzleslib.common.api.init.v3.registry.RegistryFactory;
 import fuzs.puzzleslib.common.api.item.v2.ToolTypeHelper;
 import fuzs.puzzleslib.common.api.item.v2.crafting.CombinedIngredients;
@@ -238,8 +238,8 @@ public class NeoForgeCommonProxy implements NeoForgeProxy {
     }
 
     @Override
-    public <T> AbstractTagAppender<T> getTagAppender(TagBuilder tagBuilder) {
-        return new NeoForgeTagAppender<>(tagBuilder);
+    public <T> AbstractTagAppender<T> getTagAppender(TagBuilder builder) {
+        return new NeoForgeTagAppender<>(builder);
     }
 
     @Override
@@ -248,11 +248,11 @@ public class NeoForgeCommonProxy implements NeoForgeProxy {
     }
 
     @Override
-    public RecipeOutput getTransformingRecipeOutput(RecipeOutput recipeOutput, UnaryOperator<Recipe<?>> operator) {
+    public RecipeOutput getTransformingRecipeOutput(RecipeOutput output, UnaryOperator<Recipe<?>> operator) {
         return new TransformingRecipeOutput() {
             @Override
-            public RecipeOutput recipeOutput() {
-                return recipeOutput;
+            public RecipeOutput output() {
+                return output;
             }
 
             @Override

@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.common.api.config.v3.serialization;
 
-import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagAppender;
+import fuzs.puzzleslib.common.api.data.v3.tags.AbstractTagAppender;
 import fuzs.puzzleslib.common.impl.config.serialization.RegistryProvider;
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
 import fuzs.puzzleslib.common.impl.data.SortingTagBuilder;

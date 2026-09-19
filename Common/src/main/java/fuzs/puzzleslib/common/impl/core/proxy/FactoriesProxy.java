@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.common.impl.core.proxy;
 
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
-import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagAppender;
+import fuzs.puzzleslib.common.api.data.v3.tags.AbstractTagAppender;
 import fuzs.puzzleslib.common.api.init.v3.registry.RegistryFactory;
 import fuzs.puzzleslib.common.api.item.v2.ToolTypeHelper;
 import fuzs.puzzleslib.common.api.item.v2.crafting.CombinedIngredients;
@@ -30,11 +30,11 @@ public interface FactoriesProxy {
 
     CombinedIngredients getCombinedIngredients();
 
-    <T> AbstractTagAppender<T> getTagAppender(TagBuilder tagBuilder);
+    <T> AbstractTagAppender<T> getTagAppender(TagBuilder builder);
 
     DataAttachmentRegistryImpl getDataAttachmentRegistry();
 
-    RecipeOutput getTransformingRecipeOutput(RecipeOutput recipeOutput, UnaryOperator<Recipe<?>> operator);
+    RecipeOutput getTransformingRecipeOutput(RecipeOutput output, UnaryOperator<Recipe<?>> operator);
 
     RecipeOutput getIdBoundRecipeOutput(String modId, BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput);
 

@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.fabric.impl.data;
 
-import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagAppender;
+import fuzs.puzzleslib.common.api.data.v3.tags.AbstractTagAppender;
 import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagBuilder;
@@ -11,13 +11,13 @@ import java.util.List;
 
 public final class FabricTagAppender<T> extends AbstractTagAppender<T> {
 
-    public FabricTagAppender(TagBuilder tagBuilder) {
-        super(tagBuilder);
+    public FabricTagAppender(TagBuilder builder) {
+        super(builder);
     }
 
     @SuppressWarnings("UnstableApiUsage")
     private List<TagEntry> getRemoveEntries() {
-        return ((TagBuilderHooks) this.tagBuilder).fabric_getRemove();
+        return ((TagBuilderHooks) this.builder).fabric_getRemove();
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class FabricTagAppender<T> extends AbstractTagAppender<T> {
     @Override
     public List<String> asStringList() {
         List<String> list = new ArrayList<>();
-        for (TagEntry tagEntry : this.tagBuilder.build()) {
+        for (TagEntry tagEntry : this.builder.build()) {
             list.add(this.elementOrTag(tagEntry));
         }
 
