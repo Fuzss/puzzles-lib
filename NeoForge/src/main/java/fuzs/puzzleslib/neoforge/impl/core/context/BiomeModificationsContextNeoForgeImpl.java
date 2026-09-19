@@ -5,12 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.mojang.serialization.MapCodec;
-import fuzs.puzzleslib.common.api.biome.v1.BiomeContext;
-import fuzs.puzzleslib.common.api.biome.v1.BiomeLoadingPhase;
-import fuzs.puzzleslib.common.api.biome.v1.BiomeSelector;
-import fuzs.puzzleslib.common.api.biome.v2.*;
+import fuzs.puzzleslib.common.api.biome.v2.BiomeLoadingPhase;
+import fuzs.puzzleslib.common.api.biome.v2.BiomeSelector;
+import fuzs.puzzleslib.common.api.biome.v2.context.*;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
+import fuzs.puzzleslib.common.impl.biome.BiomeContext;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.impl.biome.*;
 import net.minecraft.core.Holder;
@@ -29,10 +29,9 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public final class BiomeModificationsContextNeoForgeImpl implements BiomeModificationsContext {
-    private final Multimap<BiomeLoadingPhase, Map.Entry<BiomeSelector, Consumer<BiomeContext>>> biomeModifications = HashMultimap.create();
+    private final Multimap<BiomeLoadingPhase, Map.Entry<BiomeSelector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier>> biomeModifications = HashMultimap.create();
     private final String modId;
     private final IEventBus eventBus;
 
@@ -42,10 +41,10 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
     }
 
     @Override
-    public void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, Consumer<BiomeContext> biomeModifier) {
-        Objects.requireNonNull(loadingPhase, "biome loading phase is null");
-        Objects.requireNonNull(selector, "biome selector is null");
-        Objects.requireNonNull(biomeModifier, "biome modifier is null");
+    public void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier modifier) {
+        Objects.requireNonNull(loadingPhase, "loading phase is null");
+        Objects.requireNonNull(selector, "selector is null");
+        Objects.requireNonNull(modifier, "modifier is null");
         if (this.biomeModifications.isEmpty()) {
             BiomeModifier biomeModifierImpl = new BiomeModifierImpl();
             DeferredRegister<MapCodec<? extends BiomeModifier>> deferredRegister = DeferredRegister.create(
@@ -69,7 +68,7 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
             });
         }
 
-        this.biomeModifications.put(loadingPhase, Map.entry(selector, biomeModifier));
+        this.biomeModifications.put(loadingPhase, Map.entry(selector, modifier));
     }
 
     /**
@@ -96,29 +95,29 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
             // therefore, it is possible for no mapping to be found
             BiomeLoadingPhase biomeLoadingPhase = BIOME_PHASE_CONVERSIONS.get(phase);
             if (biomeLoadingPhase != null) {
-                Collection<Map.Entry<BiomeSelector, Consumer<BiomeContext>>> biomeModification = BiomeModificationsContextNeoForgeImpl.this.biomeModifications.get(
+                Collection<Map.Entry<BiomeSelector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier>> biomeModification = BiomeModificationsContextNeoForgeImpl.this.biomeModifications.get(
                         biomeLoadingPhase);
                 if (!biomeModification.isEmpty()) {
                     MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
                     Objects.requireNonNull(minecraftServer, "minecraft server is null");
                     RegistryAccess registryAccess = minecraftServer.registryAccess();
-                    BiomeContext biomeContext = createModificationContext(biome, builder);
-                    for (Map.Entry<BiomeSelector, Consumer<BiomeContext>> entry : biomeModification) {
+                    BiomeContext biomeContext = createModificationContext(builder);
+                    for (Map.Entry<BiomeSelector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier> entry : biomeModification) {
                         if (entry.getKey().test(registryAccess, biome)) {
-                            entry.getValue().accept(biomeContext);
+                            entry.getValue().accept(registryAccess, biome, biomeContext);
                         }
                     }
                 }
             }
         }
 
-        private static BiomeContext createModificationContext(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+        private static BiomeContext createModificationContext(ModifiableBiomeInfo.BiomeInfo.Builder builder) {
             AttributesContext attributes = new AttributesContextNeoForgeImpl(builder.getAttributes());
             ClimateContext climate = new ClimateContextNeoForgeImpl(builder.getClimateSettings());
             EffectsContext effects = new EffectsContextNeoForgeImpl(builder.getSpecialEffects());
             GenerationContext generation = new GenerationContextNeoForgeImpl(builder.getGenerationSettings());
             MobSpawnsContext mobSpawns = new MobSpawnsContextNeoForgeImpl(builder.getMobSpawnSettings());
-            return new BiomeContext(biome, attributes, climate, effects, generation, mobSpawns);
+            return new BiomeContext(attributes, climate, effects, generation, mobSpawns);
         }
 
         @Override

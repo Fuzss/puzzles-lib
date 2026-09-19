@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.biome.v2;
+package fuzs.puzzleslib.common.api.biome.v2.context;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;

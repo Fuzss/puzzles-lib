@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.biome.v2;
+package fuzs.puzzleslib.common.api.biome.v2.context;
 
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.valueproviders.IntProvider;

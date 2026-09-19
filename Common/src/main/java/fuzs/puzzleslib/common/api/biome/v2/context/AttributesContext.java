@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.biome.v2;
+package fuzs.puzzleslib.common.api.biome.v2.context;
 
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;

@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v2.AttributesContext;
+import fuzs.puzzleslib.common.api.biome.v2.context.AttributesContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;

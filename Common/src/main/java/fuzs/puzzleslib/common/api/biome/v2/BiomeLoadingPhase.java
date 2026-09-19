@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.biome.v1;
+package fuzs.puzzleslib.common.api.biome.v2;
 
 /**
  * To achieve a predictable order for biome modifiers, and to aid with mod compatibility, modifiers need to declare the

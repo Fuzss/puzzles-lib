@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.neoforge.impl.biome;
 
 import com.google.common.collect.ImmutableMap;
-import fuzs.puzzleslib.common.api.biome.v2.MobSpawnsContext;
+import fuzs.puzzleslib.common.api.biome.v2.context.MobSpawnsContext;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -35,7 +35,16 @@ public record MobSpawnsContextNeoForgeImpl(MobSpawnSettingsBuilder context) impl
 
     @Override
     public @Nullable Weighted<MobSpawnSettings.SpawnerData> getSpawn(EntityType<?> entityType) {
-        return null;
+        WeightedList.Builder<MobSpawnSettings.SpawnerData> spawns = this.context.getSpawner(entityType.getCategory());
+        if (spawns != null) {
+            return spawns.getList()
+                    .stream()
+                    .filter((Weighted<MobSpawnSettings.SpawnerData> spawn) -> spawn.value().type() == entityType)
+                    .findFirst()
+                    .orElse(null);
+        } else {
+            return null;
+        }
     }
 
     @Override

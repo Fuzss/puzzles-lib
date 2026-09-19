@@ -1,6 +1,6 @@
-package fuzs.puzzleslib.common.api.biome.v1;
+package fuzs.puzzleslib.common.api.biome.v2;
 
-import fuzs.puzzleslib.common.api.biome.v2.MobSpawnsContext;
+import fuzs.puzzleslib.common.api.biome.v2.context.MobSpawnsContext;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -15,7 +15,7 @@ import java.util.function.ToIntFunction;
  */
 public final class SpawnerDataBuilder {
     private final MobSpawnsContext context;
-    private final EntityType<?> entityType;
+    private final EntityType<?> originalEntityType;
     private IntUnaryOperator weightMapper = IntUnaryOperator.identity();
     private ToIntFunction<MobSpawnSettings.SpawnerData> minCountMapper = (MobSpawnSettings.SpawnerData spawnerData) -> {
         return spawnerData.count().minInclusive();
@@ -24,11 +24,11 @@ public final class SpawnerDataBuilder {
         return spawnerData.count().maxInclusive();
     };
 
-    private SpawnerDataBuilder(MobSpawnsContext context, EntityType<?> entityType) {
+    private SpawnerDataBuilder(MobSpawnsContext context, EntityType<?> originalEntityType) {
         Objects.requireNonNull(context, "context is null");
-        Objects.requireNonNull(entityType, "entity type is null");
+        Objects.requireNonNull(originalEntityType, "entity type is null");
         this.context = context;
-        this.entityType = entityType;
+        this.originalEntityType = originalEntityType;
     }
 
     /**
@@ -147,7 +147,7 @@ public final class SpawnerDataBuilder {
      * @param entityType the entity type to apply spawner data to
      */
     public void apply(EntityType<?> entityType) {
-        Weighted<MobSpawnSettings.SpawnerData> spawn = this.context.getSpawn(entityType);
+        Weighted<MobSpawnSettings.SpawnerData> spawn = this.context.getSpawn(this.originalEntityType);
         if (spawn != null) {
             int weight = this.weightMapper.applyAsInt(spawn.weight());
             int minCount = this.minCountMapper.applyAsInt(spawn.value());
@@ -155,7 +155,7 @@ public final class SpawnerDataBuilder {
             this.context.addSpawn(entityType, Math.min(minCount, maxCount), maxCount, weight);
         }
 
-        MobSpawnSettings.MobSpawnCost cost = this.context.getSpawnCost(entityType);
+        MobSpawnSettings.MobSpawnCost cost = this.context.getSpawnCost(this.originalEntityType);
         if (cost != null) {
             // Just add this with the same values as the vanilla mob.
             // The spawn data weight is what matters most.

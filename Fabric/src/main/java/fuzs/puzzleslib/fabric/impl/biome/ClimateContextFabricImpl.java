@@ -1,6 +1,6 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
-import fuzs.puzzleslib.common.api.biome.v2.ClimateContext;
+import fuzs.puzzleslib.common.api.biome.v2.context.ClimateContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.world.level.biome.Biome;
 

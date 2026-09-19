@@ -1,7 +1,7 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
 import com.google.common.collect.ImmutableMap;
-import fuzs.puzzleslib.common.api.biome.v2.MobSpawnsContext;
+import fuzs.puzzleslib.common.api.biome.v2.context.MobSpawnsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -100,7 +100,6 @@ public record MobSpawnsContextFabricImpl(BiomeModificationContext.MobSpawnSettin
 
     @Override
     public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getSpawnCosts() {
-        // TODO check if this is a mutable type, it should not be
         return this.getMobSpawns().allSpawnCosts();
     }
 

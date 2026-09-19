@@ -1,4 +1,4 @@
-package fuzs.puzzleslib.common.api.biome.v1;
+package fuzs.puzzleslib.common.api.biome.v2;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -17,6 +17,7 @@ import java.util.function.BiPredicate;
  * <p>Copyright (c) FabricMC
  * <p>SPDX-License-Identifier: Apache-2.0
  */
+@FunctionalInterface
 public interface BiomeSelector extends BiPredicate<RegistryAccess, Holder<Biome>> {
 
 }
