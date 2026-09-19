@@ -347,6 +347,7 @@ accessible	field	net/minecraft/client/resources/model/ModelDiscovery	uncachedRes
 mutable	field	net/minecraft/client/resources/model/ModelDiscovery	uncachedResolver	Lit/unimi/dsi/fastutil/objects/Object2ObjectFunction;
 accessible	method	net/minecraft/client/resources/model/ModelDiscovery	createAndQueueWrapper	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/resources/model/UnbakedModel;)Lnet/minecraft/client/resources/model/ModelDiscovery$ModelWrapper;
 accessible	class	net/minecraft/client/resources/model/ModelDiscovery$ModelWrapper
+extendable  method  net/minecraft/client/resources/model/sprite/MaterialBaker   bake    (Lnet/minecraft/client/resources/model/sprite/Material;)Lnet/minecraft/client/resources/model/sprite/Material$Baked;
 accessible	method	net/minecraft/core/Holder$Reference	bindTags	(Ljava/util/Collection;)V
 accessible	method	net/minecraft/core/Holder$Reference	bindValue	(Ljava/lang/Object;)V
 accessible	field	net/minecraft/core/component/DataComponentMap$Builder	map	Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;

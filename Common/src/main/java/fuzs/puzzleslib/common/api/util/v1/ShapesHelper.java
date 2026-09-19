@@ -33,6 +33,7 @@ public final class ShapesHelper {
         for (Direction direction : Direction.values()) {
             shapes.put(direction, rotate(direction.getRotation(), voxelShape));
         }
+
         return Maps.immutableEnumMap(shapes);
     }
 
@@ -51,6 +52,7 @@ public final class ShapesHelper {
             Quaternionf rotation = getHorizontalRotation(direction);
             shapes.put(direction, rotate(rotation, voxelShape));
         }
+
         return Maps.immutableEnumMap(shapes);
     }
 

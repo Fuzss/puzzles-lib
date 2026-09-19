@@ -12,17 +12,9 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
  */
 public interface DataPackReloadListenersContext {
     /**
-     * The {@link net.minecraft.world.item.crafting.RecipeManager} reload listener.
-     */
-    Identifier RECIPES = Identifier.withDefaultNamespace("recipes");
-    /**
      * The {@link net.minecraft.server.ServerFunctionLibrary} reload listener.
      */
     Identifier FUNCTIONS = Identifier.withDefaultNamespace("functions");
-    /**
-     * The {@link net.minecraft.server.ServerAdvancementManager} reload listener.
-     */
-    Identifier ADVANCEMENTS = Identifier.withDefaultNamespace("advancements");
 
     /**
      * Register a {@link PreparableReloadListener}.

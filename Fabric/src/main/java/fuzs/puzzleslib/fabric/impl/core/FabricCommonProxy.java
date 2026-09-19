@@ -297,7 +297,9 @@ public class FabricCommonProxy implements FabricProxy {
 
     @Override
     public RecipeOutput getIdBoundRecipeOutput(String modId, BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
-        return new IdBoundRecipeOutput(modId, recipeOutput, advancementOutput);
+        return new IdBoundRecipeOutput(modId, recipeOutput, advancementOutput) {
+            // NO-OP
+        };
     }
 
     @Override

@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * swaps the namespace for the mod id. Recipe unlock advancements embedding the recipe id in both a criterion and a
  * reward are rebuilt via {@link RecipeUnlockAdvancementBuilder} for the updated recipe id.
  */
-public class IdBoundRecipeOutput implements RecipeOutput {
+public abstract class IdBoundRecipeOutput implements RecipeOutput {
     /**
      * The mod id.
      */

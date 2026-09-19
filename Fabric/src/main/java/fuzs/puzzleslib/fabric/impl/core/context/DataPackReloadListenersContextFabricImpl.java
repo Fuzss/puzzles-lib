@@ -14,9 +14,7 @@ import java.util.Objects;
 
 public final class DataPackReloadListenersContextFabricImpl implements DataPackReloadListenersContext {
     private static final Map<Identifier, Identifier> VANILLA_SERVER_RELOAD_LISTENERS = ImmutableMap.<Identifier, Identifier>builder()
-            .put(RECIPES, ResourceReloaderKeys.Server.RECIPES)
             .put(FUNCTIONS, ResourceReloaderKeys.Server.FUNCTIONS)
-            .put(ADVANCEMENTS, ResourceReloaderKeys.Server.ADVANCEMENTS)
             .build();
     private static final ThreadLocal<WeakReference<ReloadableServerResources>> SERVER_RESOURCES_REFERENCE = ThreadLocal.withInitial(
             () -> new WeakReference<>(null));

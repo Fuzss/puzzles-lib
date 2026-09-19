@@ -1,6 +1,5 @@
 package fuzs.puzzleslib.neoforge.impl.client.core.context;
 
-import com.google.common.base.Suppliers;
 import fuzs.puzzleslib.common.api.client.core.v1.context.BlockStateResolverContext;
 import fuzs.puzzleslib.common.api.client.renderer.v1.model.ModelLoadingHelper;
 import fuzs.puzzleslib.common.impl.PuzzlesLib;
@@ -34,13 +33,16 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public final class BlockStateResolverContextNeoForgeImpl implements BlockStateResolverContext {
     private final ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
     private final Function<Identifier, TextureAtlasSprite> textureResolver;
     private final ResolvedModel missingModel;
-    private final Supplier<TextureAtlasSprite> missingSprite;
+    private final TextureAtlasSprite missingSprite;
     private final Function<Identifier, @Nullable ResolvedModel> modelResolver;
     private final BiConsumer<Identifier, ResolvedModel> modelCache;
     private final BiConsumer<BlockState, BlockStateModel> blockStateModelOutput;
@@ -50,11 +52,8 @@ public final class BlockStateResolverContextNeoForgeImpl implements BlockStateRe
         this.textureResolver = event.getTextureGetter();
         ModelBakery bakery = event.getModelBakery();
         this.missingModel = bakery.missingModel;
-        this.missingSprite = Suppliers.memoize(() -> {
-            TextureAtlasSprite missingSprite = event.getTextureGetter().apply(MissingTextureAtlasSprite.getLocation());
-            Objects.requireNonNull(missingSprite, "missing sprite is null");
-            return missingSprite;
-        });
+        TextureAtlasSprite missingSprite = event.getTextureGetter().apply(MissingTextureAtlasSprite.getLocation());
+        this.missingSprite = Objects.requireNonNull(missingSprite, "missing sprite is null");
         Map<Identifier, ResolvedModel> resolvedModels = new HashMap<>();
         this.modelResolver = (Identifier id) -> {
             // The resolved models map from the bakery is unmodifiable when the ModernFix mod is installed.
@@ -121,11 +120,17 @@ public final class BlockStateResolverContextNeoForgeImpl implements BlockStateRe
      * {@link ModelManager#loadModels(SpriteLoader.Preparations, SpriteLoader.Preparations, ModelBakery,
      * LoadedBlockModels, Object2IntMap, EntityModelSet, Executor)}.
      */
-    private static Map<BlockState, BlockStateModel> loadModels(Map<BlockState, BlockStateModel.UnbakedRoot> models, Function<Identifier, TextureAtlasSprite> textureGetter, Function<MaterialBaker, ModelBaker> bakerFactory, Supplier<TextureAtlasSprite> missingSprite) {
+    private static Map<BlockState, BlockStateModel> loadModels(Map<BlockState, BlockStateModel.UnbakedRoot> models, Function<Identifier, TextureAtlasSprite> textureGetter, Function<MaterialBaker, ModelBaker> bakerFactory, TextureAtlasSprite missingSprite) {
         try (Zone _ = Profiler.get().zone(PuzzlesLibMod.id("baking")::toString)) {
-            MaterialBaker materials = new MaterialBaker(missingSprite.get()) {
+            SpriteLoader.Preparations dummyAtlas = new SpriteLoader.Preparations(0,
+                    0,
+                    0,
+                    missingSprite,
+                    Map.of(),
+                    CompletableFuture.completedFuture(null));
+            MaterialBaker materials = new MaterialBaker(dummyAtlas, dummyAtlas) {
                 @Override
-                protected Material.@Nullable Baked bake(Material material) {
+                public Material.@Nullable Baked bake(Material material) {
                     TextureAtlasSprite sprite = textureGetter.apply(material.sprite());
                     return sprite != null ? new Material.Baked(sprite, material.forceTranslucent()) : null;
                 }

@@ -13,9 +13,7 @@ import java.util.Objects;
 
 public record DataPackReloadListenersContextNeoForgeImpl(AddServerReloadListenersEvent event) implements DataPackReloadListenersContext {
     private static final Map<Identifier, Identifier> VANILLA_SERVER_RELOAD_LISTENERS = ImmutableMap.<Identifier, Identifier>builder()
-            .put(RECIPES, VanillaServerListeners.RECIPES)
             .put(FUNCTIONS, VanillaServerListeners.FUNCTIONS)
-            .put(ADVANCEMENTS, VanillaServerListeners.ADVANCEMENTS)
             .build();
 
     @Override
