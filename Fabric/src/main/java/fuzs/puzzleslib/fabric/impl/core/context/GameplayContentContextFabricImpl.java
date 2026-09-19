@@ -2,37 +2,15 @@ package fuzs.puzzleslib.fabric.impl.core.context;
 
 import com.google.common.base.Preconditions;
 import fuzs.puzzleslib.common.api.core.v1.context.GameplayContentContext;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import net.fabricmc.fabric.api.registry.*;
+import net.fabricmc.fabric.api.item.v1.BlockTransformerHelper;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.FuelValues;
-import org.apache.commons.lang3.math.Fraction;
 
 import java.util.Objects;
 
 public final class GameplayContentContextFabricImpl implements GameplayContentContext {
-    private final Object2ObjectMap<Holder<? extends ItemLike>, Fraction> furnaceFuels = new Object2ObjectArrayMap<>();
-
-    @Override
-    public void registerFuel(Holder<? extends ItemLike> fuelItem, Fraction fuelValue) {
-        Objects.requireNonNull(fuelItem, "fuel item is null");
-        Objects.requireNonNull(fuelValue, "fuel value is null");
-        if (this.furnaceFuels.isEmpty()) {
-            FuelValueEvents.BUILD.register((FuelValues.Builder builder, FuelValueEvents.Context context) -> {
-                Fraction fuelBaseValue = Fraction.getFraction(context.baseSmeltTime(), 1);
-                this.furnaceFuels.forEach((Holder<? extends ItemLike> holder, Fraction fraction) -> {
-                    builder.add(holder.value(), fraction.multiplyBy(fuelBaseValue).intValue());
-                });
-            });
-        }
-
-        this.furnaceFuels.put(fuelItem, fuelValue);
-    }
-
     @Override
     public void registerFlammable(Holder<Block> flammableBlock, int encouragement, int flammability) {
         Preconditions.checkArgument(encouragement > 0, "encouragement is non-positive");
@@ -43,34 +21,24 @@ public final class GameplayContentContextFabricImpl implements GameplayContentCo
     }
 
     @Override
-    public void registerCompostable(Holder<? extends ItemLike> compostableItem, float compostingChance) {
-        Preconditions.checkArgument(compostingChance >= 0.0F && compostingChance <= 1.0F,
-                "Value " + compostingChance + " outside of range 0.0 -> 1.0");
-        Objects.requireNonNull(compostableItem, "compostable item is null");
-        CompostableRegistry.INSTANCE.add(compostableItem.value(), compostingChance);
-    }
-
-    @Override
     public void registerStrippable(Holder<Block> unstrippedBlock, Holder<Block> strippedBlock) {
         Objects.requireNonNull(unstrippedBlock, "unstripped block is null");
         Objects.requireNonNull(strippedBlock, "stripped block is null");
-        StrippableBlockRegistry.registerCopyState(unstrippedBlock.value(), strippedBlock.value());
+        BlockTransformerHelper.registerStripping(unstrippedBlock.value(), strippedBlock.value());
     }
 
     @Override
     public void registerFlattenable(Holder<Block> unflattenedBlock, Holder<Block> flattenedBlock) {
         Objects.requireNonNull(unflattenedBlock, "unflattened block is null");
         Objects.requireNonNull(flattenedBlock, "flattened block is null");
-        FlattenableBlockRegistry.register(unflattenedBlock.value(), flattenedBlock.value().defaultBlockState());
+        BlockTransformerHelper.registerFlattening(unflattenedBlock.value(), flattenedBlock.value().defaultBlockState());
     }
 
     @Override
     public void registerTillable(Holder<Block> untilledBlock, Holder<Block> tilledBlock) {
         Objects.requireNonNull(untilledBlock, "untilled block is null");
         Objects.requireNonNull(tilledBlock, "tilled block is null");
-        TillableBlockRegistry.register(untilledBlock.value(),
-                HoeItem::onlyIfAirAbove,
-                tilledBlock.value().defaultBlockState());
+        BlockTransformerHelper.registerTilling(untilledBlock.value(), tilledBlock.value().defaultBlockState());
     }
 
     @Override

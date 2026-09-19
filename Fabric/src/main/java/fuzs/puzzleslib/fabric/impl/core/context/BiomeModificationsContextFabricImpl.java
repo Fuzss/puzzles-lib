@@ -8,6 +8,7 @@ import fuzs.puzzleslib.common.api.biome.v2.context.*;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
 import fuzs.puzzleslib.common.impl.biome.BiomeTransformerContextImpl;
 import fuzs.puzzleslib.fabric.impl.biome.*;
+import fuzs.puzzleslib.fabric.mixin.accessor.BiomeFabricAccessor;
 import fuzs.puzzleslib.fabric.mixin.accessor.BiomeSelectionContextImplFabricAccessor;
 import net.fabricmc.fabric.api.biome.v1.*;
 import net.minecraft.core.Holder;
@@ -58,7 +59,9 @@ public final class BiomeModificationsContextFabricImpl implements BiomeModificat
     private static BiomeTransformer.Context buildTransformerContext(BiomeModificationContext context, Holder<Biome> biome) {
         AttributesContext attributes = new AttributesContextFabricImpl(context.getAttributes(),
                 biome.value().getAttributes());
-        ClimateContext climate = new ClimateContextFabricImpl(context.getWeather(), biome.value().climateSettings);
+        Biome.ClimateSettings climateSettings = BiomeFabricAccessor.class.cast(biome.value())
+                .puzzleslib$getClimateSettings();
+        ClimateContext climate = new ClimateContextFabricImpl(context.getWeather(), climateSettings);
         EffectsContext specialEffects = new EffectsContextFabricImpl(context.getEffects(),
                 biome.value().getSpecialEffects());
         GenerationContext generation = new GenerationContextFabricImpl(context.getGenerationSettings(),
