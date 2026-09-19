@@ -63,7 +63,7 @@ public interface DataProviderBuilder {
      *     <li>Data pack path: {@code data/<modId>/datapacks/<path>}</li>
      *     <li>Resource pack path: {@code assets/<modId>/resourcepacks/<path>}</li>
      * </ul>
-     * A {@link fuzs.puzzleslib.common.api.data.v2.ModPackMetadataProvider} is added automatically.
+     * A {@link fuzs.puzzleslib.common.api.data.v3.ModPackMetadataProvider} is added automatically.
      *
      * @param id       the pack id
      * @param packType the pack type
@@ -80,7 +80,7 @@ public interface DataProviderBuilder {
      *     <li>Data pack path: {@code data/<modId>/datapacks/<path>}</li>
      *     <li>Resource pack path: {@code assets/<modId>/resourcepacks/<path>}</li>
      * </ul>
-     * A {@link fuzs.puzzleslib.common.api.data.v2.ModPackMetadataProvider} is added automatically.
+     * A {@link fuzs.puzzleslib.common.api.data.v3.ModPackMetadataProvider} is added automatically.
      *
      * @param id            the pack id
      * @param packType      the pack type
