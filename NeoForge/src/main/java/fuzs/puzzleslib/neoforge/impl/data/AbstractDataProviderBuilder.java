@@ -2,8 +2,8 @@ package fuzs.puzzleslib.neoforge.impl.data;
 
 import com.google.common.base.Preconditions;
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
-import fuzs.puzzleslib.common.api.data.v3.metadata.ModPackMetadataProvider;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.data.v3.metadata.ModPackMetadataProvider;
 import fuzs.puzzleslib.common.api.resources.v2.PackResourcesHelper;
 import fuzs.puzzleslib.common.impl.data.DataGenerationScopes;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
@@ -34,7 +34,10 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
@@ -206,6 +209,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
 
     @Override
     public DataProviderBuilder addLootProvider(LootTableSubProvider.Factory provider, ContextKeySet paramSet) {
+        Objects.requireNonNull(provider, "loot table sub-provider is null");
         Objects.requireNonNull(paramSet, "context key set is null");
         return this.addLootProvider(new LootTableProvider.SubProviderEntry(provider, paramSet));
     }
@@ -213,12 +217,16 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     @Override
     public DataProviderBuilder addAdvancementProvider(AdvancementSubProvider.Factory provider) {
         Objects.requireNonNull(provider, "advancement sub-provider is null");
-        return this.addAdvancementProvider(new AdvancementSubProvider.Factory[]{provider});
+        return this.addReloadable(Registries.ADVANCEMENT, new AdvancementProvider(List.of(provider)));
     }
 
     @Override
     public DataProviderBuilder addAdvancementProvider(AdvancementSubProvider.Factory... providers) {
-        return this.addReloadable(Registries.ADVANCEMENT, new AdvancementProvider(Arrays.asList(providers)));
+        for (AdvancementSubProvider.Factory provider : providers) {
+            this.addAdvancementProvider(provider);
+        }
+
+        return this;
     }
 
     @Override
@@ -234,8 +242,8 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
             @Override
             public void run(BootstrapGetter registries) {
                 ScopedValue.where(DataGenerationScopes.MOD_ID, modId)
-                        .run(() -> provider.apply(registries.get(Registries.RECIPE), registries.get(Registries.ADVANCEMENT))
-                                .run());
+                        .run(() -> provider.apply(registries.get(Registries.RECIPE),
+                                registries.get(Registries.ADVANCEMENT)).run());
             }
         });
     }
