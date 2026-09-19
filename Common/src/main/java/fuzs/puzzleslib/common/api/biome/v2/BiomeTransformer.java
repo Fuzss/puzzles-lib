@@ -7,7 +7,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
 
 @FunctionalInterface
-public interface BiomeModifier {
+public interface BiomeTransformer {
     void accept(RegistryAccess registryAccess, Holder<Biome> biome, Context context);
 
     /**

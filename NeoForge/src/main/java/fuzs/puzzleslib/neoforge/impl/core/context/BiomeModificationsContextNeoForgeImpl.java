@@ -1,16 +1,16 @@
 package fuzs.puzzleslib.neoforge.impl.core.context;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.mojang.serialization.MapCodec;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeLoadingPhase;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeSelector;
+import fuzs.puzzleslib.common.api.biome.v2.BiomeTransformer;
 import fuzs.puzzleslib.common.api.biome.v2.context.*;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeModificationsContext;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
-import fuzs.puzzleslib.common.impl.biome.BiomeContext;
+import fuzs.puzzleslib.common.impl.biome.BiomeTransformerContextImpl;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.impl.biome.*;
 import net.minecraft.core.Holder;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class BiomeModificationsContextNeoForgeImpl implements BiomeModificationsContext {
-    private final Multimap<BiomeLoadingPhase, Map.Entry<BiomeSelector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier>> biomeModifications = HashMultimap.create();
+    private final Multimap<BiomeLoadingPhase, BiomeTransformer> transformers = HashMultimap.create();
     private final String modId;
     private final IEventBus eventBus;
 
@@ -41,11 +41,11 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
     }
 
     @Override
-    public void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier modifier) {
+    public void registerBiomeModification(BiomeLoadingPhase loadingPhase, BiomeSelector selector, BiomeTransformer transformer) {
         Objects.requireNonNull(loadingPhase, "loading phase is null");
         Objects.requireNonNull(selector, "selector is null");
-        Objects.requireNonNull(modifier, "modifier is null");
-        if (this.biomeModifications.isEmpty()) {
+        Objects.requireNonNull(transformer, "transformer is null");
+        if (this.transformers.isEmpty()) {
             BiomeModifier biomeModifierImpl = new BiomeModifierImpl();
             DeferredRegister<MapCodec<? extends BiomeModifier>> deferredRegister = DeferredRegister.create(
                     NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS,
@@ -68,7 +68,12 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
             });
         }
 
-        this.biomeModifications.put(loadingPhase, Map.entry(selector, modifier));
+        this.transformers.put(loadingPhase,
+                (RegistryAccess registryAccess, Holder<Biome> biome, BiomeTransformer.Context context) -> {
+                    if (selector.test(registryAccess, biome)) {
+                        transformer.accept(registryAccess, biome, context);
+                    }
+                });
     }
 
     /**
@@ -77,8 +82,7 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
      * from <a href="https://github.com/teamfusion/rottencreatures">Rotten Creatures mod</a>.
      */
     private class BiomeModifierImpl implements BiomeModifier {
-        private static final Map<Phase, BiomeLoadingPhase> BIOME_PHASE_CONVERSIONS = Maps.immutableEnumMap(ImmutableMap.of(
-                Phase.ADD,
+        private static final Map<Phase, BiomeLoadingPhase> LOADING_PHASES = Maps.immutableEnumMap(Map.of(Phase.ADD,
                 BiomeLoadingPhase.ADD,
                 Phase.REMOVE,
                 BiomeLoadingPhase.REMOVE,
@@ -91,33 +95,30 @@ public final class BiomeModificationsContextNeoForgeImpl implements BiomeModific
 
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-            // no equivalent for BEFORE_EVERYTHING exists on Fabric, so we don't use it;
-            // therefore, it is possible for no mapping to be found
-            BiomeLoadingPhase biomeLoadingPhase = BIOME_PHASE_CONVERSIONS.get(phase);
-            if (biomeLoadingPhase != null) {
-                Collection<Map.Entry<BiomeSelector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier>> biomeModification = BiomeModificationsContextNeoForgeImpl.this.biomeModifications.get(
-                        biomeLoadingPhase);
-                if (!biomeModification.isEmpty()) {
-                    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
-                    Objects.requireNonNull(minecraftServer, "minecraft server is null");
-                    RegistryAccess registryAccess = minecraftServer.registryAccess();
-                    BiomeContext biomeContext = createModificationContext(builder);
-                    for (Map.Entry<BiomeSelector, fuzs.puzzleslib.common.api.biome.v2.BiomeModifier> entry : biomeModification) {
-                        if (entry.getKey().test(registryAccess, biome)) {
-                            entry.getValue().accept(registryAccess, biome, biomeContext);
-                        }
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            Objects.requireNonNull(server, "server is null");
+            RegistryAccess registryAccess = server.registryAccess();
+            BiomeTransformer.Context context = buildTransformerContext(builder);
+            BiomeLoadingPhase loadingPhase = LOADING_PHASES.get(phase);
+            // Not all phases may exist in our implementation, so this can be null.
+            if (loadingPhase != null) {
+                Collection<BiomeTransformer> transformers = BiomeModificationsContextNeoForgeImpl.this.transformers.get(
+                        loadingPhase);
+                if (!transformers.isEmpty()) {
+                    for (BiomeTransformer transformer : transformers) {
+                        transformer.accept(registryAccess, biome, context);
                     }
                 }
             }
         }
 
-        private static BiomeContext createModificationContext(ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+        private static BiomeTransformer.Context buildTransformerContext(ModifiableBiomeInfo.BiomeInfo.Builder builder) {
             AttributesContext attributes = new AttributesContextNeoForgeImpl(builder.getAttributes());
             ClimateContext climate = new ClimateContextNeoForgeImpl(builder.getClimateSettings());
             EffectsContext effects = new EffectsContextNeoForgeImpl(builder.getSpecialEffects());
             GenerationContext generation = new GenerationContextNeoForgeImpl(builder.getGenerationSettings());
             MobSpawnsContext mobSpawns = new MobSpawnsContextNeoForgeImpl(builder.getMobSpawnSettings());
-            return new BiomeContext(attributes, climate, effects, generation, mobSpawns);
+            return new BiomeTransformerContextImpl(attributes, climate, effects, generation, mobSpawns);
         }
 
         @Override
