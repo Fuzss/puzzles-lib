@@ -64,7 +64,7 @@ import java.util.function.Supplier;
 
 import static fuzs.puzzleslib.neoforge.api.event.v1.core.NeoForgeEventInvokerRegistry.INSTANCE;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "RedundantCast", "CodeBlock2Expr"})
 public final class NeoForgeClientEventInvokers {
 
     private NeoForgeClientEventInvokers() {
@@ -82,9 +82,9 @@ public final class NeoForgeClientEventInvokers {
                 (ScreenOpeningCallback callback, ScreenEvent.Opening event) -> {
                     EventResultHolder<@Nullable Screen> eventResult = callback.onScreenOpening(event.getCurrentScreen(),
                             event.getNewScreen());
-                    // returning the current screen should ideally cause no change at all,
-                    // which is implemented fine on NeoForge via cancelling the event,
-                    // on Fabric though the screen will be initialized again, after Screen::remove having been called
+                    // Returning the current screen should ideally cause no change at all.
+                    // This is implemented fine on NeoForge via cancelling the event.
+                    // On Fabric, though, the screen will be initialized again after Screen::remove has been called.
                     eventResult.ifInterrupt((@Nullable Screen screen) -> {
                         if (screen == event.getCurrentScreen()) {
                             event.setCanceled(true);
@@ -96,7 +96,7 @@ public final class NeoForgeClientEventInvokers {
         INSTANCE.register(ExtractEntityRenderStateCallback.class,
                 RegisterRenderStateModifiersEvent.class,
                 (ExtractEntityRenderStateCallback callback, RegisterRenderStateModifiersEvent event) -> {
-                    event.registerEntityModifier((Class<? extends EntityRenderer<? extends Entity, ? extends EntityRenderState>>) EntityRenderer.class,
+                    event.registerEntityModifier((Class<? extends EntityRenderer<? extends Entity, ? extends EntityRenderState>>) (Class<?>) EntityRenderer.class,
                             (Entity entity, EntityRenderState entityRenderState) -> {
                                 callback.onExtractEntityRenderState(entity,
                                         entityRenderState,
@@ -106,7 +106,7 @@ public final class NeoForgeClientEventInvokers {
         INSTANCE.register(ClientLifecycleEvents.Started.class,
                 ClientStartedEvent.class,
                 (ClientLifecycleEvents.Started callback, ClientStartedEvent event) -> {
-                    callback.onClientStarted(Minecraft.getInstance());
+                    callback.onClientStarted(event.getClient());
                 });
         INSTANCE.register(ClientLifecycleEvents.Stopping.class,
                 ClientStoppingEvent.class,
@@ -159,12 +159,12 @@ public final class NeoForgeClientEventInvokers {
                 });
         INSTANCE.register(ClientTickEvents.Start.class,
                 ClientTickEvent.Pre.class,
-                (ClientTickEvents.Start callback, ClientTickEvent.Pre event) -> {
+                (ClientTickEvents.Start callback, ClientTickEvent.Pre _) -> {
                     callback.onStartClientTick(Minecraft.getInstance());
                 });
         INSTANCE.register(ClientTickEvents.End.class,
                 ClientTickEvent.Post.class,
-                (ClientTickEvents.End callback, ClientTickEvent.Post event) -> {
+                (ClientTickEvents.End callback, ClientTickEvent.Post _) -> {
                     callback.onEndClientTick(Minecraft.getInstance());
                 });
         INSTANCE.register(RenderGuiEvents.Before.class,
@@ -226,9 +226,9 @@ public final class NeoForgeClientEventInvokers {
                         return;
                     }
 
-                    // reverse fovEffectScale calculations applied by vanilla in return statement / by Forge when setting up the event
-                    // this approach is chosen so the callback may work with the actual fov modifier, and does not have to deal with the fovEffectScale option,
-                    // which is applied automatically regardless
+                    // Here we reverse fovEffectScale calculations applied by vanilla in the return statement / by NeoForge when setting up the event.
+                    // This approach is chosen so the callback may work with the actual fov modifier.
+                    // We bypass having to deal with the fovEffectScale option (which is applied automatically regardless).
                     Consumer<Float> consumer = value -> event.setNewFovModifier(Mth.lerp(fovEffectScale, 1.0F, value));
                     Supplier<Float> supplier = () -> (event.getNewFovModifier() - 1.0F) / fovEffectScale + 1.0F;
                     callback.onComputeFovModifier(event.getPlayer(),
@@ -547,8 +547,8 @@ public final class NeoForgeClientEventInvokers {
                                 minecraft.player,
                                 minecraft.hitResult);
                         if (eventResult.isInterrupt()) {
-                            // set this to achieve same behavior as Fabric where the methods are cancelled at head without additional processing
-                            // just manually send swing hand packet if necessary
+                            // Set this to achieve the same behavior as Fabric where the methods are canceled at head without additional processing.
+                            // Just manually send the swing hand packet if necessary.
                             event.setSwingHand(false);
                             event.setCanceled(true);
                         }
@@ -572,8 +572,8 @@ public final class NeoForgeClientEventInvokers {
                                     event.getHand(),
                                     minecraft.hitResult);
                             if (eventResult.isInterrupt()) {
-                                // set this to achieve same behavior as Fabric where the methods are cancelled at head without additional processing
-                                // just manually send swing hand packet if necessary
+                                // Set this to achieve the same behavior as Fabric where the methods are canceled at head without additional processing.
+                                // Just manually send the swing hand packet if necessary.
                                 event.setSwingHand(false);
                                 event.setCanceled(true);
                             }

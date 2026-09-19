@@ -75,6 +75,7 @@ import java.util.function.Supplier;
 
 import static fuzs.puzzleslib.neoforge.api.event.v1.core.NeoForgeEventInvokerRegistry.INSTANCE;
 
+@SuppressWarnings("CodeBlock2Expr")
 public final class NeoForgeEventInvokers {
 
     private NeoForgeEventInvokers() {
@@ -123,7 +124,7 @@ public final class NeoForgeEventInvokers {
         ResourceKey<? extends Registry<T>> resourceKey = (ResourceKey<? extends Registry<T>>) context;
         Registry<T> registry = event.getRegistry(resourceKey);
         boolean[] loadComplete = new boolean[1];
-        registry.addCallback((AddCallback<T>) (Registry<T> callbackRegistry, int id, ResourceKey<T> key, T value) -> {
+        registry.addCallback((AddCallback<T>) (Registry<T> callbackRegistry, int _, ResourceKey<T> key, T value) -> {
             if (!loadComplete[0]) {
                 try {
                     callback.onRegistryEntryAdded(callbackRegistry,
@@ -135,7 +136,7 @@ public final class NeoForgeEventInvokers {
                 }
             }
         });
-        registry.addCallback((BakeCallback<T>) (Registry<T> registryx) -> {
+        registry.addCallback((BakeCallback<T>) (Registry<T> _) -> {
             // prevent add callback from running after loading has completed, Forge still fires the callback when syncing registries,
             // but that doesn't allow for adding content
             loadComplete[0] = true;
