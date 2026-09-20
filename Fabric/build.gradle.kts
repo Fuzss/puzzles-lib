@@ -28,7 +28,7 @@ multiloader {
             "CatFabricMixin",
             "ChunkMapFabricMixin",
             "CrossbowItemFabricMixin",
-            "EnderManFabricMixin",
+            "EndermanFabricMixin",
             "EntityFabricMixin",
             "ExperienceOrbFabricMixin",
             "FoxBreedGoalFabricMixin",
