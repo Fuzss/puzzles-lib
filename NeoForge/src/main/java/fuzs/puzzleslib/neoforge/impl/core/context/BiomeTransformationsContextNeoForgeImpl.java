@@ -3,6 +3,9 @@ package fuzs.puzzleslib.neoforge.impl.core.context;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeLoadingPhase;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeSelector;
@@ -14,9 +17,11 @@ import fuzs.puzzleslib.common.impl.biome.BiomeTransformerContextImpl;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.impl.biome.*;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.PackOutput;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.data.JsonCodecProvider;
@@ -24,7 +29,6 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.Collection;
 import java.util.Map;
@@ -46,13 +50,13 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
         Objects.requireNonNull(selector, "selector is null");
         Objects.requireNonNull(transformer, "transformer is null");
         if (this.transformers.isEmpty()) {
-            BiomeModifier biomeModifierImpl = new BiomeModifierImpl();
+            MapCodec<BiomeModifierImpl> mapCodec = this.mapCodec();
             DeferredRegister<MapCodec<? extends BiomeModifier>> deferredRegister = DeferredRegister.create(
                     NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS,
                     this.modId);
             deferredRegister.register(this.eventBus);
             Holder<MapCodec<? extends BiomeModifier>> holder = deferredRegister.register("biome_modifications",
-                    biomeModifierImpl::codec);
+                    () -> mapCodec);
             DataProviderBuilder.of(this.modId, (DataProviderContext context) -> {
                 return new JsonCodecProvider<>(context.getPackOutput(),
                         PackOutput.Target.DATA_PACK,
@@ -62,17 +66,32 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
                         context.getModId()) {
                     @Override
                     protected void gather() {
-                        this.unconditional(holder.getKey().identifier(), biomeModifierImpl);
+                        this.unconditional(holder.getKey().identifier(),
+                                new BiomeModifierImpl(mapCodec, RegistryAccess.EMPTY));
                     }
                 };
             });
         }
 
         this.transformers.put(loadingPhase,
-                (RegistryAccess registryAccess, Holder<Biome> biome, BiomeTransformer.Context context) -> {
-                    if (selector.test(registryAccess, biome)) {
-                        transformer.accept(registryAccess, biome, context);
+                (HolderGetter.Provider registries, Holder<Biome> biome, BiomeTransformer.Context context) -> {
+                    if (selector.test(registries, biome)) {
+                        transformer.accept(registries, biome, context);
                     }
+                });
+    }
+
+    private MapCodec<BiomeModifierImpl> mapCodec() {
+        return MapCodec.recursive("BiomeTransformationsContextNeoForgeImpl.BiomeModifierImpl",
+                (Codec<BiomeModifierImpl> codec) -> {
+                    return ExtraCodecs.retrieveContext((DynamicOps<?> ops) -> {
+                        if (ops instanceof RegistryOps<?> registryOps) {
+                            return DataResult.success(new BiomeModifierImpl(MapCodec.assumeMapUnsafe(codec),
+                                    registryOps.lookupProvider::lookup));
+                        } else {
+                            return DataResult.error(() -> "Not a registry ops");
+                        }
+                    });
                 });
     }
 
@@ -91,13 +110,16 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
                 Phase.AFTER_EVERYTHING,
                 BiomeLoadingPhase.POST));
 
-        private final MapCodec<? extends BiomeModifier> codec = MapCodec.unit(this);
+        private final MapCodec<? extends BiomeModifier> codec;
+        private final HolderGetter.Provider registries;
+
+        BiomeModifierImpl(MapCodec<? extends BiomeModifier> codec, HolderGetter.Provider registries) {
+            this.codec = codec;
+            this.registries = registries;
+        }
 
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-            Objects.requireNonNull(server, "server is null");
-            RegistryAccess registryAccess = server.registryAccess();
             BiomeTransformer.Context context = buildTransformerContext(builder);
             BiomeLoadingPhase loadingPhase = LOADING_PHASES.get(phase);
             // Not all phases may exist in our implementation, so this can be null.
@@ -106,7 +128,7 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
                         loadingPhase);
                 if (!transformers.isEmpty()) {
                     for (BiomeTransformer transformer : transformers) {
-                        transformer.accept(registryAccess, biome, context);
+                        transformer.accept(this.registries, biome, context);
                     }
                 }
             }

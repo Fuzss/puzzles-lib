@@ -3,7 +3,7 @@ package fuzs.puzzleslib.common.api.biome.v2;
 import fuzs.puzzleslib.common.api.biome.v2.context.*;
 import fuzs.puzzleslib.common.api.core.v1.context.BiomeTransformationsContext;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.biome.Biome;
 
 /**
@@ -21,11 +21,11 @@ public interface BiomeTransformer {
     /**
      * Applies this transformer to a biome.
      *
-     * @param registryAccess the registry access of the current level
-     * @param biome          the holder of the biome being transformed
-     * @param context        the context for modifying the biome
+     * @param registries a lookup provider for the registries of the current level
+     * @param biome      the holder of the biome being transformed
+     * @param context    the context for modifying the biome
      */
-    void accept(RegistryAccess registryAccess, Holder<Biome> biome, Context context);
+    void accept(HolderGetter.Provider registries, Holder<Biome> biome, Context context);
 
     /**
      * Context containing all biome-related information passed in {@link BiomeTransformationsContext}.
