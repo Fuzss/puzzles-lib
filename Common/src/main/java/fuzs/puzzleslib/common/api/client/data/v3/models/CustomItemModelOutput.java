@@ -21,21 +21,19 @@ public interface CustomItemModelOutput extends ItemModelOutput {
     /**
      * Registers the given model for the item with the given id, using the default {@link ClientItem.Properties}.
      *
-     * @param identifier the item id
-     * @param model      the item model
-     * @see #accept(Identifier, ItemModel.Unbaked, ClientItem.Properties)
+     * @param modelId the item id
+     * @param model   the item model
      */
-    default void accept(Identifier identifier, ItemModel.Unbaked model) {
-        this.accept(identifier, model, ClientItem.Properties.DEFAULT);
+    default void accept(Identifier modelId, ItemModel.Unbaked model) {
+        this.accept(modelId, model, ClientItem.Properties.DEFAULT);
     }
 
     /**
      * Registers the given model and properties for the item with the given id.
      *
-     * @param identifier the item id
+     * @param modelId    the item id
      * @param model      the item model
      * @param properties the additional client item properties
-     * @see ItemModelOutput#register(Identifier, ClientItem)
      */
-    void accept(Identifier identifier, ItemModel.Unbaked model, ClientItem.Properties properties);
+    void accept(Identifier modelId, ItemModel.Unbaked model, ClientItem.Properties properties);
 }

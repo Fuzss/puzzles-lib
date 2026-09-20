@@ -30,7 +30,6 @@ import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
@@ -124,13 +123,10 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
             BiomeLoadingPhase loadingPhase = LOADING_PHASES.get(phase);
             // Not all phases may exist in our implementation, so this can be null.
             if (loadingPhase != null) {
-                Collection<BiomeTransformer> transformers = BiomeTransformationsContextNeoForgeImpl.this.transformers.get(
-                        loadingPhase);
-                if (!transformers.isEmpty()) {
-                    for (BiomeTransformer transformer : transformers) {
-                        transformer.accept(this.registries, biome, context);
-                    }
-                }
+                BiomeTransformationsContextNeoForgeImpl.this.transformers.get(loadingPhase)
+                        .forEach((BiomeTransformer transformer) -> {
+                            transformer.accept(this.registries, biome, context);
+                        });
             }
         }
 

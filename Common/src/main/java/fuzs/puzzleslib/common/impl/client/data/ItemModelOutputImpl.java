@@ -35,10 +35,10 @@ public final class ItemModelOutputImpl extends ModelProvider.ItemInfoCollector i
     }
 
     @Override
-    public void accept(Identifier identifier, ItemModel.Unbaked model, ClientItem.Properties properties) {
-        ClientItem clientItem = this.additionalItemInfos.put(identifier, new ClientItem(model, properties));
+    public void accept(Identifier modelId, ItemModel.Unbaked model, ClientItem.Properties properties) {
+        ClientItem clientItem = this.additionalItemInfos.put(modelId, new ClientItem(model, properties));
         if (clientItem != null) {
-            throw new IllegalStateException("Duplicate item model definition for " + identifier);
+            throw new IllegalStateException("Duplicate item model definition for " + modelId);
         }
     }
 

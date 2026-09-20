@@ -2,10 +2,10 @@ package fuzs.puzzleslib.common.api.event.v1.level;
 
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -23,7 +23,7 @@ public interface GatherPotentialSpawnsCallback {
      * @param serverLevel      the current level instance
      * @param structureManager the structure manager, used for applying {@link Structure#spawnOverrides()}
      * @param chunkGenerator   the chunk generator for calling
-     *                         {@link ChunkGenerator#getMobsAt(Holder, StructureManager, MobCategory, BlockPos)}
+     *                         {@link ChunkGenerator#getMobsAt(Level, StructureManager, MobCategory, BlockPos)}
      * @param mobCategory      the mob category to retrieve potential spawns for
      * @param blockPos         the block position the spawn attempt is made at
      * @param mobs             the vanilla list of mobs available for the given position
