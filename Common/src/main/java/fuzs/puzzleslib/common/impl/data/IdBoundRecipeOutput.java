@@ -1,12 +1,15 @@
 package fuzs.puzzleslib.common.impl.data;
 
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BootstrapRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -15,10 +18,12 @@ import net.minecraft.data.recipes.RecipeUnlockAdvancementBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -43,6 +48,12 @@ public abstract class IdBoundRecipeOutput implements RecipeOutput {
      * The bootstrap context recipe unlock advancements are registered to.
      */
     private final BootstrapContext<Advancement> advancementOutput;
+    /**
+     * Owner for stand-alone recipe holders that are never registered to the actual output, so they cannot pollute the
+     * recipe registry and later fail validation.
+     */
+    private final BootstrapRegistry<Recipe<?>> throwawayRegistry = new BootstrapRegistry<>(Registries.RECIPE,
+            Lifecycle.stable());
 
     /**
      * @param modId             the mod id to update all recipes and advancements to
@@ -75,9 +86,39 @@ public abstract class IdBoundRecipeOutput implements RecipeOutput {
         return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
     }
 
+    /**
+     * Resolves recipe ids for the eager holder lookup in {@link RecipeUnlockAdvancementBuilder#build}, which runs
+     * before {@link #accept} registers the recipe.
+     * <p>
+     * The raw bootstrap registry creates a stand-alone unbound holder for every id looked up, so an id that is never
+     * registered would later fail validation. Ids already in the mod namespace are therefore resolved against the
+     * actual output, as {@link #accept} binds the very same holder. All other ids are returned as stand-alone holders
+     * of a throwaway owner: those can only belong to the initial advancement of a relocated recipe, which
+     * {@link #updateAdvancement} replaces before anything is registered.
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
-        return this.recipeOutput.lookup(key);
+        if (key.equals(Registries.RECIPE)) {
+            HolderGetter<Recipe<?>> holderGetter = (HolderGetter<Recipe<?>>) this.recipeOutput.lookup(key);
+            return (HolderGetter<S>) new HolderGetter<Recipe<?>>() {
+                @Override
+                public Optional<Holder.Reference<Recipe<?>>> get(ResourceKey<Recipe<?>> id) {
+                    if (id.identifier().getNamespace().equals(IdBoundRecipeOutput.this.modId)) {
+                        return holderGetter.get(id);
+                    } else {
+                        return IdBoundRecipeOutput.this.throwawayRegistry.get(id);
+                    }
+                }
+
+                @Override
+                public Optional<HolderSet.Named<Recipe<?>>> get(TagKey<Recipe<?>> id) {
+                    return holderGetter.get(id);
+                }
+            };
+        } else {
+            return this.recipeOutput.lookup(key);
+        }
     }
 
     @SuppressWarnings("deprecation")
