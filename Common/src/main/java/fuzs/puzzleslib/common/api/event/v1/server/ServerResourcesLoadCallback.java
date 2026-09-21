@@ -4,6 +4,9 @@ import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
 
+/**
+ * TODO remove ReloadableServerResources, it is unused and complicates the Fabric API implementation
+ */
 @FunctionalInterface
 public interface ServerResourcesLoadCallback {
     EventInvoker<ServerResourcesLoadCallback> EVENT = EventInvoker.lookup(ServerResourcesLoadCallback.class);

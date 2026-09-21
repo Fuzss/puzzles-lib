@@ -9,6 +9,8 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 
 /**
  * Adds listeners to the server (data packs) resource manager to reload together with other resources.
+ * <p>
+ * TODO remove ReloadableServerResources, it is unused and complicates the Fabric API implementation
  */
 public interface DataPackReloadListenersContext {
     /**
