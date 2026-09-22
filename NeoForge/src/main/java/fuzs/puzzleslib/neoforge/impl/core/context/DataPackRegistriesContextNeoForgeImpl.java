@@ -11,9 +11,17 @@ import java.util.Objects;
 public record DataPackRegistriesContextNeoForgeImpl(DataPackRegistryEvent.NewRegistry event) implements DataPackRegistriesContext {
 
     @Override
-    public <T> void registerRegistry(ResourceKey<Registry<T>> registryKey, Codec<T> codec) {
+    public <T> void registerWorldRegistry(ResourceKey<Registry<T>> registryKey, Codec<T> codec) {
         Objects.requireNonNull(registryKey, "registry key is null");
         Objects.requireNonNull(codec, "codec is null");
+        this.event.dataPackRegistry(registryKey, codec);
+    }
+
+    @Override
+    public <T> void registerReloadableRegistry(ResourceKey<Registry<T>> registryKey, Codec<T> codec) {
+        Objects.requireNonNull(registryKey, "registry key is null");
+        Objects.requireNonNull(codec, "codec is null");
+        // TODO This should be registered as a reloadable registry when possible in NeoForge.
         this.event.dataPackRegistry(registryKey, codec);
     }
 

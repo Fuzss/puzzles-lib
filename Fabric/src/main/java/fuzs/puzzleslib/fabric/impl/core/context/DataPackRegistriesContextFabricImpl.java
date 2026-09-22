@@ -11,10 +11,17 @@ import java.util.Objects;
 public final class DataPackRegistriesContextFabricImpl implements DataPackRegistriesContext {
 
     @Override
-    public <T> void registerRegistry(ResourceKey<Registry<T>> registryKey, Codec<T> codec) {
+    public <T> void registerWorldRegistry(ResourceKey<Registry<T>> registryKey, Codec<T> codec) {
         Objects.requireNonNull(registryKey, "registry key is null");
         Objects.requireNonNull(codec, "codec is null");
         DynamicRegistries.register(registryKey, codec);
+    }
+
+    @Override
+    public <T> void registerReloadableRegistry(ResourceKey<Registry<T>> registryKey, Codec<T> codec) {
+        Objects.requireNonNull(registryKey, "registry key is null");
+        Objects.requireNonNull(codec, "codec is null");
+        DynamicRegistries.registerReloadable(registryKey, codec);
     }
 
     @Override
