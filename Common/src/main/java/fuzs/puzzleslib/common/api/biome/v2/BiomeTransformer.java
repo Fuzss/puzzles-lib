@@ -11,8 +11,6 @@ import net.minecraft.world.level.biome.Biome;
  * <p>
  * A transformer is registered together with a {@link BiomeSelector} and a {@link BiomeLoadingPhase} in
  * {@link BiomeTransformationsContext}, which decide the biomes the transformer is applied to and when it is applied.
- * <p>
- * TODO Switch this back to {@link net.minecraft.core.RegistryAccess}.
  *
  * @see BiomeSelector
  * @see BiomeLoadingPhase

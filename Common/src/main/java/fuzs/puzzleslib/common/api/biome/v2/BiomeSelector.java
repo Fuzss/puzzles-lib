@@ -13,8 +13,6 @@ import java.util.function.BiPredicate;
  * A selector is registered together with a transformer in {@link BiomeTransformationsContext} and evaluated for every
  * biome in the current data pack. It receives a {@link HolderGetter.Provider} for the registries of the current level
  * and the {@link Holder} of the biome being tested.
- * <p>
- * TODO Switch this back to {@link net.minecraft.core.RegistryAccess}.
  *
  * @see BiomeTransformer
  * @see BiomeTransformationsContext
