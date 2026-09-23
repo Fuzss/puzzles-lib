@@ -7,11 +7,14 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetTooltipHolder;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Util;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -23,6 +26,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public final class WidgetTooltipHolderImpl extends WidgetTooltipHolder {
     private final AbstractWidget abstractWidget;
@@ -32,6 +36,7 @@ public final class WidgetTooltipHolderImpl extends WidgetTooltipHolder {
     private final Function<List<? extends FormattedText>, List<FormattedCharSequence>> tooltipLineProcessor;
     @Nullable
     private final Supplier<List<? extends FormattedText>> tooltipLinesSupplier;
+    private final boolean extraSpaceAfterFirstLine;
 
     public WidgetTooltipHolderImpl(AbstractWidget abstractWidget, TooltipBuilderImpl builder) {
         this.abstractWidget = abstractWidget;
@@ -40,6 +45,7 @@ public final class WidgetTooltipHolderImpl extends WidgetTooltipHolder {
         this.tooltipLineProcessor = builder.tooltipLineProcessor;
         this.tooltipPositionerFactory = builder.tooltipPositionerFactory;
         this.tooltipLinesSupplier = builder.tooltipLinesSupplier;
+        this.extraSpaceAfterFirstLine = builder.extraSpaceAfterFirstLine;
         super.setDelay(builder.tooltipDelay);
         super.set(new Tooltip(CommonComponents.EMPTY, null, Optional.empty(), null) {
             @Override
@@ -84,11 +90,48 @@ public final class WidgetTooltipHolderImpl extends WidgetTooltipHolder {
         return tooltip;
     }
 
+    /**
+     * @see WidgetTooltipHolder#refreshTooltipForNextRenderPass(GuiGraphicsExtractor, int, int, boolean, boolean,
+     *         ScreenRectangle)
+     */
     @Override
     public void refreshTooltipForNextRenderPass(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovering, boolean focused, ScreenRectangle screenRectangle) {
         this.refreshLines(this.getLinesForNextRenderPass());
-        if (!this.tooltipLines.isEmpty()) {
-            super.refreshTooltipForNextRenderPass(guiGraphics, mouseX, mouseY, hovering, focused, screenRectangle);
+        if (this.tooltipLines.isEmpty()) {
+            return;
+        }
+
+        Tooltip tooltip = super.get();
+        if (tooltip == null) {
+            this.wasDisplayed = false;
+        } else {
+            Minecraft minecraft = Minecraft.getInstance();
+            boolean shouldDisplay = hovering || focused && minecraft.getLastInputType().isKeyboard();
+            if (shouldDisplay != this.wasDisplayed) {
+                if (shouldDisplay) {
+                    this.displayStartTime = Util.getMillis();
+                }
+
+                this.wasDisplayed = shouldDisplay;
+            }
+
+            if (shouldDisplay && Util.getMillis() - this.displayStartTime > this.delay.toMillis()) {
+                List<ClientTooltipComponent> components = tooltip.toCharSequence(minecraft)
+                        .stream()
+                        .map(ClientTooltipComponent::create)
+                        .collect(Collectors.toList());
+                tooltip.component().ifPresent((TooltipComponent component) -> {
+                    components.add(components.isEmpty() ? 0 : 1, ClientTooltipComponent.create(component));
+                });
+                guiGraphics.setTooltipForNextFrameInternal(minecraft.font,
+                        components,
+                        mouseX,
+                        mouseY,
+                        this.createTooltipPositioner(screenRectangle, hovering, focused),
+                        tooltip.style(),
+                        focused,
+                        this.extraSpaceAfterFirstLine);
+            }
         }
     }
 

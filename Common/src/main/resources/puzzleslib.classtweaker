@@ -304,12 +304,16 @@ accessible	method	net/minecraft/client/data/models/ModelProvider$ItemInfoCollect
 accessible	method	net/minecraft/client/data/models/ModelProvider$ItemInfoCollector	register	(Lnet/minecraft/world/item/Item;Lnet/minecraft/client/renderer/item/ClientItem;)V
 accessible	class	net/minecraft/client/data/models/ModelProvider$SimpleModelCollector
 accessible	method	net/minecraft/client/data/models/ModelProvider$SimpleModelCollector	<init>	()V
+accessible	method	net/minecraft/client/gui/GuiGraphicsExtractor	setTooltipForNextFrameInternal	(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;Lnet/minecraft/resources/Identifier;ZZ)V
 accessible	field	net/minecraft/client/gui/Hud	displayHealth	I
 accessible	field	net/minecraft/client/gui/Hud	tabList	Lnet/minecraft/client/gui/components/PlayerTabOverlay;
 mutable	field	net/minecraft/client/gui/components/AbstractWidget	tooltip	Lnet/minecraft/client/gui/components/WidgetTooltipHolder;
 accessible	field	net/minecraft/client/gui/components/Tooltip	cachedTooltip	Ljava/util/List;
 accessible	field	net/minecraft/client/gui/components/Tooltip	splitWithLanguage	Lnet/minecraft/locale/Language;
 extendable	method	net/minecraft/client/gui/components/Tooltip	<init>	(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/Component;Ljava/util/Optional;Lnet/minecraft/resources/Identifier;)V
+accessible	field	net/minecraft/client/gui/components/WidgetTooltipHolder	delay	Ljava/time/Duration;
+accessible	field	net/minecraft/client/gui/components/WidgetTooltipHolder	displayStartTime	J
+accessible	field	net/minecraft/client/gui/components/WidgetTooltipHolder	wasDisplayed	Z
 extendable	method	net/minecraft/client/gui/components/WidgetTooltipHolder	createTooltipPositioner	(Lnet/minecraft/client/gui/navigation/ScreenRectangle;ZZ)Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;
 mutable	field	net/minecraft/client/gui/components/debug/DebugScreenEntries	PROFILES	Ljava/util/Map;
 accessible	method	net/minecraft/client/gui/components/toasts/ToastManager	freeSlotCount	()I

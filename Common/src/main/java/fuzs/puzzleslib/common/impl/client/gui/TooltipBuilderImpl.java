@@ -30,6 +30,10 @@ public final class TooltipBuilderImpl implements TooltipBuilder {
         return ClientComponentSplitter.processTooltipLines(tooltipLines).toList();
     };
     @Nullable Supplier<List<? extends FormattedText>> tooltipLinesSupplier;
+    /**
+     * Vanilla only inserts extra space after the first tooltip line when requested, previously this always happened.
+     */
+    boolean extraSpaceAfterFirstLine = true;
 
     public TooltipBuilderImpl() {
         this(new FormattedText[0]);
@@ -94,6 +98,12 @@ public final class TooltipBuilderImpl implements TooltipBuilder {
     public TooltipBuilder setTooltipLineProcessor(Function<List<? extends FormattedText>, List<FormattedCharSequence>> processor) {
         Objects.requireNonNull(processor, "tooltip line processor is null");
         this.tooltipLineProcessor = processor;
+        return this;
+    }
+
+    @Override
+    public TooltipBuilder setExtraSpaceAfterFirstLine(boolean extraSpaceAfterFirstLine) {
+        this.extraSpaceAfterFirstLine = extraSpaceAfterFirstLine;
         return this;
     }
 

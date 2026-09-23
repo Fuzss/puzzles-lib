@@ -119,6 +119,17 @@ public interface TooltipBuilder {
     TooltipBuilder setTooltipLineProcessor(Function<List<? extends FormattedText>, List<FormattedCharSequence>> processor);
 
     /**
+     * Restore the extra space vanilla inserts after the first tooltip line.
+     * <p>
+     * Vanilla's {@code WidgetTooltipHolder} path now passes {@code false} here, whereas the previous behavior equates
+     * to {@code true}.
+     *
+     * @param extraSpaceAfterFirstLine whether to insert the extra space after the first tooltip line
+     * @return the builder instance
+     */
+    TooltipBuilder setExtraSpaceAfterFirstLine(boolean extraSpaceAfterFirstLine);
+
+    /**
      * Builds the tooltip instance and attaches it to a widget.
      * <p>
      * Can be called multiple times for different widgets.
