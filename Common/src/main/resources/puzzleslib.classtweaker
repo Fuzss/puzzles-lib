@@ -174,6 +174,8 @@ transitive-accessible	method	net/minecraft/core/cauldron/CauldronInteractions	is
 transitive-accessible	method	net/minecraft/core/cauldron/CauldronInteractions	shulkerBoxInteraction	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/InteractionResult;
 transitive-accessible	field	net/minecraft/data/loot/EntityLootSubProvider	map	Ljava/util/Map;
 transitive-accessible	method	net/minecraft/data/loot/packs/VanillaBlockLoot	generate	()V
+transitive-accessible   field	net/minecraft/data/recipes/RecipeProvider   items	Lnet/minecraft/core/HolderGetter;
+transitive-accessible   field	net/minecraft/data/recipes/RecipeProvider   trimPatterns    Lnet/minecraft/core/HolderGetter;
 transitive-accessible	method	net/minecraft/data/recipes/ShapedRecipeBuilder	<init>	(Lnet/minecraft/core/HolderGetter;Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/item/ItemStackTemplate;)V
 transitive-accessible	method	net/minecraft/data/recipes/ShapedRecipeBuilder	<init>	(Lnet/minecraft/core/HolderGetter;Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/level/ItemLike;I)V
 transitive-accessible	method	net/minecraft/data/recipes/ShapelessRecipeBuilder	<init>	(Lnet/minecraft/core/HolderGetter;Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/item/ItemStackTemplate;)V
@@ -362,7 +364,6 @@ accessible  field   net/minecraft/data/recipes/BrewingProvider  output  Lnet/min
 accessible  field   net/minecraft/data/recipes/BrewingProvider  potions Ljava/util/Set;
 accessible  class   net/minecraft/data/recipes/BrewingProvider$ContainerTransformation
 accessible  method  net/minecraft/data/recipes/BrewingProvider$ContainerTransformation  <init>  (Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;)V
-accessible	field	net/minecraft/data/recipes/RecipeProvider	items	Lnet/minecraft/core/HolderGetter;
 mutable	field	net/minecraft/data/recipes/RecipeProvider	items	Lnet/minecraft/core/HolderGetter;
 accessible	field	net/minecraft/data/recipes/RecipeProvider	output	Lnet/minecraft/data/recipes/RecipeOutput;
 mutable	field	net/minecraft/data/recipes/RecipeProvider	output	Lnet/minecraft/data/recipes/RecipeOutput;
