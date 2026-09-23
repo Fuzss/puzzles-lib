@@ -101,16 +101,42 @@ public interface DataProviderBuilder {
      * @param <T>       the registry element type
      * @return this builder instance
      */
-    <T> DataProviderBuilder add(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap);
+    @Deprecated
+    default <T> DataProviderBuilder add(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
+        return this.addWorldBootstrap(key, bootstrap);
+    }
 
     /**
-     * Adds a multi registry bootstrap to the world layer, mirroring
+     * Adds a multi-registry bootstrap to the world layer, mirroring
      * {@link RegistrySetBuilder#add(MultiRegistryBootstrap)}.
      *
      * @param bootstrap the bootstrap
      * @return this builder instance
      */
-    DataProviderBuilder add(MultiRegistryBootstrap bootstrap);
+    @Deprecated
+    default DataProviderBuilder add(MultiRegistryBootstrap bootstrap) {
+        return this.addWorldBootstrap(bootstrap);
+    }
+
+    /**
+     * Adds a registry and its bootstrap to the world layer, mirroring
+     * {@link RegistrySetBuilder#add(ResourceKey, SingleRegistryBootstrap)}.
+     *
+     * @param key       the registry key
+     * @param bootstrap the bootstrap
+     * @param <T>       the registry element type
+     * @return this builder instance
+     */
+    <T> DataProviderBuilder addWorldBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap);
+
+    /**
+     * Adds a multi-registry bootstrap to the world layer, mirroring
+     * {@link RegistrySetBuilder#add(MultiRegistryBootstrap)}.
+     *
+     * @param bootstrap the bootstrap
+     * @return this builder instance
+     */
+    DataProviderBuilder addWorldBootstrap(MultiRegistryBootstrap bootstrap);
 
     /**
      * Adds a registry and its bootstrap to the reloadable layer, mirroring
@@ -121,16 +147,42 @@ public interface DataProviderBuilder {
      * @param <T>       the registry element type
      * @return this builder instance
      */
-    <T> DataProviderBuilder addReloadable(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap);
+    @Deprecated
+    default <T> DataProviderBuilder addReloadable(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
+        return this.addReloadableBootstrap(key, bootstrap);
+    }
 
     /**
-     * Adds a multi registry bootstrap to the reloadable layer, mirroring
+     * Adds a multi-registry bootstrap to the reloadable layer, mirroring
      * {@link RegistrySetBuilder#add(MultiRegistryBootstrap)}.
      *
      * @param bootstrap the bootstrap
      * @return this builder instance
      */
-    DataProviderBuilder addReloadable(MultiRegistryBootstrap bootstrap);
+    @Deprecated
+    default DataProviderBuilder addReloadable(MultiRegistryBootstrap bootstrap) {
+        return this.addReloadableBootstrap(bootstrap);
+    }
+
+    /**
+     * Adds a registry and its bootstrap to the reloadable layer, mirroring
+     * {@link RegistrySetBuilder#add(ResourceKey, SingleRegistryBootstrap)}.
+     *
+     * @param key       the registry key
+     * @param bootstrap the bootstrap
+     * @param <T>       the registry element type
+     * @return this builder instance
+     */
+    <T> DataProviderBuilder addReloadableBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap);
+
+    /**
+     * Adds a multi-registry bootstrap to the reloadable layer, mirroring
+     * {@link RegistrySetBuilder#add(MultiRegistryBootstrap)}.
+     *
+     * @param bootstrap the bootstrap
+     * @return this builder instance
+     */
+    DataProviderBuilder addReloadableBootstrap(MultiRegistryBootstrap bootstrap);
 
     /**
      * Sets an existing {@link RegistrySetBuilder} for the world (default) layer, replacing the internal one.
@@ -140,6 +192,7 @@ public interface DataProviderBuilder {
      * @param registrySetBuilder the registry set builder to use
      * @return this builder instance
      */
+    @Deprecated
     DataProviderBuilder setRegistrySetBuilder(RegistrySetBuilder registrySetBuilder);
 
     /**
@@ -150,6 +203,7 @@ public interface DataProviderBuilder {
      * @param registrySetBuilder the registry set builder to use
      * @return this builder instance
      */
+    @Deprecated
     DataProviderBuilder setReloadableRegistrySetBuilder(RegistrySetBuilder registrySetBuilder);
 
     /**

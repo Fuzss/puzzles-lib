@@ -134,25 +134,25 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     }
 
     @Override
-    public <T> DataProviderBuilder add(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
+    public <T> DataProviderBuilder addWorldBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
         this.worldRegistrySetBuilder.add(key, bootstrap);
         return this;
     }
 
     @Override
-    public DataProviderBuilder add(MultiRegistryBootstrap bootstrap) {
+    public DataProviderBuilder addWorldBootstrap(MultiRegistryBootstrap bootstrap) {
         this.worldRegistrySetBuilder.add(bootstrap);
         return this;
     }
 
     @Override
-    public <T> DataProviderBuilder addReloadable(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
+    public <T> DataProviderBuilder addReloadableBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
         this.reloadableRegistrySetBuilder.add(key, bootstrap);
         return this;
     }
 
     @Override
-    public DataProviderBuilder addReloadable(MultiRegistryBootstrap bootstrap) {
+    public DataProviderBuilder addReloadableBootstrap(MultiRegistryBootstrap bootstrap) {
         this.reloadableRegistrySetBuilder.add(bootstrap);
         return this;
     }
@@ -217,7 +217,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     @Override
     public DataProviderBuilder addAdvancementProvider(AdvancementSubProvider.Factory provider) {
         Objects.requireNonNull(provider, "advancement sub-provider is null");
-        return this.addReloadable(Registries.ADVANCEMENT, new AdvancementProvider(List.of(provider)));
+        return this.addReloadableBootstrap(Registries.ADVANCEMENT, new AdvancementProvider(List.of(provider)));
     }
 
     @Override
@@ -233,7 +233,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     public DataProviderBuilder addRecipeProvider(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, ? extends Runnable> provider) {
         Objects.requireNonNull(provider, "recipe provider is null");
         String modId = this.modId;
-        return this.addReloadable(new MultiRegistryBootstrap() {
+        return this.addReloadableBootstrap(new MultiRegistryBootstrap() {
             @Override
             public Set<ResourceKey<? extends Registry<?>>> requestedRegistries() {
                 return Set.of(Registries.RECIPE, Registries.ADVANCEMENT);
@@ -277,7 +277,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         // Accumulated loot table sub-providers are materialized into a single loot table provider right before the
         // reloadable layer is built, so they share one random sequence collision map.
         if (!this.lootTableSubProviders.isEmpty()) {
-            this.addReloadable(Registries.LOOT_TABLE,
+            this.addReloadableBootstrap(Registries.LOOT_TABLE,
                     new LootTableProvider(Set.of(), List.copyOf(this.lootTableSubProviders)));
         }
 
