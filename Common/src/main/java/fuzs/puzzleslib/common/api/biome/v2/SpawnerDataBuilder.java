@@ -152,7 +152,7 @@ public final class SpawnerDataBuilder {
             int weight = this.weightMapper.applyAsInt(spawn.weight());
             int minCount = this.minCountMapper.applyAsInt(spawn.value());
             int maxCount = this.maxCountMapper.applyAsInt(spawn.value());
-            this.context.addSpawn(entityType, Math.min(minCount, maxCount), maxCount, weight);
+            this.context.addSpawn(entityType, weight, Math.min(minCount, maxCount), maxCount);
         }
 
         MobSpawnSettings.MobSpawnCost cost = this.context.getSpawnCost(this.originalEntityType);
