@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v26.3.4-mc26.3.x] - 2026-09-23
+
+### Added
+
+- Add `TooltipBuilder::setExtraSpaceAfterFirstLine` for restoring the extra space vanilla inserts after the first
+  tooltip line
+
+### Changed
+
+- Rework some methods in `DataProviderBuilder`
+
+### Fixed
+
+- Fix `SpawnerDataBuilder` passing arguments to `addSpawn` in the wrong order
+
 ## [v26.3.3-mc26.3.x] - 2026-09-22
 
 ### Added
