@@ -3,9 +3,6 @@ package fuzs.puzzleslib.neoforge.impl.core.context;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeLoadingPhase;
 import fuzs.puzzleslib.common.api.biome.v2.BiomeSelector;
@@ -20,8 +17,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.RegistryOps;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.data.JsonCodecProvider;
@@ -29,7 +25,9 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,13 +47,13 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
         Objects.requireNonNull(selector, "selector is null");
         Objects.requireNonNull(transformer, "transformer is null");
         if (this.transformers.isEmpty()) {
-            MapCodec<BiomeModifierImpl> mapCodec = this.mapCodec();
+            BiomeModifier modifier = new BiomeModifierImpl();
             DeferredRegister<MapCodec<? extends BiomeModifier>> deferredRegister = DeferredRegister.create(
                     NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS,
                     this.modId);
             deferredRegister.register(this.eventBus);
             Holder<MapCodec<? extends BiomeModifier>> holder = deferredRegister.register("biome_modifications",
-                    () -> mapCodec);
+                    modifier::codec);
             DataProviderBuilder.of(this.modId, (DataProviderContext context) -> {
                 return new JsonCodecProvider<>(context.getPackOutput(),
                         PackOutput.Target.DATA_PACK,
@@ -65,8 +63,7 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
                         context.getModId()) {
                     @Override
                     protected void gather() {
-                        this.unconditional(holder.getKey().identifier(),
-                                new BiomeModifierImpl(mapCodec, RegistryAccess.EMPTY));
+                        this.unconditional(holder.getKey().identifier(), modifier);
                     }
                 };
             });
@@ -77,20 +74,6 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
                     if (selector.test(registries, biome)) {
                         transformer.accept(registries, biome, context);
                     }
-                });
-    }
-
-    private MapCodec<BiomeModifierImpl> mapCodec() {
-        return MapCodec.recursive("BiomeTransformationsContextNeoForgeImpl.BiomeModifierImpl",
-                (Codec<BiomeModifierImpl> codec) -> {
-                    return ExtraCodecs.retrieveContext((DynamicOps<?> ops) -> {
-                        if (ops instanceof RegistryOps<?> registryOps) {
-                            return DataResult.success(new BiomeModifierImpl(MapCodec.assumeMapUnsafe(codec),
-                                    registryOps.lookupProvider::lookup));
-                        } else {
-                            return DataResult.error(() -> "Not a registry ops");
-                        }
-                    });
                 });
     }
 
@@ -109,24 +92,24 @@ public final class BiomeTransformationsContextNeoForgeImpl implements BiomeTrans
                 Phase.AFTER_EVERYTHING,
                 BiomeLoadingPhase.POST));
 
-        private final MapCodec<? extends BiomeModifier> codec;
-        private final HolderGetter.Provider registries;
-
-        BiomeModifierImpl(MapCodec<? extends BiomeModifier> codec, HolderGetter.Provider registries) {
-            this.codec = codec;
-            this.registries = registries;
-        }
+        private final MapCodec<? extends BiomeModifier> codec = MapCodec.unit(this);
 
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            Objects.requireNonNull(server, "server is null");
+            RegistryAccess registryAccess = server.registryAccess();
             BiomeTransformer.Context context = buildTransformerContext(builder);
             BiomeLoadingPhase loadingPhase = LOADING_PHASES.get(phase);
             // Not all phases may exist in our implementation, so this can be null.
             if (loadingPhase != null) {
-                BiomeTransformationsContextNeoForgeImpl.this.transformers.get(loadingPhase)
-                        .forEach((BiomeTransformer transformer) -> {
-                            transformer.accept(this.registries, biome, context);
-                        });
+                Collection<BiomeTransformer> transformers = BiomeTransformationsContextNeoForgeImpl.this.transformers.get(
+                        loadingPhase);
+                if (!transformers.isEmpty()) {
+                    for (BiomeTransformer transformer : transformers) {
+                        transformer.accept(registryAccess, biome, context);
+                    }
+                }
             }
         }
 
