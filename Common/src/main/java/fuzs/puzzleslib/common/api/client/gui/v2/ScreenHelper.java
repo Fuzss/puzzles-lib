@@ -1,5 +1,6 @@
 package fuzs.puzzleslib.common.api.client.gui.v2;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.common.impl.client.core.proxy.ClientProxyImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -8,6 +9,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 /**
  * A {@link net.minecraft.client.gui.screens.Screen} related helper class.
@@ -62,6 +64,22 @@ public final class ScreenHelper {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Converts a mouse button to the corresponding container click button index.
+     *
+     * @param buttonNum the pressed button
+     * @return the container click button index
+     *
+     * @see net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#getContainerClickButton(MouseButtonEvent)
+     */
+    public static int getContainerClickButton(int buttonNum) {
+        return switch (buttonNum) {
+            case InputConstants.MOUSE_BUTTON_LEFT -> AbstractContainerMenu.CONTAINER_CLICK_PRIMARY;
+            case InputConstants.MOUSE_BUTTON_RIGHT -> AbstractContainerMenu.CONTAINER_CLICK_SECONDARY;
+            default -> buttonNum;
+        };
     }
 
     /**

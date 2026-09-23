@@ -60,6 +60,7 @@ transitive-accessible	field	net/minecraft/client/gui/screens/inventory/AbstractC
 transitive-accessible	field	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	imageWidth	I
 transitive-accessible	field	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	leftPos	I
 transitive-accessible	field	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	topPos	I
+transitive-accessible   method  net/minecraft/client/gui/screens/inventory/AbstractContainerScreen  getContainerClickButton (Lnet/minecraft/client/input/MouseButtonEvent;)I
 transitive-accessible	method	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	getHoveredSlot	(DD)Lnet/minecraft/world/inventory/Slot;
 transitive-accessible	method	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	isHovering	(IIIIDD)Z
 transitive-accessible	method	net/minecraft/client/gui/screens/inventory/AbstractContainerScreen	isHovering	(Lnet/minecraft/world/inventory/Slot;DD)Z
