@@ -15,7 +15,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewDatapackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 
 public final class NeoForgeModConstructor implements ModConstructorImpl<ModConstructor> {
@@ -56,7 +56,7 @@ public final class NeoForgeModConstructor implements ModConstructorImpl<ModConst
             eventBus.addListener((final NewRegistryEvent event) -> {
                 modConstructor.onRegisterGameRegistries(new GameRegistriesContextNeoForgeImpl(event));
             });
-            eventBus.addListener((final DataPackRegistryEvent.NewRegistry event) -> {
+            eventBus.addListener((final NewDatapackRegistryEvent event) -> {
                 modConstructor.onRegisterDataPackRegistries(new DataPackRegistriesContextNeoForgeImpl(event));
             });
             eventBus.addListener((final ModifyDefaultComponentsEvent event) -> {
