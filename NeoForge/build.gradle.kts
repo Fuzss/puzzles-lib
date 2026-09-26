@@ -15,7 +15,6 @@ multiloader {
         plugin.set("${project.group}.${project.packageName}.mixin.MixinConfigPluginNeoForgeImpl")
         mixin("MenuProviderWithDataNeoForgeMixin")
         accessor(
-            "BiomeSpecialEffectsBuilderNeoForgeAccessor",
             "EntityNeoForgeAccessor",
             "GatherDataEventNeoForgeAccessor",
             "PackNeoForgeAccessor"

@@ -1,7 +1,6 @@
 package fuzs.puzzleslib.neoforge.impl.biome;
 
 import fuzs.puzzleslib.common.api.biome.v2.context.EffectsContext;
-import fuzs.puzzleslib.neoforge.mixin.accessor.BiomeSpecialEffectsBuilderNeoForgeAccessor;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.neoforged.neoforge.common.world.BiomeSpecialEffectsBuilder;
 
@@ -26,8 +25,7 @@ public record EffectsContextNeoForgeImpl(BiomeSpecialEffectsBuilder context) imp
 
     @Override
     public void setFoliageColorOverride(Optional<Integer> foliageColorOverride) {
-        ((BiomeSpecialEffectsBuilderNeoForgeAccessor) this.context).puzzleslib$setFoliageColorOverride(
-                foliageColorOverride);
+        this.context.foliageColorOverride(foliageColorOverride);
     }
 
     @Override
@@ -37,8 +35,7 @@ public record EffectsContextNeoForgeImpl(BiomeSpecialEffectsBuilder context) imp
 
     @Override
     public void setDryFoliageColorOverride(Optional<Integer> dryFoliageColorOverride) {
-        ((BiomeSpecialEffectsBuilderNeoForgeAccessor) this.context).puzzleslib$setDryFoliageColorOverride(
-                dryFoliageColorOverride);
+        this.context.dryFoliageColorOverride(dryFoliageColorOverride);
     }
 
     @Override
@@ -48,7 +45,7 @@ public record EffectsContextNeoForgeImpl(BiomeSpecialEffectsBuilder context) imp
 
     @Override
     public void setGrassColorOverride(Optional<Integer> grassColorOverride) {
-        ((BiomeSpecialEffectsBuilderNeoForgeAccessor) this.context).puzzleslib$setGrassColorOverride(grassColorOverride);
+        this.context.grassColorOverride(grassColorOverride);
     }
 
     @Override
