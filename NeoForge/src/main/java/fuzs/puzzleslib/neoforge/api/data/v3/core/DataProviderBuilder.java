@@ -4,6 +4,7 @@ import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.data.v3.metadata.ModPackMetadataProvider;
 import fuzs.puzzleslib.neoforge.impl.data.AbstractDataProviderBuilder;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.MultiRegistryBootstrap;
@@ -225,18 +226,20 @@ public interface DataProviderBuilder {
     /**
      * Adds a single loot table sub-provider entry to the accumulated loot table provider.
      *
-     * @param entry the loot table sub-provider entry
+     * @param provider the loot table sub-provider entry
      * @return this builder instance
      */
-    DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry entry);
+    @Deprecated
+    DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry provider);
 
     /**
      * Adds loot table sub-provider entries to the accumulated loot table provider.
      *
-     * @param entries the loot table sub-provider entries
+     * @param providers the loot table sub-provider entries
      * @return this builder instance
      */
-    DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry... entries);
+    @Deprecated
+    DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry... providers);
 
     /**
      * Adds a loot table sub-provider to the accumulated loot table provider, using the given context key set.
@@ -246,6 +249,15 @@ public interface DataProviderBuilder {
      * @return this builder instance
      */
     DataProviderBuilder addLootProvider(LootTableSubProvider.Factory provider, ContextKeySet paramSet);
+
+    /**
+     * Adds a loot table sub-provider to the accumulated loot table provider, using the given context key set.
+     *
+     * @param provider the loot table sub-provider factory
+     * @param paramSet the loot context parameter set
+     * @return this builder instance
+     */
+    DataProviderBuilder addLootProvider(LootTableSubProvider.Factory provider, Holder<ContextKeySet> paramSet);
 
     /**
      * Adds a single advancement sub-provider.

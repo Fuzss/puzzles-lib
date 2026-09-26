@@ -10,9 +10,11 @@ import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
 import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.mixin.accessor.GatherDataEventNeoForgeAccessor;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.MultiRegistryBootstrap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.registries.SingleRegistryBootstrap;
@@ -65,7 +67,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     /**
      * The loot table sub-providers accumulated into a single loot table provider.
      */
-    private final List<LootTableProvider.SubProviderEntry> lootTableSubProviders = new ArrayList<>();
+    private final List<SubProviderEntry> lootTableSubProviders = new ArrayList<>();
 
     protected AbstractDataProviderBuilder(String modId) {
         this.modId = Objects.requireNonNull(modId, "mod id is null");
@@ -189,18 +191,14 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     }
 
     @Override
-    public DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry entry) {
-        Objects.requireNonNull(entry, "loot table sub-provider entry is null");
-        LootTableSubProvider.Factory factory = entry.bootstrap();
-        this.lootTableSubProviders.add(new LootTableProvider.SubProviderEntry((LootTableSubProvider.Context context) -> {
-            return ScopedValue.where(DataGenerationScopes.MOD_ID, this.modId).call(() -> factory.create(context));
-        }, entry.paramSet()));
-        return this;
+    public DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry provider) {
+        Objects.requireNonNull(provider, "loot table sub-provider entry is null");
+        return this.addLootProvider(provider.bootstrap(), provider.paramSet());
     }
 
     @Override
-    public DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry... entries) {
-        for (LootTableProvider.SubProviderEntry entry : entries) {
+    public DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry... providers) {
+        for (LootTableProvider.SubProviderEntry entry : providers) {
             this.addLootProvider(entry);
         }
 
@@ -211,7 +209,17 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     public DataProviderBuilder addLootProvider(LootTableSubProvider.Factory provider, ContextKeySet paramSet) {
         Objects.requireNonNull(provider, "loot table sub-provider is null");
         Objects.requireNonNull(paramSet, "context key set is null");
-        return this.addLootProvider(new LootTableProvider.SubProviderEntry(provider, paramSet));
+        return this.addLootProvider(provider, BuiltInRegistries.CONTEXT_KEY_SET.wrapAsHolder(paramSet));
+    }
+
+    @Override
+    public DataProviderBuilder addLootProvider(LootTableSubProvider.Factory provider, Holder<ContextKeySet> paramSet) {
+        Objects.requireNonNull(provider, "loot table sub-provider is null");
+        Objects.requireNonNull(paramSet, "context key set is null");
+        this.lootTableSubProviders.add(new SubProviderEntry((LootTableSubProvider.Context context) -> {
+            return ScopedValue.where(DataGenerationScopes.MOD_ID, this.modId).call(() -> provider.create(context));
+        }, paramSet));
+        return this;
     }
 
     @Override
@@ -277,8 +285,10 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         // Accumulated loot table sub-providers are materialized into a single loot table provider right before the
         // reloadable layer is built, so they share one random sequence collision map.
         if (!this.lootTableSubProviders.isEmpty()) {
-            this.addReloadableBootstrap(Registries.LOOT_TABLE,
-                    new LootTableProvider(Set.of(), List.copyOf(this.lootTableSubProviders)));
+            List<LootTableProvider.SubProviderEntry> providers = this.lootTableSubProviders.stream()
+                    .map(SubProviderEntry::repack)
+                    .toList();
+            this.addReloadableBootstrap(Registries.LOOT_TABLE, new LootTableProvider(Set.of(), providers));
         }
 
         if (!this.worldRegistrySetBuilder.getEntryKeys().isEmpty()) {
@@ -313,6 +323,12 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
             factory.apply((PackOutput packOutput) -> {
                 return dataProvider.apply(new EventBackedDataProviderContext(event, packOutput));
             });
+        }
+    }
+
+    protected record SubProviderEntry(LootTableSubProvider.Factory bootstrap, Holder<ContextKeySet> paramSet) {
+        public LootTableProvider.SubProviderEntry repack() {
+            return new LootTableProvider.SubProviderEntry(this.bootstrap(), this.paramSet().value());
         }
     }
 
