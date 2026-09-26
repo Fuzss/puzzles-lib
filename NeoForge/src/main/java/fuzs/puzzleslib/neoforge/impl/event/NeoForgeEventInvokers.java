@@ -1052,5 +1052,18 @@ public final class NeoForgeEventInvokers {
                             event::isInvulnerable);
                     callback.onEntityDamageImmunity(event.getEntity(), event.getSource(), isInvulnerable);
                 });
+        INSTANCE.register(ItemClickBehaviorCallback.class,
+                ItemStackedOnOtherEvent.class,
+                (ItemClickBehaviorCallback callback, ItemStackedOnOtherEvent event) -> {
+                    EventResult eventResult = callback.onItemClickBehavior(event.getStackedOnItem(),
+                            event.getSlot(),
+                            event.getCarriedItem(),
+                            event.getCarriedSlotAccess(),
+                            event.getClickAction(),
+                            event.getPlayer());
+                    if (eventResult.isInterrupt()) {
+                        event.cancelWithResult(!eventResult.getAsBoolean());
+                    }
+                });
     }
 }

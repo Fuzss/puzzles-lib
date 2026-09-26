@@ -43,7 +43,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -480,5 +483,23 @@ public final class FabricEventInvokers {
                 false);
         INSTANCE.register(StopSleepInBedCallback.class, FabricPlayerEvents.STOP_SLEEP_IN_BED);
         INSTANCE.register(EntityDamageImmunityCallback.class, FabricEntityEvents.ENTITY_DAMAGE_IMMUNITY);
+        INSTANCE.register(ItemClickBehaviorCallback.class,
+                net.fabricmc.fabric.api.item.v1.ItemClickBehaviorCallback.EVENT,
+                (ItemClickBehaviorCallback callback) -> {
+                    return (ItemStack hoveredItem, Slot hoveredSlot, ItemStack itemHeldByCursor, SlotAccess slotHeldByCursor, ClickAction clickAction, Player player) -> {
+                        EventResult eventResult = callback.onItemClickBehavior(hoveredItem,
+                                hoveredSlot,
+                                itemHeldByCursor,
+                                slotHeldByCursor,
+                                clickAction,
+                                player);
+                        if (eventResult.isInterrupt()) {
+                            return eventResult.getAsBoolean() ? net.fabricmc.fabric.api.util.EventResult.ALLOW :
+                                    net.fabricmc.fabric.api.util.EventResult.DENY;
+                        } else {
+                            return net.fabricmc.fabric.api.util.EventResult.PASS;
+                        }
+                    };
+                });
     }
 }
