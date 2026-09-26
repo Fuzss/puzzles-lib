@@ -28,7 +28,7 @@ public final class SubmitLivingEntityEvents {
          * @param <T>                 the entity type
          * @param <S>                 the render state type
          * @param <M>                 the entity model type
-         * @param renderState         the entity render state
+         * @param state               the entity render state
          * @param entityRenderer      the living entity renderer
          * @param poseStack           the pose stack
          * @param submitNodeCollector the submit node collector
@@ -37,7 +37,7 @@ public final class SubmitLivingEntityEvents {
          *         <li>{@link EventResult#PASS PASS} to allow the player model to render</li>
          *         </ul>
          */
-        <T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> EventResult onBeforeSubmitLivingEntity(S renderState, LivingEntityRenderer<T, S, M> entityRenderer, PoseStack poseStack, SubmitNodeCollector submitNodeCollector);
+        <T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> EventResult onBeforeSubmitLivingEntity(S state, LivingEntityRenderer<T, S, M> entityRenderer, PoseStack poseStack, SubmitNodeCollector submitNodeCollector);
     }
 
     @FunctionalInterface
@@ -49,11 +49,11 @@ public final class SubmitLivingEntityEvents {
          * @param <T>                 the entity type
          * @param <S>                 the render state type
          * @param <M>                 the entity model type
-         * @param renderState         the entity render state
+         * @param state               the entity render state
          * @param entityRenderer      the living entity renderer
          * @param poseStack           the pose stack
          * @param submitNodeCollector the submit node collector
          */
-        <T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> void onAfterSubmitLivingEntity(S renderState, LivingEntityRenderer<T, S, M> entityRenderer, PoseStack poseStack, SubmitNodeCollector submitNodeCollector);
+        <T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> void onAfterSubmitLivingEntity(S state, LivingEntityRenderer<T, S, M> entityRenderer, PoseStack poseStack, SubmitNodeCollector submitNodeCollector);
     }
 }

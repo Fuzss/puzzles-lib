@@ -19,7 +19,7 @@ public interface SubmitNameTagCallback {
      * but also the score text value.
      *
      * @param entityRenderer      the entity renderer instance
-     * @param renderState         the entity render state
+     * @param state               the entity render state
      * @param poseStack           the pose stack
      * @param submitNodeCollector the submit node collector
      * @param cameraRenderState   the camera render state
@@ -28,5 +28,5 @@ public interface SubmitNameTagCallback {
      *         <li>{@link EventResult#PASS PASS} to allow the name tag to render if present</li>
      *         </ul>
      */
-    EventResult onSubmitNameTag(EntityRenderer<?, ?> entityRenderer, EntityRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState);
+    EventResult onSubmitNameTag(EntityRenderer<?, ?> entityRenderer, EntityRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState);
 }

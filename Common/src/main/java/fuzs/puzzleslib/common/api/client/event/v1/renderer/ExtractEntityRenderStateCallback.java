@@ -17,8 +17,8 @@ public interface ExtractEntityRenderStateCallback {
      * Use methods found in {@link RenderStateExtraData} for attaching custom render state data.
      *
      * @param entity      the entity
-     * @param renderState the entity render state
+     * @param state       the entity render state
      * @param partialTick the partial tick
      */
-    void onExtractEntityRenderState(Entity entity, EntityRenderState renderState, float partialTick);
+    void onExtractEntityRenderState(Entity entity, EntityRenderState state, float partialTick);
 }

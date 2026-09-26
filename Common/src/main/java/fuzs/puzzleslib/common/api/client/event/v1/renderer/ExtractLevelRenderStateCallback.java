@@ -17,11 +17,11 @@ public interface ExtractLevelRenderStateCallback {
      * level for future rendering.
      *
      * @param levelExtractor the level extractor
-     * @param renderState    the level render state
+     * @param state          the level render state
      * @param level          the level
      * @param camera         the camera
      * @param frustum        the frustum
      * @param deltaTracker   the delta tracker
      */
-    void onExtractLevelRenderState(LevelExtractor levelExtractor, LevelRenderState renderState, ClientLevel level, Camera camera, Frustum frustum, DeltaTracker deltaTracker);
+    void onExtractLevelRenderState(LevelExtractor levelExtractor, LevelRenderState state, ClientLevel level, Camera camera, Frustum frustum, DeltaTracker deltaTracker);
 }
