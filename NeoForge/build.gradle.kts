@@ -19,6 +19,6 @@ multiloader {
             "GatherDataEventNeoForgeAccessor",
             "PackNeoForgeAccessor"
         )
-        clientAccessor("BrandingControlAccessor", "RegisterKeyMappingsEventNeoForgeAccessor")
+        clientAccessor("RegisterKeyMappingsEventNeoForgeAccessor")
     }
 }

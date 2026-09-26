@@ -14,12 +14,12 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(MenuProviderWithData.class)
 public interface MenuProviderWithDataNeoForgeMixin<T> extends MenuProvider {
-    @Shadow
-    T getMenuData(@Nullable ServerPlayer serverPlayer);
-
     @Override
     default void writeClientSideData(AbstractContainerMenu abstractContainerMenu, RegistryFriendlyByteBuf buf) {
         Player player = EventImplHelper.getPlayerFromContainerMenu(abstractContainerMenu);
         MenuTypeWithData.encodeMenuData(abstractContainerMenu, buf, this.getMenuData((ServerPlayer) player));
     }
+
+    @Shadow
+    T getMenuData(@Nullable ServerPlayer serverPlayer);
 }
