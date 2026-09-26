@@ -23,13 +23,12 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
-import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.util.Mth;
@@ -457,11 +456,10 @@ public final class NeoForgeClientEventInvokers {
         INSTANCE.register(SubmitArmWithItemCallback.class,
                 RenderHandEvent.class,
                 (SubmitArmWithItemCallback callback, RenderHandEvent event) -> {
-                    GameRenderer gameRenderer = Minecraft.getInstance().gameRenderer;
-                    PlayerRenderState playerState = gameRenderer.gameRenderState().levelRenderState.playerRenderState;
-                    EventResult eventResult = callback.onSubmitArmWithItem(gameRenderer.firstPersonHandsAndItemsRenderer,
-                            playerState,
-                            playerState.firstPersonHandsAndItems,
+                    FirstPersonHandsAndItemsRenderer handsAndItemsRenderer = Minecraft.getInstance().gameRenderer.firstPersonHandsAndItemsRenderer;
+                    EventResult eventResult = callback.onSubmitArmWithItem(handsAndItemsRenderer,
+                            event.getPlayerState(),
+                            event.getPlayerState().firstPersonHandsAndItems,
                             event.getPartialTick(),
                             event.getInterpolatedPitch(),
                             event.getHand(),
