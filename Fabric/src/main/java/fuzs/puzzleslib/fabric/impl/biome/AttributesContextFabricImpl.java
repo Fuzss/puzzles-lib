@@ -7,8 +7,7 @@ import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.modifier.AttributeModifier;
 import org.jspecify.annotations.Nullable;
 
-public record AttributesContextFabricImpl(BiomeModificationContext.AttributesContext context,
-                                          EnvironmentAttributeMap biome) implements AttributesContext {
+public record AttributesContextFabricImpl(BiomeModificationContext.AttributesContext context) implements AttributesContext {
     @Override
     public void addAll(EnvironmentAttributeMap attributes) {
         this.context.addAll(attributes);
@@ -31,21 +30,21 @@ public record AttributesContextFabricImpl(BiomeModificationContext.AttributesCon
 
     @Override
     public <T> EnvironmentAttributeMap.@Nullable Entry<T, ?> get(EnvironmentAttribute<T> attribute) {
-        return this.biome.get(attribute);
+        return this.context.get(attribute);
     }
 
     @Override
     public <T> T getValue(EnvironmentAttribute<T> attribute) {
-        return this.applyModifier(attribute, attribute.defaultValue());
+        return this.context.getValue(attribute);
     }
 
     @Override
     public boolean contains(EnvironmentAttribute<?> attribute) {
-        return this.biome.contains(attribute);
+        return this.context.contains(attribute);
     }
 
     @Override
     public <T> T applyModifier(EnvironmentAttribute<T> attribute, T value) {
-        return this.biome.applyModifier(attribute, value);
+        return this.context.applyModifier(attribute, value);
     }
 }

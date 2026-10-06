@@ -6,8 +6,7 @@ import net.minecraft.world.level.biome.Biome;
 
 import java.util.Objects;
 
-public record ClimateContextFabricImpl(BiomeModificationContext.WeatherContext context,
-                                       Biome.ClimateSettings biome) implements ClimateContext {
+public record ClimateContextFabricImpl(BiomeModificationContext.WeatherContext context) implements ClimateContext {
     @Override
     public void hasPrecipitation(boolean hasPrecipitation) {
         this.context.setPrecipitation(hasPrecipitation);
@@ -15,7 +14,7 @@ public record ClimateContextFabricImpl(BiomeModificationContext.WeatherContext c
 
     @Override
     public boolean hasPrecipitation() {
-        return this.biome.hasPrecipitation();
+        return this.context.hasPrecipitation();
     }
 
     @Override
@@ -25,7 +24,7 @@ public record ClimateContextFabricImpl(BiomeModificationContext.WeatherContext c
 
     @Override
     public float getTemperature() {
-        return this.biome.temperature();
+        return this.context.getTemperature();
     }
 
     @Override
@@ -36,7 +35,7 @@ public record ClimateContextFabricImpl(BiomeModificationContext.WeatherContext c
 
     @Override
     public Biome.TemperatureModifier getTemperatureModifier() {
-        return this.biome.temperatureModifier();
+        return this.context.getTemperatureModifier();
     }
 
     @Override
@@ -46,6 +45,6 @@ public record ClimateContextFabricImpl(BiomeModificationContext.WeatherContext c
 
     @Override
     public float getDownfall() {
-        return this.biome.downfall();
+        return this.context.getDownfall();
     }
 }

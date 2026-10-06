@@ -7,8 +7,7 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import java.util.Objects;
 import java.util.Optional;
 
-public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext context,
-                                       BiomeSpecialEffects biome) implements EffectsContext {
+public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext context) implements EffectsContext {
     @Override
     public void setWaterColor(int waterColor) {
         this.context.setWaterColor(waterColor);
@@ -16,7 +15,7 @@ public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext c
 
     @Override
     public int getWaterColor() {
-        return this.biome.waterColor();
+        return this.context.getWaterColor();
     }
 
     @Override
@@ -26,7 +25,7 @@ public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext c
 
     @Override
     public Optional<Integer> getFoliageColorOverride() {
-        return this.biome.foliageColorOverride();
+        return this.context.getFoliageColorOverride();
     }
 
     @Override
@@ -36,7 +35,7 @@ public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext c
 
     @Override
     public Optional<Integer> getDryFoliageColorOverride() {
-        return this.biome.dryFoliageColorOverride();
+        return this.context.getDryFoliageColorOverride();
     }
 
     @Override
@@ -46,7 +45,7 @@ public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext c
 
     @Override
     public Optional<Integer> getGrassColorOverride() {
-        return this.biome.grassColorOverride();
+        return this.context.getGrassColorOverride();
     }
 
     @Override
@@ -57,6 +56,6 @@ public record EffectsContextFabricImpl(BiomeModificationContext.EffectsContext c
 
     @Override
     public BiomeSpecialEffects.GrassColorModifier getGrassColorModifier() {
-        return this.biome.grassColorModifier();
+        return this.context.getGrassColorModifier();
     }
 }

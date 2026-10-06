@@ -1,14 +1,9 @@
 package fuzs.puzzleslib.fabric.impl.biome;
 
-import com.google.common.collect.ImmutableMap;
 import fuzs.puzzleslib.common.api.biome.v2.context.MobSpawnsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.minecraft.util.random.Weighted;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.attribute.EnvironmentAttributeMap;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -17,8 +12,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public record MobSpawnsContextFabricImpl(BiomeModificationContext.MobSpawnSettingsContext context,
-                                         EnvironmentAttributeMap biome) implements MobSpawnsContext {
+public record MobSpawnsContextFabricImpl(BiomeModificationContext.MobSpawnSettingsContext context) implements MobSpawnsContext {
     @Override
     public List<Weighted<MobSpawnSettings.SpawnerData>> getSpawns(MobCategory mobCategory) {
         return this.context.getMobs(mobCategory);
@@ -45,19 +39,12 @@ public record MobSpawnsContextFabricImpl(BiomeModificationContext.MobSpawnSettin
 
     @Override
     public void addSpawn(EntityType<?> entityType, int weight, int minCount, int maxCount) {
-        IntProvider count;
-        if (minCount == maxCount) {
-            count = new ConstantInt(minCount);
-        } else {
-            count = new UniformInt(minCount, maxCount);
-        }
-
-        this.context.addSpawn(entityType.getCategory(), new MobSpawnSettings.SpawnerData(entityType, count), weight);
+        this.context.addSpawn(entityType, weight, minCount, maxCount);
     }
 
     @Override
     public void addSpawn(EntityType<?> entityType, int weight, IntProvider count) {
-        this.context.addSpawn(entityType.getCategory(), new MobSpawnSettings.SpawnerData(entityType, count), weight);
+        this.context.addSpawn(entityType, weight, count);
     }
 
     @Override
@@ -67,20 +54,12 @@ public record MobSpawnsContextFabricImpl(BiomeModificationContext.MobSpawnSettin
 
     @Override
     public Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> getSpawns() {
-        ImmutableMap.Builder<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> builder = ImmutableMap.builder();
-        for (MobCategory mobCategory : MobCategory.values()) {
-            List<Weighted<MobSpawnSettings.SpawnerData>> spawns = this.context.getMobs(mobCategory);
-            if (!spawns.isEmpty()) {
-                builder.put(mobCategory, spawns);
-            }
-        }
-
-        return builder.build();
+        return this.context.getMobs();
     }
 
     @Override
     public MobSpawnSettings.@Nullable MobSpawnCost getSpawnCost(EntityType<?> entityType) {
-        return this.getMobSpawns().getMobSpawnCost(entityType);
+        return this.context.getMobCharge(entityType);
     }
 
     @Override
@@ -90,7 +69,7 @@ public record MobSpawnsContextFabricImpl(BiomeModificationContext.MobSpawnSettin
 
     @Override
     public boolean removeSpawnCost(EntityType<?> entityType) {
-        if (this.getMobSpawns().getMobSpawnCost(entityType) != null) {
+        if (this.context.getMobCharge(entityType) != null) {
             this.context.clearMobCharge(entityType);
             return true;
         } else {
@@ -100,11 +79,6 @@ public record MobSpawnsContextFabricImpl(BiomeModificationContext.MobSpawnSettin
 
     @Override
     public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getSpawnCosts() {
-        return this.getMobSpawns().allSpawnCosts();
-    }
-
-    private MobSpawnSettings getMobSpawns() {
-        return this.biome.applyModifier(EnvironmentAttributes.NATURAL_MOB_SPAWNS,
-                EnvironmentAttributes.NATURAL_MOB_SPAWNS.defaultValue());
+        return this.context.getMobCharges();
     }
 }

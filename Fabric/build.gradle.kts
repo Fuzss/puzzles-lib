@@ -56,7 +56,6 @@ multiloader {
             "ThrownEnderpearlFabricMixin",
             "WolfFabricMixin"
         )
-        accessor("BiomeFabricAccessor", "BiomeSelectionContextImplFabricAccessor")
         clientMixin(
             "AbstractClientPlayerFabricMixin",
             "CameraFabricMixin",
