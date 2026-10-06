@@ -21,12 +21,12 @@ abstract class ResourceManagerRegistryLoadTaskNeoForgeMixin {
     private HolderGetter.Provider puzzleslib$lookupProvider;
 
     @Inject(method = "load", at = @At("HEAD"))
-    private void puzzleslib$captureRegistries(RegistryOps.RegistryInfoLookup context, Executor executor, CallbackInfoReturnable<CompletableFuture<?>> callback) {
+    public void load(RegistryOps.RegistryInfoLookup context, Executor executor, CallbackInfoReturnable<CompletableFuture<?>> callback) {
         this.puzzleslib$lookupProvider = context::lookup;
     }
 
     @ModifyReturnValue(method = "lambda$load$2", at = @At("RETURN"))
-    private <T> RegistryLoadTask.PendingRegistration<T> puzzleslib$modifyEnchantments(RegistryLoadTask.PendingRegistration<T> pendingRegistration) {
+    private <T> RegistryLoadTask.PendingRegistration<T> load(RegistryLoadTask.PendingRegistration<T> pendingRegistration) {
         return NeoForgeEventImplHelper.onModifyEnchantments(this.puzzleslib$lookupProvider, pendingRegistration);
     }
 }
