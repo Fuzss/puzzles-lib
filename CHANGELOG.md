@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v26.3.11-mc26.3.x] - 2026-10-06
+
+### Changed
+
+- Read biome data during biome modification from Fabric API's live `BiomeModificationContext`
+- Use the public `TagBuilder` methods in `FabricTagAppender` instead of Fabric API internals
+
+### Fixed
+
+- Fix a possible crash while loading registries when no pending registration is available for modifying enchantments on
+  NeoForge
+
 ## [v26.3.10-mc26.3.x] - 2026-10-05
 
 ### Added
