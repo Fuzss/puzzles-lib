@@ -37,6 +37,9 @@ public final class NeoForgeEventImplHelper {
 
     @SuppressWarnings("unchecked")
     public static <T> RegistryLoadTask.PendingRegistration<T> onModifyEnchantments(HolderGetter.Provider lookupProvider, RegistryLoadTask.PendingRegistration<T> pendingRegistration) {
+        if (pendingRegistration == null) {
+            return pendingRegistration;
+        }
         if (!pendingRegistration.key().isFor(Registries.ENCHANTMENT)) {
             return pendingRegistration;
         }
