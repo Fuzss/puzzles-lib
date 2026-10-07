@@ -19,19 +19,54 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * A single block variant of a {@link BlockSetFamily}, such as a stair, slab, or sign, that can be generated alongside
+ * the family's base block.
+ * <p>
+ * Variants either mirror a vanilla {@link BlockFamily.Variant} or are {@link StandaloneBlockSetVariant standalone} when
+ * no vanilla equivalent exists (for example, shelves and boats). They are added to a family by generating them via
+ * {@link BlockSetFamily.Writable#generateFor(BlockSetVariant)}.
+ */
 public interface BlockSetVariant extends StringRepresentable {
+    /**
+     * A chiseled block.
+     */
     BlockSetVariant CHISELED = new VanillaBlockSetVariant.Prefix(BlockFamily.Variant.CHISELED,
             BlockFamily.Builder::chiseled);
+    /**
+     * A cracked block.
+     */
     BlockSetVariant CRACKED = new VanillaBlockSetVariant.Prefix(BlockFamily.Variant.CRACKED,
             BlockFamily.Builder::cracked);
+    /**
+     * A cut block.
+     */
     BlockSetVariant CUT = new VanillaBlockSetVariant.Prefix(BlockFamily.Variant.CUT, BlockFamily.Builder::cut);
+    /**
+     * A mosaic block.
+     */
     BlockSetVariant MOSAIC = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.MOSAIC, BlockFamily.Builder::mosaic);
+    /**
+     * A polished block.
+     */
     BlockSetVariant POLISHED = new VanillaBlockSetVariant.Prefix(BlockFamily.Variant.POLISHED,
             BlockFamily.Builder::polished);
+    /**
+     * A brick block.
+     */
     BlockSetVariant BRICKS = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.BRICKS, BlockFamily.Builder::bricks);
+    /**
+     * A cobbled block.
+     */
     BlockSetVariant COBBLED = new VanillaBlockSetVariant.Prefix(BlockFamily.Variant.COBBLED,
             BlockFamily.Builder::cobbled);
+    /**
+     * A tile block.
+     */
     BlockSetVariant TILES = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.TILES, BlockFamily.Builder::tiles);
+    /**
+     * A pillar block.
+     */
     BlockSetVariant PILLAR = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.PILLAR,
             BlockFamily.Builder::pillar) {
         @Override
@@ -45,6 +80,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A log block.
+     */
     BlockSetVariant LOG = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.LOG, BlockFamily.Builder::log) {
         @Override
         public void registerBlock(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -58,6 +96,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A six-sided wood block.
+     */
     BlockSetVariant WOOD = new StandaloneBlockSetVariant("wood") {
         @Override
         public void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -72,6 +113,9 @@ public interface BlockSetVariant extends StringRepresentable {
             context.registerItem(this, context.getRegistries().registerBlockItem(context.getBlock(this)));
         }
     };
+    /**
+     * A stripped log block.
+     */
     BlockSetVariant STRIPPED_LOG = new VanillaBlockSetVariant(BlockFamily.Variant.STRIPPED_LOG,
             BlockFamily.Builder::strippedLog) {
         @Override
@@ -91,6 +135,9 @@ public interface BlockSetVariant extends StringRepresentable {
             return context.getName((String baseName) -> "stripped_" + baseName + "_log", baseNameOverride);
         }
     };
+    /**
+     * A stripped six-sided wood block.
+     */
     BlockSetVariant STRIPPED_WOOD = new StandaloneBlockSetVariant("stripped_wood") {
         @Override
         public void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -104,6 +151,9 @@ public interface BlockSetVariant extends StringRepresentable {
             context.registerItem(this, context.getRegistries().registerBlockItem(context.getBlock(this)));
         }
     };
+    /**
+     * A stair block.
+     */
     BlockSetVariant STAIRS = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.STAIRS,
             BlockFamily.Builder::stairs) {
         @Override
@@ -119,6 +169,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A slab block.
+     */
     BlockSetVariant SLAB = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.SLAB, BlockFamily.Builder::slab) {
         @Override
         public void registerBlock(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -131,6 +184,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A wall block.
+     */
     BlockSetVariant WALL = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.WALL, BlockFamily.Builder::wall) {
         @Override
         public void registerBlock(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -144,6 +200,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A fence block.
+     */
     BlockSetVariant FENCE = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.FENCE, BlockFamily.Builder::fence) {
         @Override
         public void registerBlock(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -156,6 +215,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A fence gate block.
+     */
     BlockSetVariant FENCE_GATE = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.FENCE_GATE,
             BlockFamily.Builder::fenceGate) {
         @Override
@@ -171,6 +233,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A door block.
+     */
     BlockSetVariant DOOR = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.DOOR, BlockFamily.Builder::door) {
         @Override
         public void registerBlock(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -192,6 +257,9 @@ public interface BlockSetVariant extends StringRepresentable {
                     context.getRegistries().registerBlockItem(context.getBlock(this), DoubleHighBlockItem::new));
         }
     };
+    /**
+     * A trapdoor block.
+     */
     BlockSetVariant TRAPDOOR = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.TRAPDOOR,
             BlockFamily.Builder::trapdoor) {
         @Override
@@ -208,6 +276,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A button block.
+     */
     BlockSetVariant BUTTON = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.BUTTON,
             BlockFamily.Builder::button) {
         @Override
@@ -225,6 +296,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A pressure plate block.
+     */
     BlockSetVariant PRESSURE_PLATE = new VanillaBlockSetVariant.Suffix(BlockFamily.Variant.PRESSURE_PLATE,
             BlockFamily.Builder::pressurePlate) {
         @Override
@@ -242,6 +316,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     }));
         }
     };
+    /**
+     * A standing sign block. Also registers the matching {@link #WALL_SIGN wall sign}.
+     */
     BlockSetVariant SIGN = new StandaloneBlockSetVariant(BlockFamily.Variant.SIGN) {
         @Override
         public void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -279,12 +356,18 @@ public interface BlockSetVariant extends StringRepresentable {
                                     () -> new Item.Properties().stacksTo(16).signText()));
         }
     };
+    /**
+     * The wall sign belonging to {@link #SIGN}. Registered together with it and not meant to be generated on its own.
+     */
     BlockSetVariant WALL_SIGN = new StandaloneBlockSetVariant(BlockFamily.Variant.WALL_SIGN) {
         @Override
         public void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
             throw new UnsupportedOperationException();
         }
     };
+    /**
+     * A hanging sign block. Also registers the matching {@link #WALL_HANGING_SIGN wall hanging sign}.
+     */
     BlockSetVariant HANGING_SIGN = new StandaloneBlockSetVariant(BlockFamily.Variant.HANGING_SIGN) {
         @Override
         public void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -321,12 +404,19 @@ public interface BlockSetVariant extends StringRepresentable {
                                     () -> new Item.Properties().stacksTo(16)));
         }
     };
+    /**
+     * The wall hanging sign belonging to {@link #HANGING_SIGN}. Registered together with it and not meant to be
+     * generated on its own.
+     */
     BlockSetVariant WALL_HANGING_SIGN = new StandaloneBlockSetVariant(BlockFamily.Variant.WALL_HANGING_SIGN) {
         @Override
         public void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
             throw new UnsupportedOperationException();
         }
     };
+    /**
+     * A shelf block.
+     */
     BlockSetVariant SHELF = new StandaloneBlockSetVariant("shelf") {
         @Override
         public void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
@@ -345,6 +435,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                             ItemContainerContents.EMPTY)));
         }
     };
+    /**
+     * A boat entity and its matching item.
+     */
     BlockSetVariant BOAT = new StandaloneBlockSetVariant("boat") {
         @SuppressWarnings("unchecked")
         @Override
@@ -367,6 +460,9 @@ public interface BlockSetVariant extends StringRepresentable {
                                     () -> new Item.Properties().stacksTo(1)));
         }
     };
+    /**
+     * A chest boat entity and its matching item.
+     */
     BlockSetVariant CHEST_BOAT = new StandaloneBlockSetVariant("chest_boat") {
         @SuppressWarnings("unchecked")
         @Override
@@ -390,8 +486,22 @@ public interface BlockSetVariant extends StringRepresentable {
         }
     };
 
+    /**
+     * Generates and registers the blocks, items, and entities belonging to this variant.
+     *
+     * @param context          the family context used for registering the variant
+     * @param baseNameOverride optional name override for the base block, or {@code null} to use the family's base name
+     * @see BlockSetFamily.Writable#generateFor(BlockSetVariant)
+     */
     void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride);
 
+    /**
+     * Returns the vanilla {@link BlockFamily.Variant} this variant corresponds to.
+     *
+     * @return the vanilla variant, or {@code null} if this variant has no vanilla equivalent
+     *
+     * @see #fromVanilla(BlockFamily.Variant)
+     */
     BlockFamily.@Nullable Variant toVanilla();
 
     /**

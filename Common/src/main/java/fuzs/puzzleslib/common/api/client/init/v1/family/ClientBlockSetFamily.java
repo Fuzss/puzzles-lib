@@ -10,7 +10,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 
 /**
- * Client side version extension for registration methods in {@link BlockSetFamily}.
+ * Client side extension for the registration methods of {@link BlockSetFamily}.
  */
 public final class ClientBlockSetFamily {
 
@@ -18,6 +18,15 @@ public final class ClientBlockSetFamily {
         // NO-OP
     }
 
+    /**
+     * Registers the entity renderers for the {@link BlockSetVariant#BOAT} and {@link BlockSetVariant#CHEST_BOAT} entity
+     * types of the given block set family.
+     *
+     * @param blockSetFamily      the block set family
+     * @param context             the entity renderers context
+     * @param boatModelLayer      the model layer used for the boat renderer
+     * @param chestBoatModelLayer the model layer used for the chest boat renderer
+     */
     @SuppressWarnings("unchecked")
     public static void registerFor(BlockSetFamily blockSetFamily, EntityRenderersContext context, ModelLayerLocation boatModelLayer, ModelLayerLocation chestBoatModelLayer) {
         context.registerEntityRenderer((EntityType<? extends AbstractBoat>) blockSetFamily.getEntityType(BlockSetVariant.BOAT)
