@@ -164,7 +164,7 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
     public void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, FamilyRecipeProvider> craftingVariants, Map<BlockSetVariant, FamilyRecipeProvider> stonecutterVariants) {
         BlockFamily blockFamily = blockSetFamily.getBlockFamily();
         this.generateRecipes(blockFamily, FeatureFlags.DEFAULT_FLAGS);
-        blockSetFamily.getItemVariants().forEach((BlockSetVariant variant, Holder.Reference<Item> holder) -> {
+        blockSetFamily.getGeneratedItemVariants().forEach((BlockSetVariant variant, Holder.Reference<Item> holder) -> {
             if (blockFamily.shouldGenerateCraftingRecipe()) {
                 FamilyRecipeProvider recipeProvider = craftingVariants.get(variant);
                 if (recipeProvider != null) {

@@ -87,17 +87,17 @@ public abstract class AbstractModelProvider implements DataProvider {
                     generators.woodProvider(block).logWithHorizontal(block);
                 })
                 .put(BlockSetVariant.WOOD, (BlockModelGenerators generators, Block block) -> {
-                    generators.woodProvider(family.getBlockVariants().get(BlockSetVariant.LOG).value()).wood(block);
+                    generators.woodProvider(family.getGeneratedBlockVariants().get(BlockSetVariant.LOG).value()).wood(block);
                 })
                 .put(BlockSetVariant.STRIPPED_LOG, (BlockModelGenerators generators, Block block) -> {
                     generators.woodProvider(block).logWithHorizontal(block);
                 })
                 .put(BlockSetVariant.STRIPPED_WOOD, (BlockModelGenerators generators, Block block) -> {
-                    generators.woodProvider(family.getBlockVariants().get(BlockSetVariant.STRIPPED_LOG).value())
+                    generators.woodProvider(family.getGeneratedBlockVariants().get(BlockSetVariant.STRIPPED_LOG).value())
                             .wood(block);
                 })
                 .put(BlockSetVariant.SHELF, (BlockModelGenerators generators, Block block) -> {
-                    generators.createShelf(block, family.getBlockVariants().get(BlockSetVariant.STRIPPED_LOG).value());
+                    generators.createShelf(block, family.getGeneratedBlockVariants().get(BlockSetVariant.STRIPPED_LOG).value());
                 })
                 .build();
     }
@@ -209,7 +209,7 @@ public abstract class AbstractModelProvider implements DataProvider {
             familyProvider.fullBlock = BlockModelGenerators.plainModel(model.getTemplate()
                     .getDefaultModelLocation(blockFamily.getBaseBlock()));
             familyProvider.generateFor(blockFamily);
-            family.getBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
+            family.getGeneratedBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
                 BiConsumer<BlockModelGenerators, Block> modelProvider = variants.get(variant);
                 if (modelProvider != null) {
                     modelProvider.accept(generators, holder.value());
@@ -230,7 +230,7 @@ public abstract class AbstractModelProvider implements DataProvider {
     public void generateForItems(ItemModelGenerators generators, BlockSetFamily family, Map<BlockSetVariant, BiConsumer<ItemModelGenerators, Item>> variants) {
         BlockFamily blockFamily = family.getBlockFamily();
         if (blockFamily.shouldGenerateModel()) {
-            family.getItemVariants().forEach((BlockSetVariant variant, Holder.Reference<Item> holder) -> {
+            family.getGeneratedItemVariants().forEach((BlockSetVariant variant, Holder.Reference<Item> holder) -> {
                 BiConsumer<ItemModelGenerators, Item> modelProvider = variants.get(variant);
                 if (modelProvider != null) {
                     modelProvider.accept(generators, holder.value());

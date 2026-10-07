@@ -21,13 +21,22 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFamily.Writable, BlockSetFamily.Context {
-    private final Map<BlockSetVariant, Holder.Reference<Block>> blockVariants = new LinkedHashMap<>();
-    private final Map<BlockSetVariant, Holder.Reference<Item>> itemVariants = new LinkedHashMap<>();
-    private final Map<BlockSetVariant, Holder.Reference<EntityType<?>>> entityVariants = new LinkedHashMap<>();
-    private final Map<BlockSetVariant, Holder.Reference<Block>> blockVariantsView = Collections.unmodifiableMap(this.blockVariants);
-    private final Map<BlockSetVariant, Holder.Reference<Item>> itemVariantsView = Collections.unmodifiableMap(this.itemVariants);
-    private final Map<BlockSetVariant, Holder.Reference<EntityType<?>>> entityVariantsView = Collections.unmodifiableMap(
-            this.entityVariants);
+    private final Map<BlockSetVariant, Holder.Reference<Block>> allBlockVariants = new LinkedHashMap<>();
+    private final Map<BlockSetVariant, Holder.Reference<Item>> allItemVariants = new LinkedHashMap<>();
+    private final Map<BlockSetVariant, Holder.Reference<EntityType<?>>> allEntityVariants = new LinkedHashMap<>();
+    private final Map<BlockSetVariant, Holder.Reference<Block>> generatedBlockVariants = new LinkedHashMap<>();
+    private final Map<BlockSetVariant, Holder.Reference<Item>> generatedItemVariants = new LinkedHashMap<>();
+    private final Map<BlockSetVariant, Holder.Reference<EntityType<?>>> generatedEntityVariants = new LinkedHashMap<>();
+    private final Map<BlockSetVariant, Holder.Reference<Block>> allBlockVariantsView = Collections.unmodifiableMap(this.allBlockVariants);
+    private final Map<BlockSetVariant, Holder.Reference<Item>> allItemVariantsView = Collections.unmodifiableMap(this.allItemVariants);
+    private final Map<BlockSetVariant, Holder.Reference<EntityType<?>>> allEntityVariantsView = Collections.unmodifiableMap(
+            this.allEntityVariants);
+    private final Map<BlockSetVariant, Holder.Reference<Block>> generatedBlockVariantsView = Collections.unmodifiableMap(
+            this.generatedBlockVariants);
+    private final Map<BlockSetVariant, Holder.Reference<Item>> generatedItemVariantsView = Collections.unmodifiableMap(
+            this.generatedItemVariants);
+    private final Map<BlockSetVariant, Holder.Reference<EntityType<?>>> generatedEntityVariantsView = Collections.unmodifiableMap(
+            this.generatedEntityVariants);
     private final RegistryManager registries;
     private final Holder.Reference<Block> baseBlock;
     private final String baseName;
@@ -49,6 +58,11 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     }
 
     @Override
+    public String getBaseName() {
+        return this.baseName;
+    }
+
+    @Override
     public BlockSetType getBlockSetType() {
         return this.blockSetType;
     }
@@ -61,20 +75,20 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     @Override
     public BlockFamily getBlockFamily() {
         BlockFamily.Builder blockFamily = new BlockFamily.Builder(this.getBaseBlock().value());
-        this.getBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
+        this.getGeneratedBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
             if (variant instanceof VanillaBlockSetVariant vanillaVariant) {
                 vanillaVariant.variantBuilder.accept(blockFamily, holder.value());
             }
         });
 
-        if (this.getBlockVariants().containsKey(BlockSetVariant.SIGN) && this.getBlockVariants()
+        if (this.getGeneratedBlockVariants().containsKey(BlockSetVariant.SIGN) && this.getGeneratedBlockVariants()
                 .containsKey(BlockSetVariant.WALL_SIGN)) {
             blockFamily.sign(this.getBlock(BlockSetVariant.SIGN).value(),
                     this.getBlock(BlockSetVariant.WALL_SIGN).value());
         }
 
-        if (this.getBlockVariants().containsKey(BlockSetVariant.HANGING_SIGN) && this.getBlockVariants()
-                .containsKey(BlockSetVariant.WALL_HANGING_SIGN)) {
+        if (this.getGeneratedBlockVariants().containsKey(BlockSetVariant.HANGING_SIGN)
+                && this.getGeneratedBlockVariants().containsKey(BlockSetVariant.WALL_HANGING_SIGN)) {
             blockFamily.hangingSign(this.getBlock(BlockSetVariant.HANGING_SIGN).value(),
                     this.getBlock(BlockSetVariant.WALL_HANGING_SIGN).value());
         }
@@ -84,18 +98,33 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     }
 
     @Override
-    public Map<BlockSetVariant, Holder.Reference<Block>> getBlockVariants() {
-        return this.blockVariantsView;
+    public Map<BlockSetVariant, Holder.Reference<Block>> getAllBlockVariants() {
+        return this.allBlockVariantsView;
     }
 
     @Override
-    public Map<BlockSetVariant, Holder.Reference<Item>> getItemVariants() {
-        return this.itemVariantsView;
+    public Map<BlockSetVariant, Holder.Reference<Item>> getAllItemVariants() {
+        return this.allItemVariantsView;
     }
 
     @Override
-    public Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getEntityVariants() {
-        return this.entityVariantsView;
+    public Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getAllEntityVariants() {
+        return this.allEntityVariantsView;
+    }
+
+    @Override
+    public Map<BlockSetVariant, Holder.Reference<Block>> getGeneratedBlockVariants() {
+        return this.generatedBlockVariantsView;
+    }
+
+    @Override
+    public Map<BlockSetVariant, Holder.Reference<Item>> getGeneratedItemVariants() {
+        return this.generatedItemVariantsView;
+    }
+
+    @Override
+    public Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getGeneratedEntityVariants() {
+        return this.generatedEntityVariantsView;
     }
 
     @Override
@@ -111,17 +140,40 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     @Override
     public Writable registerBlock(BlockSetVariant variant, Holder.Reference<Block> holder) {
         Objects.requireNonNull(holder, "holder is null");
-        if (this.blockVariants.put(variant, holder) != null) {
+        if (this.allBlockVariants.put(variant, holder) != null) {
             throw new IllegalStateException(variant + " already present");
         }
 
+        this.generatedBlockVariants.put(variant, holder);
         return this;
     }
 
     @Override
     public Writable registerItem(BlockSetVariant variant, Holder.Reference<Item> holder) {
         Objects.requireNonNull(holder, "holder is null");
-        if (this.itemVariants.put(variant, holder) != null) {
+        if (this.allItemVariants.put(variant, holder) != null) {
+            throw new IllegalStateException(variant + " already present");
+        }
+
+        this.generatedItemVariants.put(variant, holder);
+        return this;
+    }
+
+    @Override
+    public Writable registerEntityType(BlockSetVariant variant, Holder.Reference<EntityType<?>> holder) {
+        Objects.requireNonNull(holder, "holder is null");
+        if (this.allEntityVariants.put(variant, holder) != null) {
+            throw new IllegalStateException(variant + " already present");
+        }
+
+        this.generatedEntityVariants.put(variant, holder);
+        return this;
+    }
+
+    @Override
+    public Writable provideBlock(BlockSetVariant variant, Holder.Reference<Block> holder) {
+        Objects.requireNonNull(holder, "holder is null");
+        if (this.allBlockVariants.put(variant, holder) != null) {
             throw new IllegalStateException(variant + " already present");
         }
 
@@ -129,9 +181,19 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     }
 
     @Override
-    public Writable registerEntityType(BlockSetVariant variant, Holder.Reference<EntityType<?>> holder) {
+    public Writable provideItem(BlockSetVariant variant, Holder.Reference<Item> holder) {
         Objects.requireNonNull(holder, "holder is null");
-        if (this.entityVariants.put(variant, holder) != null) {
+        if (this.allItemVariants.put(variant, holder) != null) {
+            throw new IllegalStateException(variant + " already present");
+        }
+
+        return this;
+    }
+
+    @Override
+    public Writable provideEntityType(BlockSetVariant variant, Holder.Reference<EntityType<?>> holder) {
+        Objects.requireNonNull(holder, "holder is null");
+        if (this.allEntityVariants.put(variant, holder) != null) {
             throw new IllegalStateException(variant + " already present");
         }
 

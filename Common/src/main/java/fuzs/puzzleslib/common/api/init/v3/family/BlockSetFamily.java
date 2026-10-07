@@ -142,28 +142,60 @@ public interface BlockSetFamily {
 
     Holder.Reference<Block> getBaseBlock();
 
+    String getBaseName();
+
     BlockSetType getBlockSetType();
 
     WoodType getWoodType();
 
     BlockFamily getBlockFamily();
 
-    Map<BlockSetVariant, Holder.Reference<Block>> getBlockVariants();
+    Map<BlockSetVariant, Holder.Reference<Block>> getAllBlockVariants();
 
-    Map<BlockSetVariant, Holder.Reference<Item>> getItemVariants();
+    Map<BlockSetVariant, Holder.Reference<Item>> getAllItemVariants();
 
-    Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getEntityVariants();
+    Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getAllEntityVariants();
+
+    Map<BlockSetVariant, Holder.Reference<Block>> getGeneratedBlockVariants();
+
+    Map<BlockSetVariant, Holder.Reference<Item>> getGeneratedItemVariants();
+
+    Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getGeneratedEntityVariants();
+
+    /**
+     * @deprecated use {@link #getGeneratedBlockVariants()}
+     */
+    @Deprecated
+    default Map<BlockSetVariant, Holder.Reference<Block>> getBlockVariants() {
+        return this.getGeneratedBlockVariants();
+    }
+
+    /**
+     * @deprecated use {@link #getGeneratedItemVariants()}
+     */
+    @Deprecated
+    default Map<BlockSetVariant, Holder.Reference<Item>> getItemVariants() {
+        return this.getGeneratedItemVariants();
+    }
+
+    /**
+     * @deprecated use {@link #getGeneratedEntityVariants()}
+     */
+    @Deprecated
+    default Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getEntityVariants() {
+        return this.getGeneratedEntityVariants();
+    }
 
     default Holder.Reference<Block> getBlock(BlockSetVariant variant) {
-        return this.getBlockVariants().get(variant);
+        return this.getAllBlockVariants().get(variant);
     }
 
     default Holder.Reference<Item> getItem(BlockSetVariant variant) {
-        return this.getItemVariants().get(variant);
+        return this.getAllItemVariants().get(variant);
     }
 
     default Holder.Reference<EntityType<?>> getEntityType(BlockSetVariant variant) {
-        return this.getEntityVariants().get(variant);
+        return this.getAllEntityVariants().get(variant);
     }
 
     default void register() {
@@ -172,7 +204,7 @@ public interface BlockSetFamily {
     }
 
     default void registerFor(BiConsumer<BlockEntityType<?>, Block> consumer, Map<BlockSetVariant, Holder<BlockEntityType<?>>> variants) {
-        this.getBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
+        this.getGeneratedBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
             Holder<BlockEntityType<?>> blockEntity = variants.get(variant);
             if (blockEntity != null) {
                 consumer.accept(blockEntity.value(), holder.value());
@@ -186,13 +218,13 @@ public interface BlockSetFamily {
     }
 
     default void registerFor(GameplayContentContext context, Map<BlockSetVariant, ResourceKey<ContextIntProvider>> fuelVariants, Map<BlockSetVariant, Vector2ic> flammableVariants) {
-        this.getItemVariants().forEach((BlockSetVariant variant, Holder.Reference<Item> holder) -> {
+        this.getGeneratedItemVariants().forEach((BlockSetVariant variant, Holder.Reference<Item> holder) -> {
             ResourceKey<ContextIntProvider> fuelValue = fuelVariants.get(variant);
             if (fuelValue != null) {
                 context.registerFuel(holder, fuelValue);
             }
         });
-        this.getBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
+        this.getGeneratedBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
             Vector2ic flammable = flammableVariants.get(variant);
             if (flammable != null) {
                 context.registerFlammable(holder, flammable.x(), flammable.y());
@@ -201,7 +233,7 @@ public interface BlockSetFamily {
     }
 
     default void registerFor(Map<BlockSetVariant, Function<Holder<EntityType<?>>, DispenseItemBehavior>> variants) {
-        this.getEntityVariants().forEach((BlockSetVariant variant, Holder.Reference<EntityType<?>> holder) -> {
+        this.getGeneratedEntityVariants().forEach((BlockSetVariant variant, Holder.Reference<EntityType<?>> holder) -> {
             Function<Holder<EntityType<?>>, DispenseItemBehavior> behaviorFactory = variants.get(variant);
             if (behaviorFactory != null) {
                 DispenserBlock.registerBehavior(this.getItem(variant).value(), behaviorFactory.apply(holder));
@@ -215,6 +247,35 @@ public interface BlockSetFamily {
         Writable registerItem(BlockSetVariant variant, Holder.Reference<Item> holder);
 
         Writable registerEntityType(BlockSetVariant variant, Holder.Reference<EntityType<?>> holder);
+
+        Writable provideBlock(BlockSetVariant variant, Holder.Reference<Block> holder);
+
+        Writable provideItem(BlockSetVariant variant, Holder.Reference<Item> holder);
+
+        Writable provideEntityType(BlockSetVariant variant, Holder.Reference<EntityType<?>> holder);
+
+        default Writable provideFor(BlockSetVariant variant, Block block) {
+            return this.provideBlock(variant, block.builtInRegistryHolder());
+        }
+
+        default Writable provideFor(BlockSetVariant variant, Item item) {
+            return this.provideItem(variant, item.builtInRegistryHolder());
+        }
+
+        default Writable provideFor(BlockSetVariant variant, EntityType<?> entityType) {
+            return this.provideEntityType(variant, entityType.builtInRegistryHolder());
+        }
+
+        default Writable provide(BlockFamily blockFamily) {
+            blockFamily.getVariants().forEach((BlockFamily.Variant variant, Block block) -> {
+                BlockSetVariant blockSetVariant = BlockSetVariant.fromVanilla(variant);
+                if (blockSetVariant != null) {
+                    this.provideFor(blockSetVariant, block);
+                }
+            });
+
+            return this;
+        }
 
         default Writable generateFor(BlockSetVariant variant) {
             return this.generateFor(variant, null);

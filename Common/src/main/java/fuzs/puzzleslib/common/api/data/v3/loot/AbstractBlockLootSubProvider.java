@@ -173,7 +173,7 @@ public abstract class AbstractBlockLootSubProvider extends BlockLootSubProvider 
      * @param variants       the variant providers to apply
      */
     public final void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, BiConsumer<AbstractBlockLootSubProvider, Block>> variants) {
-        blockSetFamily.getBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> block) -> {
+        blockSetFamily.getGeneratedBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> block) -> {
             BiConsumer<AbstractBlockLootSubProvider, Block> provider = variants.get(variant);
             if (provider != null) {
                 provider.accept(this, block.value());

@@ -178,9 +178,9 @@ public abstract class AbstractLanguageProvider implements DataProvider, Translat
      * @param baseName       the base name the variant names are derived from
      */
     public void generateFor(BlockSetFamily blockSetFamily, String baseName) {
-        this.generateFor(this::add, blockSetFamily.getBlockVariants(), VARIANT_BLOCK_NAMES, baseName);
-        this.generateFor(this::add, blockSetFamily.getItemVariants(), VARIANT_ITEM_NAMES, baseName);
-        this.generateFor(this::add, blockSetFamily.getEntityVariants(), VARIANT_ENTITY_NAMES, baseName);
+        this.generateFor(this::add, blockSetFamily.getGeneratedBlockVariants(), VARIANT_BLOCK_NAMES, baseName);
+        this.generateFor(this::add, blockSetFamily.getGeneratedItemVariants(), VARIANT_ITEM_NAMES, baseName);
+        this.generateFor(this::add, blockSetFamily.getGeneratedEntityVariants(), VARIANT_ENTITY_NAMES, baseName);
     }
 
     /**

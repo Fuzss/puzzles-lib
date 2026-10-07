@@ -393,4 +393,40 @@ public interface BlockSetVariant extends StringRepresentable {
     void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride);
 
     BlockFamily.@Nullable Variant toVanilla();
+
+    /**
+     * Retrieves the {@link BlockSetVariant} matching a vanilla {@link BlockFamily.Variant}.
+     *
+     * @param vanillaVariant the vanilla variant to look up
+     * @return the matching block set variant, or {@code null} if there is no equivalent
+     */
+    static @Nullable BlockSetVariant fromVanilla(BlockFamily.Variant vanillaVariant) {
+        return switch (vanillaVariant) {
+            case BUTTON -> BUTTON;
+            case CHISELED -> CHISELED;
+            case CRACKED -> CRACKED;
+            case CUT -> CUT;
+            case DOOR -> DOOR;
+            case CUSTOM_FENCE, FENCE -> FENCE;
+            case CUSTOM_FENCE_GATE, FENCE_GATE -> FENCE_GATE;
+            case CUSTOM_HANGING_SIGN, HANGING_SIGN -> HANGING_SIGN;
+            case LOG -> LOG;
+            case STRIPPED_LOG -> STRIPPED_LOG;
+            case MOSAIC -> MOSAIC;
+            case SIGN -> SIGN;
+            case SLAB -> SLAB;
+            case STAIRS -> STAIRS;
+            case PRESSURE_PLATE -> PRESSURE_PLATE;
+            case POLISHED -> POLISHED;
+            case TRAPDOOR -> TRAPDOOR;
+            case WALL -> WALL;
+            case WALL_SIGN -> WALL_SIGN;
+            case CUSTOM_WALL_HANGING_SIGN, WALL_HANGING_SIGN -> WALL_HANGING_SIGN;
+            case BRICKS -> BRICKS;
+            case COBBLED -> COBBLED;
+            case TILES -> TILES;
+            case PILLAR -> PILLAR;
+            default -> null;
+        };
+    }
 }
