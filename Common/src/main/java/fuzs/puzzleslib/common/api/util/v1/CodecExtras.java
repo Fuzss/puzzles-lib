@@ -142,7 +142,8 @@ public final class CodecExtras {
     }
 
     /**
-     * Creates a codec from an encoder. The returned codec can only encode and will throw on any attempt to decode.
+     * Creates a codec from an encoder. The returned codec can only encode and will return an error on any attempt to
+     * decode.
      *
      * @param encoder the encoder
      * @param <A>     the element type
@@ -151,15 +152,17 @@ public final class CodecExtras {
      * @see #decodeOnly(Decoder)
      */
     public static <A> Codec<A> encodeOnly(Encoder<A> encoder) {
-        return Codec.of(encoder, MapCodec.unitCodec(() -> {
-            throw new UnsupportedOperationException("Cannot decode with encode-only codec! Encoder:" + encoder);
-        }), "EncodeOnly[" + encoder + "]");
+        return Codec.of(encoder, new Decoder<>() {
+            @Override
+            public <T> DataResult<Pair<A, T>> decode(DynamicOps<T> ops, T input) {
+                return DataResult.error(() -> "Cannot decode with encode-only codec! Encoder:" + encoder);
+            }
+        }, "EncodeOnly[" + encoder + "]");
     }
 
     /**
-     * Creates a codec from a decoder. The returned codec can only decode and will throw on any attempt to encode.
-     * <p>
-     * Copied from {@code net.neoforged.neoforge.common.util.NeoForgeExtraCodecs#decodeOnly}.
+     * Creates a codec from a decoder. The returned codec can only decode and will return an error on any attempt to
+     * encode.
      *
      * @param decoder the decoder
      * @param <A>     the element type
@@ -168,9 +171,12 @@ public final class CodecExtras {
      * @see #encodeOnly(Encoder)
      */
     public static <A> Codec<A> decodeOnly(Decoder<A> decoder) {
-        return Codec.of(MapCodec.unitCodec(() -> {
-            throw new UnsupportedOperationException("Cannot encode with decode-only codec! Decoder:" + decoder);
-        }), decoder, "DecodeOnly[" + decoder + "]");
+        return Codec.of(new Encoder<>() {
+            @Override
+            public <T> DataResult<T> encode(A input, DynamicOps<T> ops, T prefix) {
+                return DataResult.error(() -> "Cannot encode with decode-only codec! Decoder:" + decoder);
+            }
+        }, decoder, "DecodeOnly[" + decoder + "]");
     }
 
     /**
