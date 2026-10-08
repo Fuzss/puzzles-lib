@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v8.1.35-1.20.1] - 2026-10-08
+### Fixed
+- Fix the Mixin refmap being missing from built Forge JARs by disabling Gradle's build cache
+
 ## [v8.1.34-1.20.1] - 2026-09-29
 ### Fixed
 - Always rebind mutable capability components on retrieval to fix desync issues
