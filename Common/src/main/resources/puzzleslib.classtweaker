@@ -1,6 +1,5 @@
 classTweaker    v2  official
 transitive-accessible	field	net/minecraft/client/KeyMapping	key	Lcom/mojang/blaze3d/platform/InputConstants$Key;
-transitive-accessible	field	net/minecraft/client/Minecraft	missTime	I
 transitive-accessible	field	net/minecraft/client/gui/Gui	minecraft	Lnet/minecraft/client/Minecraft;
 transitive-accessible	method	net/minecraft/client/gui/Gui	getCameraPlayer	()Lnet/minecraft/world/entity/player/Player;
 transitive-accessible	method	net/minecraft/client/gui/Gui	getPlayerVehicleWithHealth	()Lnet/minecraft/world/entity/LivingEntity;
@@ -36,8 +35,6 @@ transitive-accessible	method	net/minecraft/client/gui/screens/worldselection/Wor
 transitive-accessible	field	net/minecraft/client/model/PlayerModel	slim	Z
 transitive-accessible	field	net/minecraft/client/model/geom/LayerDefinitions	INNER_ARMOR_DEFORMATION	Lnet/minecraft/client/model/geom/builders/CubeDeformation;
 transitive-accessible	field	net/minecraft/client/model/geom/LayerDefinitions	OUTER_ARMOR_DEFORMATION	Lnet/minecraft/client/model/geom/builders/CubeDeformation;
-transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Polygon
-transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Vertex
 transitive-accessible	field	net/minecraft/client/model/geom/builders/LayerDefinition	material	Lnet/minecraft/client/model/geom/builders/MaterialDefinition;
 transitive-accessible	field	net/minecraft/client/model/geom/builders/LayerDefinition	mesh	Lnet/minecraft/client/model/geom/builders/MeshDefinition;
 transitive-accessible	field	net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl	connection	Lnet/minecraft/network/Connection;
@@ -167,11 +164,6 @@ transitive-accessible	field	net/minecraft/world/level/Explosion	damageCalculator
 transitive-accessible	field	net/minecraft/world/level/Explosion	damageSource	Lnet/minecraft/world/damagesource/DamageSource;
 transitive-accessible	field	net/minecraft/world/level/block/entity/BlockEntity	type	Lnet/minecraft/world/level/block/entity/BlockEntityType;
 transitive-mutable	field	net/minecraft/world/level/block/entity/BlockEntity	type	Lnet/minecraft/world/level/block/entity/BlockEntityType;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	conditions	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	entries	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	functions	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	rolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
 transitive-accessible	field   net/minecraft/world/level/storage/loot/LootTable	functions	Ljava/util/List;
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootTable	pools	Ljava/util/List;
 transitive-accessible	field	net/minecraft/world/level/storage/loot/parameters/LootContextParamSets	REGISTRY	Lcom/google/common/collect/BiMap;
@@ -314,6 +306,7 @@ accessible	field	net/minecraft/world/level/storage/loot/LootTable	randomSequence
 mutable	field	net/minecraft/world/level/storage/loot/LootTable	randomSequence	Ljava/util/Optional;
 
 # fabric-item-group-api-v1
+
 transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	BUILDING_BLOCKS	Lnet/minecraft/resources/ResourceKey;
 transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	COLORED_BLOCKS	Lnet/minecraft/resources/ResourceKey;
 transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	NATURAL_BLOCKS	Lnet/minecraft/resources/ResourceKey;
@@ -332,6 +325,38 @@ transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$TabVisibili
 transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$Output
 
 # fabric-transitive-access-wideners-v1
+
+transitive-accessible	method	net/minecraft/client/renderer/item/ItemProperties	register	(Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)V
+transitive-accessible	method	net/minecraft/client/renderer/item/ItemProperties	registerGeneric	(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;
+transitive-accessible	method	net/minecraft/client/renderer/item/ItemProperties	registerCustomModelData	(Lnet/minecraft/client/renderer/item/ItemPropertyFunction;)V
+transitive-accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	entries	Ljava/util/List;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	conditions	Ljava/util/List;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	functions	Ljava/util/List;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	rolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
+transitive-accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V
+transitive-accessible	method	net/minecraft/world/scores/criteria/ObjectiveCriteria	registerCustom	(Ljava/lang/String;ZLnet/minecraft/world/scores/criteria/ObjectiveCriteria$RenderType;)Lnet/minecraft/world/scores/criteria/ObjectiveCriteria;
+transitive-accessible	method	net/minecraft/world/scores/criteria/ObjectiveCriteria	registerCustom	(Ljava/lang/String;)Lnet/minecraft/world/scores/criteria/ObjectiveCriteria;
+transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Vertex
+transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Polygon
+transitive-accessible	class	net/minecraft/client/renderer/RenderType$CompositeRenderType
+transitive-accessible	method	net/minecraft/world/entity/LivingEntity	hurtArmor	(Lnet/minecraft/world/damagesource/DamageSource;F)V
+transitive-accessible	method	net/minecraft/world/entity/LivingEntity	hurtHelmet	(Lnet/minecraft/world/damagesource/DamageSource;F)V
+transitive-accessible	method	net/minecraft/world/entity/LivingEntity	hurtCurrentlyUsedShield	(F)V
+transitive-accessible	method	net/minecraft/world/entity/projectile/Projectile	<init>	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V
+transitive-accessible	method	net/minecraft/world/entity/projectile/FishingHook	<init>	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;II)V
+transitive-accessible	method	net/minecraft/server/level/ServerLevel	sendParticles	(Lnet/minecraft/server/level/ServerPlayer;ZDDDLnet/minecraft/network/protocol/Packet;)Z
+transitive-accessible	method	net/minecraft/network/chat/TextColor	formatValue	()Ljava/lang/String;
+transitive-accessible	method	net/minecraft/network/chat/contents/TranslatableContents	getArgument	(I)Lnet/minecraft/network/chat/FormattedText;
+transitive-extendable	class	net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
+transitive-accessible	field	net/minecraft/world/entity/npc/VillagerType	BY_BIOME	Ljava/util/Map;
+transitive-accessible	field	net/minecraft/world/SimpleContainer	items	Lnet/minecraft/core/NonNullList;
+transitive-accessible	method	net/minecraft/sounds/SoundEvent	createFixedRangeEvent	(Lnet/minecraft/resources/ResourceLocation;F)Lnet/minecraft/sounds/SoundEvent;
+transitive-accessible	method	net/minecraft/sounds/SoundEvent	createVariableRangeEvent	(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/sounds/SoundEvent;
+transitive-accessible	method	net/minecraft/data/worldgen/biome/OverworldBiomes	calculateSkyColor	(F)I
+transitive-accessible	field	net/minecraft/data/worldgen/ProcessorLists	EMPTY	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/client/Minecraft	missTime	I
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	flowerPot	(Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	leaves	(Lnet/minecraft/world/level/block/SoundType;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	log	(Lnet/minecraft/world/level/material/MapColor;Lnet/minecraft/world/level/material/MapColor;)Lnet/minecraft/world/level/block/Block;
@@ -339,21 +364,63 @@ transitive-accessible	method	net/minecraft/world/level/block/Blocks	log	(Lnet/mi
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	netherStem	(Lnet/minecraft/world/level/material/MapColor;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	stoneButton	()Lnet/minecraft/world/level/block/Block;
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	woodenButton	(Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/Block;
-transitive-accessible	method	net/minecraft/world/level/block/Blocks	always	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
-transitive-accessible	method	net/minecraft/world/level/block/Blocks	always	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/EntityType;)Ljava/lang/Boolean;
-transitive-accessible	method	net/minecraft/world/level/block/Blocks	ocelotOrParrot	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/EntityType;)Ljava/lang/Boolean;
 transitive-accessible	method	net/minecraft/world/level/block/Blocks	litBlockEmission	(I)Ljava/util/function/ToIntFunction;
-transitive-accessible	method	net/minecraft/world/level/block/Blocks	never	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
-transitive-accessible	method	net/minecraft/world/level/block/Blocks	never	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/EntityType;)Ljava/lang/Boolean;
+transitive-accessible	method	net/minecraft/world/entity/Display	createTransformation	(Lnet/minecraft/network/syncher/SynchedEntityData;)Lcom/mojang/math/Transformation;
+transitive-accessible	method	net/minecraft/world/entity/Display	setTransformation	(Lcom/mojang/math/Transformation;)V
+transitive-accessible	method	net/minecraft/world/entity/Display	setTransformationInterpolationDuration	(I)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getTransformationInterpolationDuration	()I
+transitive-accessible	method	net/minecraft/world/entity/Display	setTransformationInterpolationDelay	(I)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getTransformationInterpolationDelay	()I
+transitive-accessible	method	net/minecraft/world/entity/Display	setPosRotInterpolationDuration	(I)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getPosRotInterpolationDuration	()I
+transitive-accessible	method	net/minecraft/world/entity/Display	setBillboardConstraints	(Lnet/minecraft/world/entity/Display$BillboardConstraints;)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getBillboardConstraints	()Lnet/minecraft/world/entity/Display$BillboardConstraints;
+transitive-accessible	method	net/minecraft/world/entity/Display	setBrightnessOverride	(Lnet/minecraft/util/Brightness;)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getBrightnessOverride	()Lnet/minecraft/util/Brightness;
+transitive-accessible	method	net/minecraft/world/entity/Display	getPackedBrightnessOverride	()I
+transitive-accessible	method	net/minecraft/world/entity/Display	setViewRange	(F)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getViewRange	()F
+transitive-accessible	method	net/minecraft/world/entity/Display	setShadowRadius	(F)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getShadowRadius	()F
+transitive-accessible	method	net/minecraft/world/entity/Display	setShadowStrength	(F)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getShadowStrength	()F
+transitive-accessible	method	net/minecraft/world/entity/Display	setWidth	(F)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getWidth	()F
+transitive-accessible	method	net/minecraft/world/entity/Display	setHeight	(F)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getGlowColorOverride	()I
+transitive-accessible	method	net/minecraft/world/entity/Display	setGlowColorOverride	(I)V
+transitive-accessible	method	net/minecraft/world/entity/Display	getHeight	()F
+transitive-accessible	method	net/minecraft/world/entity/Display$ItemDisplay	getItemStack	()Lnet/minecraft/world/item/ItemStack;
+transitive-accessible	method	net/minecraft/world/entity/Display$ItemDisplay	setItemStack	(Lnet/minecraft/world/item/ItemStack;)V
+transitive-accessible	method	net/minecraft/world/entity/Display$ItemDisplay	setItemTransform	(Lnet/minecraft/world/item/ItemDisplayContext;)V
+transitive-accessible	method	net/minecraft/world/entity/Display$ItemDisplay	getItemTransform	()Lnet/minecraft/world/item/ItemDisplayContext;
+transitive-accessible	method	net/minecraft/world/entity/Display$BlockDisplay	getBlockState	()Lnet/minecraft/world/level/block/state/BlockState;
+transitive-accessible	method	net/minecraft/world/entity/Display$BlockDisplay	setBlockState	(Lnet/minecraft/world/level/block/state/BlockState;)V
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	getText	()Lnet/minecraft/network/chat/Component;
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	setText	(Lnet/minecraft/network/chat/Component;)V
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	getLineWidth	()I
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	setLineWidth	(I)V
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	getTextOpacity	()B
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	setTextOpacity	(B)V
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	getBackgroundColor	()I
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	setBackgroundColor	(I)V
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	getFlags	()B
+transitive-accessible	method	net/minecraft/world/entity/Display$TextDisplay	setFlags	(B)V
+transitive-accessible	method	net/minecraft/world/entity/Interaction	setWidth	(F)V
+transitive-accessible	method	net/minecraft/world/entity/Interaction	getWidth	()F
+transitive-accessible	method	net/minecraft/world/entity/Interaction	setHeight	(F)V
+transitive-accessible	method	net/minecraft/world/entity/Interaction	getHeight	()F
+transitive-accessible	method	net/minecraft/world/entity/Interaction	setResponse	(Z)V
+transitive-accessible	method	net/minecraft/world/entity/Interaction	getResponse	()Z
 
 # fabric-data-generation-api-v1
+
 transitive-accessible	method	net/minecraft/data/BlockFamilies	familyBuilder	(Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/data/BlockFamily$Builder;
 transitive-accessible	field	net/minecraft/data/models/BlockModelGenerators	blockStateOutput	Ljava/util/function/Consumer;
 transitive-accessible	field	net/minecraft/data/models/BlockModelGenerators	modelOutput	Ljava/util/function/BiConsumer;
 transitive-accessible	field	net/minecraft/data/models/ItemModelGenerators	output	Ljava/util/function/BiConsumer;
 transitive-accessible	method	net/minecraft/data/models/model/TextureSlot	create	(Ljava/lang/String;)Lnet/minecraft/data/models/model/TextureSlot;
 transitive-accessible	method	net/minecraft/data/models/model/TextureSlot	create	(Ljava/lang/String;Lnet/minecraft/data/models/model/TextureSlot;)Lnet/minecraft/data/models/model/TextureSlot;
-#transitive-extendable	method	net/minecraft/data/tags/TagsProvider$TagAppender	add	([Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/data/tags/TagsProvider$TagAppender;
 transitive-accessible	method	net/minecraft/data/models/model/TexturedModel	createDefault	(Ljava/util/function/Function;Lnet/minecraft/data/models/model/ModelTemplate;)Lnet/minecraft/data/models/model/TexturedModel$Provider;
 transitive-accessible	class	net/minecraft/data/models/BlockModelGenerators$TintState
 transitive-accessible	class	net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider
