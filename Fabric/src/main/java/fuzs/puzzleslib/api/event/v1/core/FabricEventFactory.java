@@ -6,17 +6,33 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.InteractionResult;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A helper class for avoiding boilerplate code when defining new events on Fabric.
- * <p>Especially useful when converting events from common to dedicated Fabric {@link Event}s.
- * <p>Thanks a lot to <a href="https://github.com/architectury/architectury-api/blob/1.19.3/common/src/main/java/dev/architectury/event/EventFactory.java">EventFactory.java</a> from Architectury API for this implementation.
+ * <p>
+ * Especially useful when converting events from common to dedicated {@link Event Fabric Events}.
+ * <p>
+ * Thanks a lot to <a
+ * href="https://github.com/architectury/architectury-api/blob/1.19.3/common/src/main/java/dev/architectury/event/EventFactory.java">EventFactory.java</a>
+ * from <a href="https://github.com/architectury/architectury-api">Architectury API</a> for this implementation.
+ * <p>
+ * Listener invocation is based on <a href="https://github.com/architectury/architectury-api/pull/747">architectury-api
+ * PR #747</a>: instead of resolving a {@link MethodHandle} for every callback, one handle is unreflected, adapted with
+ * {@link MethodHandle#asSpreader(Class, int)} and cached per {@link Method}, then invoked with
+ * {@link MethodHandle#invokeExact(Object...)}. This keeps listener exceptions unwrapped and stack traces free of
+ * reflection frames while removing the previous per-callback overhead.
  */
 @SuppressWarnings("unchecked")
 public final class FabricEventFactory {
+    private static final MethodType INVOKER_TYPE = MethodType.methodType(Object.class, Object.class, Object[].class);
+    private static final Map<Method, MethodHandle> INVOKERS = new ConcurrentHashMap<>();
 
     /**
      * Creates a new event from a functional interface without a result, meaning the interface method returns {@link Void}.
@@ -139,8 +155,16 @@ public final class FabricEventFactory {
         }));
     }
 
-    @SuppressWarnings("unchecked")
     private static <T> T invokeFast(Object object, Method method, Object[] args) throws Throwable {
-        return (T) MethodHandles.lookup().unreflect(method).bindTo(object).invokeWithArguments(args);
+        MethodHandle invoker = INVOKERS.get(method);
+        if (invoker == null) {
+            invoker = MethodHandles.lookup()
+                    .unreflect(method)
+                    .asSpreader(Object[].class, method.getParameterCount())
+                    .asType(INVOKER_TYPE);
+            INVOKERS.putIfAbsent(method, invoker);
+        }
+
+        return (T) invoker.invokeExact((Object) object, args);
     }
 }
