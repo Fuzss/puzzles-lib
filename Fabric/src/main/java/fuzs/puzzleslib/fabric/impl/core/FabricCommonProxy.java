@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
+import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -194,7 +194,7 @@ public class FabricCommonProxy implements FabricProxy {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void setTagBuilderReplace(TagBuilder builder, boolean isReplace) {
-        ((FabricTagBuilder) builder).fabric_setReplace(isReplace);
+        ((TagBuilderHooks) builder).fabric_setReplace(isReplace);
     }
 
     @Override
