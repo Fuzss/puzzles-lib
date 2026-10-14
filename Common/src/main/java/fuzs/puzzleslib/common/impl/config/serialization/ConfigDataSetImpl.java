@@ -17,6 +17,7 @@ import net.minecraft.tags.TagKey;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -40,13 +41,16 @@ public final class ConfigDataSetImpl<T> implements ConfigDataSet<T> {
             double.class,
             Double.class,
             String.class);
-
+    /**
+     * incremented whenever tags are updated, so all data sets invalidate their dissolved values
+     */
+    private static final AtomicInteger TAG_VERSION = new AtomicInteger();
     /**
      * registry to work with
      */
     private final KeyedValueProvider<T> valueProvider;
     /**
-     * internal entry holder storage, will be dissolved when {@link #toMap()} is called for the first time
+     * internal entry holder storage; will be dissolved when {@link #toMap()} is called for the first time
      */
     private final List<EntryHolder<?, T>> values = new ArrayList<>();
     /**
@@ -58,7 +62,11 @@ public final class ConfigDataSetImpl<T> implements ConfigDataSet<T> {
     /**
      * dissolved {@link #values}
      */
-    private Map<T, Object[]> dissolved;
+    private Map<T, Object[]> dissolved = Collections.emptyMap();
+    /**
+     * {@link #TAG_VERSION} value that {@link #dissolved} was compiled for
+     */
+    private int dissolvedVersion = -1;
 
     /**
      * @param valueProvider registry entries the to be created collections contain
@@ -79,14 +87,16 @@ public final class ConfigDataSetImpl<T> implements ConfigDataSet<T> {
         for (String value : values) {
             this.deserialize(value, types).ifPresent(this.values::add);
         }
+    }
 
-        // TODO fix this leak, since invokers are never unregistered for thrown away implementations (e.g. on config reload)
+    public static void registerEventHandlers() {
+        // Registered only once, since invokers are never unregistered; data sets invalidate themselves via TAG_VERSION.
         ServerResourcesLoadCallback.EVENT.register((ReloadableServerResources serverResources, RegistryAccess registries) -> {
-            this.dissolved = null;
+            TAG_VERSION.incrementAndGet();
         });
         if (ModLoaderEnvironment.INSTANCE.isClient()) {
             ClientTagsUpdatedCallback.EVENT.register((RegistryAccess registries) -> {
-                this.dissolved = null;
+                TAG_VERSION.incrementAndGet();
             });
         }
     }
@@ -229,20 +239,24 @@ public final class ConfigDataSetImpl<T> implements ConfigDataSet<T> {
     }
 
     private Map<T, Object[]> dissolve() {
-        Map<T, Object[]> dissolved = this.dissolved;
-        if (dissolved == null) {
+        int version = TAG_VERSION.get();
+        if (this.dissolvedVersion != version) {
             Map<T, Object[]> entries = new IdentityHashMap<>();
             Set<T> toRemove = Sets.newIdentityHashSet();
             // split this to ensure data values from individual entries take precedence over tag entries
             for (EntryHolder<?, T> holder : this.values) {
                 if (holder instanceof ConfigDataSetImpl.TagEntryHolder<?>) {
-                    holder.dissolve(holder.inverted ? (t, objects) -> toRemove.add(t) : entries::put);
+                    holder.dissolve(holder.inverted ? (T value, Object[] objects) -> {
+                        toRemove.add(value);
+                    } : entries::put);
                 }
             }
 
             for (EntryHolder<?, T> holder : this.values) {
                 if (holder instanceof ConfigDataSetImpl.RegistryEntryHolder<?>) {
-                    holder.dissolve(holder.inverted ? (t, objects) -> toRemove.add(t) : entries::put);
+                    holder.dissolve(holder.inverted ? (T value, Object[] objects) -> {
+                        toRemove.add(value);
+                    } : entries::put);
                 }
             }
 
@@ -254,10 +268,13 @@ public final class ConfigDataSetImpl<T> implements ConfigDataSet<T> {
                                 IdentityHashMap::new));
             }
 
-            entries.keySet().removeIf(t -> !this.filter.test(0, t) || toRemove.contains(t));
+            entries.keySet().removeIf((T value) -> {
+                return !this.filter.test(0, value) || toRemove.contains(value);
+            });
+            this.dissolvedVersion = version;
             return this.dissolved = Collections.unmodifiableMap(entries);
         } else {
-            return dissolved;
+            return this.dissolved;
         }
     }
 

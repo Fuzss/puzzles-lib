@@ -13,13 +13,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public final class EventInvokerImpl {
     private static final Map<Class<?>, EventInvokerLike<?>> EVENT_INVOKER_LOOKUP = Collections.synchronizedMap(Maps.newIdentityHashMap());
     private static final Queue<Runnable> DEFERRED_INVOKER_REGISTRATIONS = Queues.newConcurrentLinkedQueue();
-
-    private static boolean initialized;
+    private static final AtomicBoolean INITIALIZED_EVENT_INVOKERS = new AtomicBoolean();
 
     static {
         // initialize events required during start-up early, all other events are initialized when loading has completed
@@ -31,11 +31,11 @@ public final class EventInvokerImpl {
     }
 
     public static void initialize() {
-        if (!initialized) {
+        if (!INITIALIZED_EVENT_INVOKERS.get()) {
             // initialize most of the events as late as possible to avoid loading many classes very early,
             // and being blamed for possible class loading errors that follow
             ProxyImpl.get().registerAllEventHandlers();
-            initialized = true;
+            INITIALIZED_EVENT_INVOKERS.set(true);
             while (!DEFERRED_INVOKER_REGISTRATIONS.isEmpty()) {
                 DEFERRED_INVOKER_REGISTRATIONS.poll().run();
             }
@@ -46,7 +46,7 @@ public final class EventInvokerImpl {
         Objects.requireNonNull(clazz, "type is null");
         Supplier<EventInvoker<T>> invoker = Suppliers.memoize(() -> EventInvokerImpl.lookup(clazz, context));
         return (EventPhase phase, T callback) -> {
-            if (!initialized && !EVENT_INVOKER_LOOKUP.containsKey(clazz)) {
+            if (!INITIALIZED_EVENT_INVOKERS.get() && !EVENT_INVOKER_LOOKUP.containsKey(clazz)) {
                 DEFERRED_INVOKER_REGISTRATIONS.offer(() -> {
                     invoker.get().register(phase, callback);
                 });

@@ -4,6 +4,7 @@ import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.common.api.core.v1.ServiceProviderHelper;
 import fuzs.puzzleslib.common.api.event.v1.LoadCompleteCallback;
 import fuzs.puzzleslib.common.impl.client.core.proxy.ClientProxyImpl;
+import fuzs.puzzleslib.common.impl.config.serialization.ConfigDataSetImpl;
 import fuzs.puzzleslib.common.impl.core.ModContext;
 import fuzs.puzzleslib.common.impl.event.core.EventInvokerImpl;
 import net.minecraft.core.BlockPos;
@@ -53,6 +54,7 @@ public interface ProxyImpl extends SidedProxy, FactoriesProxy, NetworkingProxy, 
             ModContext.forEach(ModContext::runAfterConstruction);
             EventInvokerImpl.initialize();
         });
+        ConfigDataSetImpl.registerEventHandlers();
     }
 
     MinecraftServer getMinecraftServer();
