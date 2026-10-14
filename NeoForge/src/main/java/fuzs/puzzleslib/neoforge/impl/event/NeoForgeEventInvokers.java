@@ -30,7 +30,6 @@ import net.minecraft.util.random.Weighted;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -381,11 +380,13 @@ public final class NeoForgeEventInvokers {
         INSTANCE.register(CreateGrindstoneResultCallback.class,
                 GrindstoneEvent.OnPlaceItem.class,
                 (CreateGrindstoneResultCallback callback, GrindstoneEvent.OnPlaceItem event) -> {
-                    Map.Entry<GrindstoneMenu, Player> entry = NeoForgeEventImplHelper.getGrindstoneMenuFromInputs(event.getTopItem(),
+                    ServerPlayer player = NeoForgeEventImplHelper.getGrindstoneMenuFromInputs(event.getTopItem(),
                             event.getBottomItem());
-                    if (entry != null) {
-                        Supplier<ItemStack> outputItemStackSupplier = Suppliers.memoize(() -> entry.getKey()
-                                .computeResult(event.getTopItem(), event.getBottomItem()));
+                    if (player != null) {
+                        Supplier<ItemStack> outputItemStackSupplier = Suppliers.memoize(() -> {
+                            return ((GrindstoneMenu) player.containerMenu).computeResult(event.getTopItem(),
+                                    event.getBottomItem());
+                        });
                         MutableValue<ItemStack> outputItemStack = MutableValue.fromEvent((ItemStack output) -> {
                             Objects.requireNonNull(output, "output is null");
                             event.setOutput(output);
@@ -393,7 +394,7 @@ public final class NeoForgeEventInvokers {
                             return !event.getOutput().isEmpty() ? event.getOutput() : outputItemStackSupplier.get();
                         });
                         MutableInt experiencePointReward = MutableInt.fromEvent(event::setXp, event::getXp);
-                        EventResult eventResult = callback.onCreateGrindstoneResult(entry.getValue(),
+                        EventResult eventResult = callback.onCreateGrindstoneResult(player,
                                 event.getTopItem(),
                                 event.getBottomItem(),
                                 outputItemStack,

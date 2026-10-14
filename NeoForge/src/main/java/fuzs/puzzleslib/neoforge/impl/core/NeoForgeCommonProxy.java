@@ -94,7 +94,7 @@ public class NeoForgeCommonProxy implements NeoForgeProxy {
     public <T> void openMenu(Player player, MenuProvider menuProvider, T data) {
         player.openMenu(new MenuProvider() {
             @Override
-            public void writeClientSideData(AbstractContainerMenu containerMenu, RegistryFriendlyByteBuf buf) {
+            public void writeClientSideData(ServerPlayer player, AbstractContainerMenu containerMenu, RegistryFriendlyByteBuf buf) {
                 MenuTypeWithData.encodeMenuData(containerMenu, buf, data);
             }
 

@@ -15,18 +15,14 @@ import net.minecraft.resources.RegistryLoadTask;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.GrindstoneMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public final class NeoForgeEventImplHelper {
@@ -76,33 +72,14 @@ public final class NeoForgeEventImplHelper {
                 new RegistrationInfo(Optional.empty(), pendingRegistration.registrationInfo().lifecycle()));
     }
 
-    public static @Nullable Player getPlayerFromContainerMenu(AbstractContainerMenu abstractContainerMenu) {
-        for (Slot slot : abstractContainerMenu.slots) {
-            if (slot.container instanceof Inventory inventory) {
-                return inventory.player;
-            }
-        }
-
+    public static @Nullable ServerPlayer getGrindstoneMenuFromInputs(ItemStack primaryItem, ItemStack secondaryItem) {
         MinecraftServer server = ProxyImpl.get().getMinecraftServer();
         if (server != null) {
-            for (ServerPlayer serverPlayer : server.getPlayerList().getPlayers()) {
-                if (serverPlayer.containerMenu == abstractContainerMenu) {
-                    return serverPlayer;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static Map.@Nullable Entry<GrindstoneMenu, Player> getGrindstoneMenuFromInputs(ItemStack primaryItemStack, ItemStack secondaryItemStack) {
-        MinecraftServer minecraftServer = ProxyImpl.get().getMinecraftServer();
-        if (minecraftServer != null) {
-            for (ServerPlayer serverPlayer : minecraftServer.getPlayerList().getPlayers()) {
-                if (serverPlayer.containerMenu instanceof GrindstoneMenu grindstoneMenu) {
-                    if (grindstoneMenu.getSlot(0).getItem() == primaryItemStack
-                            && grindstoneMenu.getSlot(1).getItem() == secondaryItemStack) {
-                        return Map.entry(grindstoneMenu, serverPlayer);
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                if (player.containerMenu instanceof GrindstoneMenu grindstoneMenu) {
+                    if (grindstoneMenu.getSlot(0).getItem() == primaryItem
+                            && grindstoneMenu.getSlot(1).getItem() == secondaryItem) {
+                        return player;
                     }
                 }
             }
