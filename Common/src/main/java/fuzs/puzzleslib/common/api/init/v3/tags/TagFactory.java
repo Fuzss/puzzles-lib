@@ -18,6 +18,7 @@ import net.minecraft.world.level.material.Fluid;
 /**
  * A simple helper class for creating new {@link TagKey TagKeys} with a provided namespace.
  */
+@Deprecated
 @FunctionalInterface
 public interface TagFactory {
     /**

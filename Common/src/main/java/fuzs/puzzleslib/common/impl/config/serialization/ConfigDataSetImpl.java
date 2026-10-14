@@ -80,6 +80,7 @@ public final class ConfigDataSetImpl<T> implements ConfigDataSet<T> {
             this.deserialize(value, types).ifPresent(this.values::add);
         }
 
+        // TODO fix this leak, since invokers are never unregistered for thrown away implementations (e.g. on config reload)
         ServerResourcesLoadCallback.EVENT.register((ReloadableServerResources serverResources, RegistryAccess registries) -> {
             this.dissolved = null;
         });
