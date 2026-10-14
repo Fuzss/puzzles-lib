@@ -2,8 +2,8 @@ package fuzs.puzzleslib.fabric.impl.core.context;
 
 import fuzs.puzzleslib.common.api.core.v1.context.PackRepositorySourcesContext;
 import fuzs.puzzleslib.common.api.resources.v2.PackResourcesHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
-import net.fabricmc.fabric.impl.resource.ResourceLoaderImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.network.chat.Component;
@@ -32,10 +32,9 @@ public final class DataPackSourcesContextFabricImpl implements PackRepositorySou
         registerBuiltInPack(identifier, displayName, shouldAddAutomatically, PackType.SERVER_DATA);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     public static void registerBuiltInPack(Identifier identifier, Component displayName, boolean shouldAddAutomatically, PackType packType) {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(identifier.getNamespace()).orElseThrow();
-        ResourceLoaderImpl.registerBuiltinPack(identifier,
+        ResourceLoader.registerBuiltinPack(identifier,
                 PackResourcesHelper.getBuiltInPack(identifier, packType).getPath(),
                 modContainer,
                 displayName,
