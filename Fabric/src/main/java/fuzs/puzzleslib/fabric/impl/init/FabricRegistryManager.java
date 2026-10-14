@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityDataRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -25,6 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -110,10 +110,14 @@ public final class FabricRegistryManager extends RegistryManagerImpl {
 
     @Override
     public Holder.Reference<PoiType> registerPoiType(String path, int maxTickets, int validRange, Supplier<Set<BlockState>> matchingBlockStates) {
-        return this.register(Registries.POINT_OF_INTEREST_TYPE,
-                path,
-                () -> PoiHelper.register(this.makeKey(path), maxTickets, validRange, matchingBlockStates.get()),
-                true);
+        ResourceKey<PoiType> id = this.makeResourceKey(Registries.POINT_OF_INTEREST_TYPE, path);
+        return this.register(Registries.POINT_OF_INTEREST_TYPE, path, () -> {
+            return PoiTypes.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE,
+                    id,
+                    matchingBlockStates.get(),
+                    maxTickets,
+                    validRange);
+        }, true);
     }
 
     @Override
