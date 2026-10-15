@@ -1,10 +1,12 @@
 package fuzs.puzzleslib.common.api.container.v1;
 
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -40,31 +42,62 @@ public final class ContainerMenuHelper {
     }
 
     /**
+     * Replace the container slot belonging to the provided equipment slot with a non-interactive variant.
+     * <p>
+     * Useful for handheld container items such as bags while their menu is open.
+     *
+     * @param containerMenu the container menu
+     * @param slot          the equipment slot
+     */
+    public static void setSlotLocked(AbstractContainerMenu containerMenu, EquipmentSlot slot) {
+        for (int slotNum = 0; slotNum < containerMenu.slots.size(); slotNum++) {
+            Slot originalSlot = containerMenu.slots.get(slotNum);
+            if (originalSlot.container instanceof Inventory inventory && originalSlot.getContainerSlot() == getSlotNum(
+                    inventory,
+                    slot)) {
+                NonInteractiveResultSlot updatedSlot = new NonInteractiveResultSlot(originalSlot.container,
+                        originalSlot.getContainerSlot(),
+                        originalSlot.x,
+                        originalSlot.y) {
+                    @Override
+                    public boolean isFake() {
+                        return false;
+                    }
+                };
+                updatedSlot.index = originalSlot.index;
+                containerMenu.slots.set(slotNum, updatedSlot);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Gets the {@link Slot#getContainerSlot()} for any {@link EquipmentSlot}.
+     *
+     * @param inventory the player inventory
+     * @param slot      the equipment slot
+     * @return the container slot
+     */
+    public static int getSlotNum(Inventory inventory, EquipmentSlot slot) {
+        for (Int2ObjectMap.Entry<EquipmentSlot> entry : Inventory.EQUIPMENT_SLOT_MAPPING.int2ObjectEntrySet()) {
+            if (entry.getValue() == slot) {
+                return entry.getIntKey();
+            }
+        }
+
+        return inventory.getSelectedSlot();
+    }
+
+    /**
      * Replace the container slot representing the currently selected hotbar slot with a non-interactive variant.
      * <p>
      * Useful for handheld container items such as bags while their menu is open.
      *
      * @param containerMenu the container menu
      */
+    @Deprecated
     public static void setSelectedSlotLocked(AbstractContainerMenu containerMenu) {
-        for (int i = 0; i < containerMenu.slots.size(); i++) {
-            Slot slot = containerMenu.slots.get(i);
-            if (slot.container instanceof Inventory inventory
-                    && inventory.getSelectedSlot() == slot.getContainerSlot()) {
-                NonInteractiveResultSlot newSlot = new NonInteractiveResultSlot(slot.container,
-                        slot.getContainerSlot(),
-                        slot.x,
-                        slot.y) {
-                    @Override
-                    public boolean isFake() {
-                        return false;
-                    }
-                };
-                newSlot.index = slot.index;
-                containerMenu.slots.set(i, newSlot);
-                break;
-            }
-        }
+        setSlotLocked(containerMenu, EquipmentSlot.MAINHAND);
     }
 
     /**
@@ -79,6 +112,7 @@ public final class ContainerMenuHelper {
      * @param container listener for changes to the item list
      * @return the created container
      */
+    @Deprecated
     public static SimpleContainer createListBackedContainer(NonNullList<ItemStack> items, @Nullable Container container) {
         return createListBackedContainer(items, container != null ? (Container containerX) -> {
             container.setChanged();
@@ -97,6 +131,7 @@ public final class ContainerMenuHelper {
      * @param listener listener for changes to the item list
      * @return the created container
      */
+    @Deprecated
     public static SimpleContainer createListBackedContainer(NonNullList<ItemStack> items, @Nullable Consumer<Container> listener) {
         SimpleContainer simpleContainer = new SimpleContainer() {
             @Override
@@ -122,9 +157,9 @@ public final class ContainerMenuHelper {
      * @param to   the target container
      */
     public static void copyItemsIntoContainer(NonNullList<ItemStack> from, Container to) {
-        for (int i = 0; i < from.size(); i++) {
-            if (i < to.getContainerSize()) {
-                to.setItem(i, from.get(i));
+        for (int slotNum = 0; slotNum < from.size(); slotNum++) {
+            if (slotNum < to.getContainerSize()) {
+                to.setItem(slotNum, from.get(slotNum));
             }
         }
     }
@@ -140,9 +175,9 @@ public final class ContainerMenuHelper {
      * @param to   the target item list
      */
     public static void copyItemsIntoList(NonNullList<ItemStack> from, NonNullList<ItemStack> to) {
-        for (int i = 0; i < from.size(); i++) {
-            if (i < to.size()) {
-                to.set(i, from.get(i));
+        for (int slotNum = 0; slotNum < from.size(); slotNum++) {
+            if (slotNum < to.size()) {
+                to.set(slotNum, from.get(slotNum));
             }
         }
     }
