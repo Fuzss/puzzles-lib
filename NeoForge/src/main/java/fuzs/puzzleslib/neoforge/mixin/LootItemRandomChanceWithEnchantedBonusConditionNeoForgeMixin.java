@@ -18,7 +18,7 @@ abstract class LootItemRandomChanceWithEnchantedBonusConditionNeoForgeMixin {
     private Holder<Enchantment> enchantment;
 
     @ModifyVariable(method = "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z",
-            at = @At("STORE"),
+            at = @At(value = "STORE", ordinal = 0),
             ordinal = 0)
     public int test(int enchantmentLevel, LootContext lootContext) {
         return ComputeEnchantedLootBonusEvent.onComputeEnchantedLootBonus(this.enchantment,

@@ -34,7 +34,7 @@ abstract class EnchantedCountIncreaseFunctionNeoForgeMixin {
         throw new RuntimeException();
     }
 
-    @ModifyVariable(method = "run", at = @At("STORE"), ordinal = 0)
+    @ModifyVariable(method = "run", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     public int run(int enchantmentLevel, ItemStack itemStack, LootContext lootContext) {
         return ComputeEnchantedLootBonusEvent.onComputeEnchantedLootBonus(this.enchantment, enchantmentLevel,
                 lootContext
