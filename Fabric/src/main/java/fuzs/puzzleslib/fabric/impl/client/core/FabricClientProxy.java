@@ -197,7 +197,11 @@ public class FabricClientProxy extends FabricCommonProxy implements ClientProxyI
     }
 
     private int getStatusBarHeight(Identifier layerId) {
+        // Fabric now returns the top height of the whole layer, while NeoForge provides the bottom height.
+        // We need to streamline the behavior on Fabric, as only here the height of the layer can be provided.
         Identifier updatedLayerId = GuiLayersContextFabricImpl.getVanillaGuiLayer(layerId);
-        return HudStatusBarHeightRegistry.getHeight(updatedLayerId);
+        int layerHeight = HudStatusBarHeightRegistry.getElementHeight(updatedLayerId);
+        int hudHeight = HudStatusBarHeightRegistry.getHeight(updatedLayerId);
+        return hudHeight - layerHeight + 10;
     }
 }
