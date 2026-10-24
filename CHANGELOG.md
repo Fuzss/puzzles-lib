@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v26.3.16-mc26.3.x] - 2026-10-24
+
+### Added
+
+- Add `ContainerMenuHelper::setSlotLocked` and `ContainerMenuHelper::getSlotNum` for locking any equipment slot in an
+  `AbstractContainerMenu`
+
+### Fixed
+
+- Fix status bar heights registered via `GuiLayersContext` being calculated incorrectly on Fabric
+
 ## [v26.3.15-mc26.3.x] - 2026-10-14
 
 ### Changed
