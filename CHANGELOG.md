@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v21.1.66-mc1.21.1] - 2026-10-26
+
+### Fixed
+
+- Restore missing transitive access wideners
+
 ## [v21.1.65-mc1.21.1] - 2026-10-21
 
 ### Fixed
