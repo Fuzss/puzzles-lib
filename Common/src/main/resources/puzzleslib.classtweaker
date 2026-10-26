@@ -383,12 +383,14 @@ transitive-accessible   method  net/minecraft/world/entity/SpawnPlacements  regi
 transitive-accessible   field   net/minecraft/world/entity/npc/VillagerType BY_BIOME    Ljava/util/Map;
 transitive-accessible   method  net/minecraft/world/entity/projectile/FishingHook   <init>  (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;II)V
 transitive-accessible   method  net/minecraft/world/entity/projectile/Projectile    <init>  (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V
+transitive-accessible   method  net/minecraft/world/level/block/Blocks  always  (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  flowerPot   (Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  leaves  (Lnet/minecraft/world/level/block/SoundType;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  litBlockEmission    (I)Ljava/util/function/ToIntFunction;
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  log (Lnet/minecraft/world/level/material/MapColor;Lnet/minecraft/world/level/material/MapColor;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  log (Lnet/minecraft/world/level/material/MapColor;Lnet/minecraft/world/level/material/MapColor;Lnet/minecraft/world/level/block/SoundType;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  netherStem  (Lnet/minecraft/world/level/material/MapColor;)Lnet/minecraft/world/level/block/Block;
+transitive-accessible   method  net/minecraft/world/level/block/Blocks  never   (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  stoneButton ()Lnet/minecraft/world/level/block/Block;
 transitive-accessible   method  net/minecraft/world/level/block/Blocks  woodenButton    (Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible   field   net/minecraft/world/level/storage/loot/LootPool bonusRolls  Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
