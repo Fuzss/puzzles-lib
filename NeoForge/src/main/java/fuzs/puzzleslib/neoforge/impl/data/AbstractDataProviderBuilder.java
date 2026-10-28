@@ -306,7 +306,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
 
     private void addDataProviders(GatherDataEvent event) {
         RootDataProviderFactory factory = this.createRootDataProviderFactory(event);
-        PackGenerator registryPackGenerator = this.createRegistryPackGenerator(event);
+        PackGenerator generator = this.createRegistryPackGenerator(event);
 
         // Accumulated loot table sub-providers are materialized into a single loot table provider right before the
         // reloadable layer is built, so they share one random sequence collision map.
@@ -319,21 +319,21 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
 
         if (!this.worldRegistrySetBuilder.getEntryKeys().isEmpty()) {
             // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
-            registryPackGenerator.createWorldRegistryObjects(this.worldRegistrySetBuilder,
+            generator.createWorldRegistryObjects(this.worldRegistrySetBuilder,
                     null,
                     this.getWorldRegistryProviderName());
         }
 
         if (!this.reloadableRegistrySetBuilder.getEntryKeys().isEmpty()) {
             // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
-            registryPackGenerator.createReloadableRegistryObjects(this.reloadableRegistrySetBuilder,
+            generator.createReloadableRegistryObjects(this.reloadableRegistrySetBuilder,
                     null,
                     this.getReloadableRegistryProviderName());
         }
 
         for (DataProviderContext.Factory dataProvider : this.dataProviders) {
             factory.apply((PackOutput packOutput) -> {
-                return dataProvider.apply(new EventBackedDataProviderContext(event, packOutput));
+                return dataProvider.apply(new EventBackedDataProviderContext(event, packOutput, generator));
             });
         }
     }

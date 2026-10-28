@@ -6,16 +6,18 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.PackGenerator;
 
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public record EventBackedDataProviderContext(GatherDataEvent event,
-                                             PackOutput packOutput) implements DataProviderContext {
+                                             PackOutput packOutput,
+                                             PackGenerator packGenerator) implements DataProviderContext {
 
     public EventBackedDataProviderContext(GatherDataEvent event) {
-        this(event, event.getGenerator().getPackOutput());
+        this(event, event.getGenerator().getPackOutput(), event.getDefaultPackGenerator());
     }
 
     @Override
@@ -35,12 +37,12 @@ public record EventBackedDataProviderContext(GatherDataEvent event,
 
     @Override
     public CompletableFuture<HolderLookup.Provider> getRegistries() {
-        return this.event.getReloadableLookupProvider();
+        return this.packGenerator.getReloadableLookupProvider();
     }
 
     @Override
     public CompletableFuture<HolderLookup.Provider> getWorldRegistries() {
-        return this.event.getWorldLookupProvider();
+        return this.packGenerator.getWorldLookupProvider();
     }
 
     @Override
