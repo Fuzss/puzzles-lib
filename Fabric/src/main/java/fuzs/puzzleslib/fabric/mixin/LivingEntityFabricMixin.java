@@ -12,15 +12,16 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
 import fuzs.puzzleslib.common.api.event.v1.data.MutableDouble;
 import fuzs.puzzleslib.common.api.event.v1.data.MutableFloat;
-import fuzs.puzzleslib.fabric.api.event.v1.FabricLivingEvents;
-import fuzs.puzzleslib.fabric.impl.event.CapturedDropsEntity;
-import fuzs.puzzleslib.fabric.impl.event.FabricEventImplHelper;
+import fuzs.puzzleslib.common.api.event.v1.data.MutableInt;
 import fuzs.puzzleslib.common.impl.PuzzlesLib;
 import fuzs.puzzleslib.common.impl.event.EventImplHelper;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedDouble;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedFloat;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedInt;
 import fuzs.puzzleslib.common.impl.event.data.DefaultedValue;
+import fuzs.puzzleslib.fabric.api.event.v1.FabricLivingEvents;
+import fuzs.puzzleslib.fabric.impl.event.CapturedDropsEntity;
+import fuzs.puzzleslib.fabric.impl.event.FabricEventImplHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -29,7 +30,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -44,6 +44,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -210,26 +211,21 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         }
     }
 
-    @Inject(method = "dropExperience",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"),
-            cancellable = true)
-    protected void dropExperience(ServerLevel serverLevel, @Nullable Entity killer, CallbackInfo callback) {
-        DefaultedInt experienceReward = DefaultedInt.fromValue(this.getBaseExperienceReward(serverLevel));
-        EventResult eventResult = FabricLivingEvents.EXPERIENCE_DROP.invoker()
-                .onLivingExperienceDrop(LivingEntity.class.cast(this), this.getLastHurtByPlayer(), experienceReward);
-        if (eventResult.isInterrupt()) {
+    @ModifyArg(method = "dropExperience",
+               at = @At(value = "INVOKE",
+                        target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"))
+    protected int dropExperience(int experienceReward, @Cancellable CallbackInfo callback) {
+        MutableInt experienceRewardValue = MutableInt.fromValue(experienceReward);
+        EventResult result = FabricLivingEvents.EXPERIENCE_DROP.invoker()
+                .onLivingExperienceDrop(LivingEntity.class.cast(this),
+                        this.getLastHurtByPlayer(),
+                        experienceRewardValue);
+        if (result.isInterrupt()) {
             callback.cancel();
-        } else {
-            experienceReward.getAsOptionalInt().ifPresent((int value) -> {
-                ExperienceOrb.award((ServerLevel) this.level(), this.position(), value);
-                callback.cancel();
-            });
         }
-    }
 
-    @Shadow
-    protected abstract int getBaseExperienceReward(ServerLevel serverLevel);
+        return experienceRewardValue.getAsInt();
+    }
 
     @Shadow
     public abstract @Nullable Player getLastHurtByPlayer();
