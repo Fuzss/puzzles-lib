@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -496,6 +497,9 @@ public interface BlockSetFamily {
                 BlockSetVariant blockSetVariant = BlockSetVariant.fromVanilla(variant);
                 if (blockSetVariant != null) {
                     this.provideFor(blockSetVariant, block);
+                    if (block.asItem() != Items.AIR) {
+                        this.provideFor(blockSetVariant, block.asItem());
+                    }
                 }
             });
 
