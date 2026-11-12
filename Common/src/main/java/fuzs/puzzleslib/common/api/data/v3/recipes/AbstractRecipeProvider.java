@@ -39,9 +39,8 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
      */
     public AbstractRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
         super(recipeOutput, advancementOutput);
-        this.output = ProxyImpl.get().getIdBoundRecipeOutput(DataGenerationScopes.MOD_ID.get(),
-                recipeOutput,
-                advancementOutput);
+        this.output = ProxyImpl.get()
+                .getIdBoundRecipeOutput(DataGenerationScopes.MOD_ID.get(), recipeOutput, advancementOutput);
     }
 
     /**
@@ -50,6 +49,7 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
      *
      * @param blockSetFamily the block set family the providers operate on
      * @return the variant providers mapped by block set variant
+     *
      * @see #generateFor(BlockSetFamily, Map, Map)
      */
     public static Map<BlockSetVariant, FamilyRecipeProvider> createVariantWoodProviders(BlockSetFamily blockSetFamily) {
@@ -147,55 +147,75 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
      * Generates recipes for all blocks of the given block set family.
      *
      * @param blockSetFamily the block set family
-     * @see #generateFor(BlockSetFamily, Map, Map)
      */
     public void generateFor(BlockSetFamily blockSetFamily) {
-        this.generateFor(blockSetFamily, Collections.emptyMap(), Collections.emptyMap());
+        this.generateFor(blockSetFamily, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
     }
 
     /**
      * Generates recipes for all blocks of the given block set family, using the given variant providers for individual
      * crafting and stonecutting variants.
      *
-     * @param blockSetFamily      the block set family
-     * @param craftingVariants    the crafting variant providers
-     * @param stonecutterVariants the stonecutter variant providers
+     * @param blockSetFamily       the block set family
+     * @param craftingVariants     the crafting variant providers
+     * @param stonecuttingVariants the stonecutter variant providers
      */
-    public void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, FamilyRecipeProvider> craftingVariants, Map<BlockSetVariant, FamilyRecipeProvider> stonecutterVariants) {
+    @Deprecated
+    public void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, FamilyRecipeProvider> craftingVariants, Map<BlockSetVariant, FamilyRecipeProvider> stonecuttingVariants) {
+        this.generateFor(blockSetFamily, craftingVariants, stonecuttingVariants, Collections.emptyMap());
+    }
+
+    /**
+     * Generates recipes for all blocks of the given block set family, using the given variant providers for individual
+     * crafting, stonecutting, and smelting variants.
+     *
+     * @param blockSetFamily       the block set family
+     * @param craftingVariants     the crafting variant providers
+     * @param stonecuttingVariants the stonecutter variant providers
+     * @param smeltingVariants     the smelting variant providers
+     */
+    public void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, FamilyRecipeProvider> craftingVariants, Map<BlockSetVariant, FamilyRecipeProvider> stonecuttingVariants, Map<BlockSetVariant, FamilyRecipeProvider> smeltingVariants) {
         BlockFamily blockFamily = blockSetFamily.getBlockFamily();
         this.generateRecipes(blockFamily, FeatureFlags.DEFAULT_FLAGS);
         blockSetFamily.getGeneratedItemVariants().forEach((BlockSetVariant variant, Holder.Reference<Item> holder) -> {
-            if (blockFamily.shouldGenerateCraftingRecipe()) {
-                FamilyRecipeProvider recipeProvider = craftingVariants.get(variant);
-                if (recipeProvider != null) {
-                    Block baseBlock;
-                    BlockFamily.Variant vanillaVariant = variant.toVanilla();
-                    if (vanillaVariant != null) {
-                        baseBlock = this.getBaseBlockForCrafting(blockFamily, vanillaVariant);
-                    } else {
-                        baseBlock = blockSetFamily.getBaseBlock().value();
-                    }
-
-                    recipeProvider.create(this,
-                            holder.value(),
-                            baseBlock,
-                            blockFamily.getRecipeGroupPrefix(),
-                            blockFamily.getRecipeUnlockedBy());
-                }
+            FamilyRecipeProvider craftingProvider = craftingVariants.get(variant);
+            if (craftingProvider != null) {
+                Block baseBlock = this.getBaseBlockForCrafting(blockSetFamily, variant, blockFamily);
+                craftingProvider.create(this,
+                        holder.value(),
+                        baseBlock,
+                        blockFamily.getRecipeGroupPrefix(),
+                        blockFamily.getRecipeUnlockedBy());
             }
 
-            if (blockFamily.shouldGenerateStonecutterRecipe()) {
-                FamilyRecipeProvider recipeProvider = stonecutterVariants.get(variant);
-                if (recipeProvider != null) {
-                    Block baseBlock = blockSetFamily.getBaseBlock().value();
-                    recipeProvider.create(this,
-                            holder.value(),
-                            baseBlock,
-                            blockFamily.getRecipeGroupPrefix(),
-                            blockFamily.getRecipeUnlockedBy());
-                }
+            FamilyRecipeProvider stonecuttingProvider = stonecuttingVariants.get(variant);
+            if (stonecuttingProvider != null) {
+                Block baseBlock = blockSetFamily.getBaseBlock().value();
+                stonecuttingProvider.create(this,
+                        holder.value(),
+                        baseBlock,
+                        blockFamily.getRecipeGroupPrefix(),
+                        blockFamily.getRecipeUnlockedBy());
+            }
+
+            FamilyRecipeProvider smeltingProvider = smeltingVariants.get(variant);
+            if (smeltingProvider != null) {
+                smeltingProvider.create(this,
+                        holder.value(),
+                        blockSetFamily.getBaseBlock().value(),
+                        blockFamily.getRecipeGroupPrefix(),
+                        blockFamily.getRecipeUnlockedBy());
             }
         });
+    }
+
+    private Block getBaseBlockForCrafting(BlockSetFamily blockSetFamily, BlockSetVariant variant, BlockFamily blockFamily) {
+        BlockFamily.Variant vanillaVariant = variant.toVanilla();
+        if (vanillaVariant != null) {
+            return this.getBaseBlockForCrafting(blockFamily, vanillaVariant);
+        } else {
+            return blockSetFamily.getBaseBlock().value();
+        }
     }
 
     /**
@@ -317,6 +337,7 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
      * @param resultItem     the recipe result
      * @param ingredient     the recipe ingredient
      * @return the recipe builder
+     *
      * @see #stonecutterResultFromBaseBuilder(RecipeCategory, ItemLike, Ingredient, int)
      */
     public RecipeBuilder stonecutterResultFromBaseBuilder(RecipeCategory recipeCategory, ItemLike resultItem, Ingredient ingredient) {
@@ -372,7 +393,7 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
 
     /**
      * Creates a family recipe for a single block set variant, used by
-     * {@link #generateFor(BlockSetFamily, Map, Map)}.
+     * {@link #generateFor(BlockSetFamily, Map, Map, Map)}.
      */
     @FunctionalInterface
     public interface FamilyRecipeProvider {
