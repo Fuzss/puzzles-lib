@@ -278,8 +278,6 @@ transitive-accessible	field	net/minecraft/world/level/ServerExplosion	blockInter
 transitive-mutable	field	net/minecraft/world/level/ServerExplosion	blockInteraction	Lnet/minecraft/world/level/Explosion$BlockInteraction;
 transitive-accessible	field	net/minecraft/world/level/ServerExplosion	damageCalculator	Lnet/minecraft/world/level/ExplosionDamageCalculator;
 transitive-accessible	field	net/minecraft/world/level/ServerExplosion	damageSource	Lnet/minecraft/world/damagesource/DamageSource;
-transitive-accessible	field	net/minecraft/world/level/block/entity/BlockEntity	type	Lnet/minecraft/world/level/block/entity/BlockEntityType;
-transitive-mutable	field	net/minecraft/world/level/block/entity/BlockEntity	type	Lnet/minecraft/world/level/block/entity/BlockEntityType;
 transitive-accessible	method	net/minecraft/world/level/block/state/properties/BlockSetType	register	(Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;
 transitive-accessible	method	net/minecraft/world/level/block/state/properties/WoodType	register	(Lnet/minecraft/world/level/block/state/properties/WoodType;)Lnet/minecraft/world/level/block/state/properties/WoodType;
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/core/Holder;

@@ -12,6 +12,7 @@ multiloader {
     mixins {
         plugin.set("${project.group}.${project.packageName}.mixin.MixinConfigPluginImpl")
         mixin("DataCommandsMixin", "EnchantCommandMixin", "TagsProviderMixin")
+        accessor("BlockEntityAccessor")
         clientMixin("ClientSuggestionProviderMixin", "EditBoxMixin", "MinecraftMixin")
         serverMixin("DedicatedServerSettingsMixin", "EulaMixin")
     }

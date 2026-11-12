@@ -9,6 +9,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * TODO Use {@code BlockEntityHelper#init} instead.
+ */
+@Deprecated
 @Mixin(BlockEntity.class)
 abstract class BlockEntityFabricMixin {
 
