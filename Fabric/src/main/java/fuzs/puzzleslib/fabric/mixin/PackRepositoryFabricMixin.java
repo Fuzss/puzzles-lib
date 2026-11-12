@@ -23,7 +23,7 @@ abstract class PackRepositoryFabricMixin {
         // client resource packs can be handled much simpler since the repository is only ever created once
         for (RepositorySource repositorySource : this.sources) {
             if (repositorySource instanceof ServerPacksSource) {
-                DataPackSourcesContextFabricImpl.addAll(PackRepository.class.cast(this));
+                DataPackSourcesContextFabricImpl.addAll((PackRepository) (Object) this);
                 return;
             }
         }

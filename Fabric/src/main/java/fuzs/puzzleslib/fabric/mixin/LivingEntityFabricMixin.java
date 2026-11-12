@@ -68,7 +68,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
     public void die(DamageSource source, CallbackInfo callback) {
         EventResult result = FabricLivingEvents.LIVING_DEATH.invoker()
-                .onLivingDeath(LivingEntity.class.cast(this), source);
+                .onLivingDeath((LivingEntity) (Object) this, source);
         if (result.isInterrupt()) {
             callback.cancel();
         }
@@ -84,7 +84,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         // this injects after the field is already updated, so it is fine to use instead of ItemStack::getUseDuration
         MutableInt useItemRemainingValue = MutableInt.fromValue(this.useItemRemaining);
         EventResult result = FabricLivingEvents.USE_ITEM_START.invoker()
-                .onUseItemStart(LivingEntity.class.cast(this), this.useItem, hand, useItemRemainingValue);
+                .onUseItemStart((LivingEntity) (Object) this, this.useItem, hand, useItemRemainingValue);
         if (result.isInterrupt()) {
             this.useItem = ItemStack.EMPTY;
             this.useItemRemaining = 0;
@@ -100,10 +100,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
             int originalRemainingUseDuration = this.getUseItemRemainingTicks();
             MutableInt remainingUseDuration = MutableInt.fromValue(originalRemainingUseDuration);
             EventResult result = FabricLivingEvents.USE_ITEM_TICK.invoker()
-                    .onUseItemTick(LivingEntity.class.cast(this),
-                            useItem,
-                            this.getUsedItemHand(),
-                            remainingUseDuration);
+                    .onUseItemTick((LivingEntity) (Object) this, useItem, this.getUsedItemHand(), remainingUseDuration);
             // --this.useItemRemaining == 0 runs at the end of this method, when 0 is set increase by one again,
             // so that LivingEntity::completeUsingItem does run
             int updatedUseItemRemaining = remainingUseDuration.getAsInt();
@@ -145,7 +142,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         Objects.requireNonNull(originalUseItem.get(), "original use item is null");
         MutableValue<ItemStack> resultValue = MutableValue.fromValue(result);
         FabricLivingEvents.USE_ITEM_FINISH.invoker()
-                .onUseItemFinish(LivingEntity.class.cast(this),
+                .onUseItemFinish((LivingEntity) (Object) this,
                         resultValue,
                         originalUseItem.get(),
                         this.getUsedItemHand());
@@ -159,7 +156,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
     public void releaseUsingItem(CallbackInfo callback) {
         if (!this.useItem.isEmpty()) {
             if (FabricLivingEvents.USE_ITEM_STOP.invoker()
-                    .onUseItemStop(LivingEntity.class.cast(this),
+                    .onUseItemStop((LivingEntity) (Object) this,
                             this.useItem,
                             this.getUsedItemHand(),
                             this.useItemRemaining)
@@ -182,7 +179,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
 
     @Inject(method = "dropAllDeathLoot", at = @At("TAIL"))
     protected void dropAllDeathLoot$2(ServerLevel level, DamageSource source, CallbackInfo callback) {
-        if (!FabricEventImplHelper.tryOnLivingDrops(LivingEntity.class.cast(this),
+        if (!FabricEventImplHelper.tryOnLivingDrops((LivingEntity) (Object) this,
                 source,
                 this.lastHurtByPlayerMemoryTime)) {
             PuzzlesLib.LOGGER.warn("Unable to invoke LivingDropsCallback for entity {}: Drops is null",
@@ -195,7 +192,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         // this is a safety precaution, in case LivingEntity::dropAllDeathLoot does not reach TAIL and therefore doesn't spawn the captured drops (another mixin might cancel the method mid-way)
         // this should work rather fine, as LivingEntity::dropAllDeathLoot is basically exclusively called from LivingEntity::die,
         // and spawning captured drops in LivingEntity::dropAllDeathLoot only rarely has a conflict if any at all
-        FabricEventImplHelper.tryOnLivingDrops(LivingEntity.class.cast(this), source, this.lastHurtByPlayerMemoryTime);
+        FabricEventImplHelper.tryOnLivingDrops((LivingEntity) (Object) this, source, this.lastHurtByPlayerMemoryTime);
     }
 
     @Inject(method = "drop",
@@ -216,7 +213,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
     protected int dropExperience(int experienceReward, @Cancellable CallbackInfo callback) {
         MutableInt experienceRewardValue = MutableInt.fromValue(experienceReward);
         EventResult result = FabricLivingEvents.EXPERIENCE_DROP.invoker()
-                .onLivingExperienceDrop(LivingEntity.class.cast(this),
+                .onLivingExperienceDrop((LivingEntity) (Object) this,
                         this.getLastHurtByPlayer(),
                         experienceRewardValue);
         if (result.isInterrupt()) {
@@ -232,7 +229,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
     @ModifyVariable(method = "actuallyHurt", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     protected float actuallyHurt(float dmg, ServerLevel level, DamageSource source, @Cancellable CallbackInfo callback) {
         if (!this.isInvulnerableTo(level, source)) {
-            Either<Unit, Float> result = FabricEventImplHelper.onLivingHurt(LivingEntity.class.cast(this),
+            Either<Unit, Float> result = FabricEventImplHelper.onLivingHurt((LivingEntity) (Object) this,
                     level,
                     source,
                     dmg);
@@ -254,7 +251,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
     public float applyItemBlocking(float blockedDamage, ServerLevel level, DamageSource source, float damage, @Cancellable CallbackInfoReturnable<Float> callback) {
         MutableFloat blockedDamageValue = MutableFloat.fromValue(blockedDamage);
         EventResult result = FabricLivingEvents.SHIELD_BLOCK.invoker()
-                .onShieldBlock(LivingEntity.class.cast(this), source, blockedDamageValue);
+                .onShieldBlock((LivingEntity) (Object) this, source, blockedDamageValue);
         if (result.isInterrupt()) {
             callback.setReturnValue(0.0F);
             return 0.0F;
@@ -271,7 +268,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         MutableDouble fallDistance = MutableDouble.fromEvent(fallDistanceRef::set, fallDistanceRef::get);
         MutableFloat damageMultiplier = MutableFloat.fromEvent(damageMultiplierRef::set, damageMultiplierRef::get);
         EventResult result = FabricLivingEvents.LIVING_FALL.invoker()
-                .onLivingFall(LivingEntity.class.cast(this), fallDistance, damageMultiplier);
+                .onLivingFall((LivingEntity) (Object) this, fallDistance, damageMultiplier);
         if (result.isInterrupt()) {
             callback.setReturnValue(false);
         }
@@ -289,7 +286,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         MutableDouble ratioX = MutableDouble.fromEvent(ratioXRef::set, ratioXRef::get);
         MutableDouble ratioZ = MutableDouble.fromEvent(ratioZRef::set, ratioZRef::get);
         EventResult result = FabricLivingEvents.LIVING_KNOCK_BACK.invoker()
-                .onLivingKnockBack(LivingEntity.class.cast(this), knockbackStrength, ratioX, ratioZ);
+                .onLivingKnockBack((LivingEntity) (Object) this, knockbackStrength, ratioX, ratioZ);
         if (result.isInterrupt()) {
             callback.cancel();
         }
@@ -300,7 +297,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
                     ordinal = 1)
     public MobEffectInstance addEffect(@Nullable MobEffectInstance effect, MobEffectInstance newEffect, @Nullable Entity source) {
         FabricLivingEvents.MOB_EFFECT_APPLY.invoker()
-                .onMobEffectApply(LivingEntity.class.cast(this), newEffect, effect, source);
+                .onMobEffectApply((LivingEntity) (Object) this, newEffect, effect, source);
         return effect;
     }
 
@@ -309,7 +306,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         // Forge also adds this patch to spiders, but let's just say no one wants to remove poison immunity from them
         // Forge is incomplete anyway, with mobs are not affected by this event when checking for the wither effect
         EventResult result = FabricLivingEvents.MOB_EFFECT_AFFECTS.invoker()
-                .onMobEffectAffects(LivingEntity.class.cast(this), newEffect);
+                .onMobEffectAffects((LivingEntity) (Object) this, newEffect);
         if (result.isInterrupt()) {
             callback.setReturnValue(result.getAsBoolean());
         }
@@ -320,7 +317,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         MobEffectInstance mobEffect = this.getEffect(effect);
         if (mobEffect != null) {
             EventResult result = FabricLivingEvents.MOB_EFFECT_REMOVE.invoker()
-                    .onMobEffectRemove(LivingEntity.class.cast(this), mobEffect);
+                    .onMobEffectRemove((LivingEntity) (Object) this, mobEffect);
             if (result.isInterrupt()) {
                 callback.setReturnValue(false);
             }
@@ -339,7 +336,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         Map<Holder<MobEffect>, MobEffectInstance> removedActiveEffects = new HashMap<>();
         for (Map.Entry<Holder<MobEffect>, MobEffectInstance> entry : this.activeEffects.entrySet()) {
             EventResult result = FabricLivingEvents.MOB_EFFECT_REMOVE.invoker()
-                    .onMobEffectRemove(LivingEntity.class.cast(this), entry.getValue());
+                    .onMobEffectRemove((LivingEntity) (Object) this, entry.getValue());
             if (result.isPass()) {
                 removedActiveEffects.put(entry.getKey(), entry.getValue());
             }
@@ -366,7 +363,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         if (tickServer) {
             return true;
         } else if (FabricLivingEvents.MOB_EFFECT_EXPIRE.invoker()
-                .onMobEffectExpire(LivingEntity.class.cast(this), effect)
+                .onMobEffectExpire((LivingEntity) (Object) this, effect)
                 .isInterrupt()) {
             // There are multiple things that happen when an effect expires.
             // To bypass all of them, we prevent it from expiring and then cancel everything that would follow normally.
@@ -386,7 +383,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
 
     @Inject(method = "jumpFromGround", at = @At("TAIL"))
     protected void jumpFromGround(CallbackInfo callback) {
-        EventImplHelper.onLivingJump(FabricLivingEvents.LIVING_JUMP.invoker(), LivingEntity.class.cast(this));
+        EventImplHelper.onLivingJump(FabricLivingEvents.LIVING_JUMP.invoker(), (LivingEntity) (Object) this);
     }
 
     @ModifyArg(method = "getVisibilityPercent",
@@ -395,7 +392,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
     public double getVisibilityPercent(double visibilityPercent, @Local(argsOnly = true) @Nullable Entity targetingEntity) {
         MutableDouble visibilityPercentValue = MutableDouble.fromValue(visibilityPercent);
         FabricLivingEvents.CALCULATE_LIVING_VISIBILITY.invoker()
-                .onCalculateLivingVisibility(LivingEntity.class.cast(this), targetingEntity, visibilityPercentValue);
+                .onCalculateLivingVisibility((LivingEntity) (Object) this, targetingEntity, visibilityPercentValue);
         return visibilityPercentValue.getAsDouble();
     }
 
@@ -404,7 +401,7 @@ abstract class LivingEntityFabricMixin extends Entity implements CapturedDropsEn
         if (heldWeapon.getItem() instanceof ProjectileWeaponItem) {
             MutableValue<ItemStack> projectileValue = MutableValue.fromValue(projectile);
             FabricLivingEvents.PICK_PROJECTILE.invoker()
-                    .onPickProjectile(LivingEntity.class.cast(this), heldWeapon, projectileValue);
+                    .onPickProjectile((LivingEntity) (Object) this, heldWeapon, projectileValue);
             return Objects.requireNonNull(projectileValue.get(), "projectile is null");
         } else {
             return projectile;

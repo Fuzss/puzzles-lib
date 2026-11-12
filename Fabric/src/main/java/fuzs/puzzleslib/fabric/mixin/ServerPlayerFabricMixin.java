@@ -48,12 +48,12 @@ abstract class ServerPlayerFabricMixin extends Player implements CapturedDropsEn
 
     @Inject(method = "openMenu", at = @At("TAIL"))
     public void openMenu(@Nullable MenuProvider provider, CallbackInfoReturnable<OptionalInt> callback) {
-        FabricPlayerEvents.CONTAINER_OPEN.invoker().onContainerOpen(ServerPlayer.class.cast(this), this.containerMenu);
+        FabricPlayerEvents.CONTAINER_OPEN.invoker().onContainerOpen((ServerPlayer) (Object) this, this.containerMenu);
     }
 
     @Inject(method = "openHorseInventory", at = @At("TAIL"))
     public void openHorseInventory(AbstractHorse horse, Container container, CallbackInfo callback) {
-        FabricPlayerEvents.CONTAINER_OPEN.invoker().onContainerOpen(ServerPlayer.class.cast(this), this.containerMenu);
+        FabricPlayerEvents.CONTAINER_OPEN.invoker().onContainerOpen((ServerPlayer) (Object) this, this.containerMenu);
     }
 
     @Inject(method = "doCloseContainer",
@@ -62,12 +62,12 @@ abstract class ServerPlayerFabricMixin extends Player implements CapturedDropsEn
                      shift = At.Shift.AFTER))
     public void doCloseContainer(CallbackInfo callback) {
         FabricPlayerEvents.CONTAINER_CLOSE.invoker()
-                .onContainerClose(ServerPlayer.class.cast(this), this.containerMenu);
+                .onContainerClose((ServerPlayer) (Object) this, this.containerMenu);
     }
 
     @Inject(method = "stopSleepInBed", at = @At("HEAD"))
     public void stopSleepInBed(boolean forcefulWakeUp, boolean updateLevelList, CallbackInfo callback) {
         FabricPlayerEvents.STOP_SLEEP_IN_BED.invoker()
-                .onStopSleepInBed(ServerPlayer.class.cast(this), !forcefulWakeUp && !updateLevelList);
+                .onStopSleepInBed((ServerPlayer) (Object) this, !forcefulWakeUp && !updateLevelList);
     }
 }

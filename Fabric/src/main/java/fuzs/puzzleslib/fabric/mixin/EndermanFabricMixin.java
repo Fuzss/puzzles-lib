@@ -20,7 +20,7 @@ abstract class EndermanFabricMixin extends Monster {
     @ModifyReturnValue(method = "isBeingStaredBy", at = @At("TAIL"))
     boolean isBeingStaredBy(boolean isBeingStaredBy, Player player) {
         return isBeingStaredBy && FabricLivingEvents.LOOKING_AT_ENDERMAN.invoker()
-                .onLookingAtEndermanCallback(Enderman.class.cast(this), player)
+                .onLookingAtEndermanCallback((Enderman) (Object) this, player)
                 .isPass();
     }
 }

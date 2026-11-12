@@ -65,7 +65,7 @@ abstract class ServerLevelFabricMixin extends Level {
             cancellable = true)
     public void explode(@Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float r, boolean fire, Level.ExplosionInteraction interactionType, ParticleOptions smallExplosionParticles, ParticleOptions largeExplosionParticles, WeightedList<ExplosionParticleInfo> blockParticles, Holder<SoundEvent> explosionSound, CallbackInfo callback, @Local ServerExplosion explosion) {
         EventResult eventResult = FabricLevelEvents.EXPLOSION_START.invoker()
-                .onExplosionStart(ServerLevel.class.cast(this), explosion);
+                .onExplosionStart((ServerLevel) (Object) this, explosion);
         if (eventResult.isInterrupt()) {
             callback.cancel();
         }

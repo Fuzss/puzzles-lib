@@ -42,7 +42,7 @@ abstract class MobFabricMixin extends LivingEntity {
             cancellable = true)
     public void checkDespawn(CallbackInfo callback) {
         EventResult result = FabricLivingEvents.CHECK_MOB_DESPAWN.invoker()
-                .onCheckMobDespawn(Mob.class.cast(this), (ServerLevel) this.level());
+                .onCheckMobDespawn((Mob) (Object) this, (ServerLevel) this.level());
         if (result.isInterrupt()) {
             if (result.getAsBoolean()) {
                 this.discard();

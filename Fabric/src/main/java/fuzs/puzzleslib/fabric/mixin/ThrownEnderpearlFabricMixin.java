@@ -32,7 +32,7 @@ abstract class ThrownEnderpearlFabricMixin extends ThrowableItemProjectile {
             EventResult result = FabricEntityEvents.ENDER_PEARL_TELEPORT.invoker()
                     .onEnderPearlTeleport(serverPlayer,
                             this.oldPosition(),
-                            ThrownEnderpearl.class.cast(this),
+                            (ThrownEnderpearl) (Object) this,
                             damageAmountRef.get(),
                             hitResult);
             if (result.isInterrupt()) {

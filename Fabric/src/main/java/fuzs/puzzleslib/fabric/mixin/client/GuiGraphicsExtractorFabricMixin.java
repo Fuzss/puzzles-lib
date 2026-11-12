@@ -22,7 +22,7 @@ abstract class GuiGraphicsExtractorFabricMixin {
     private void renderTooltip(Font font, List<ClientTooltipComponent> lines, int xo, int yo, ClientTooltipPositioner positioner, @Nullable Identifier style, boolean extraSpaceAfterFirstLine, CallbackInfo callback) {
         if (!lines.isEmpty()) {
             EventResult result = FabricGuiEvents.RENDER_TOOLTIP.invoker()
-                    .onRenderTooltip(GuiGraphicsExtractor.class.cast(this), font, xo, yo, lines, positioner);
+                    .onRenderTooltip((GuiGraphicsExtractor) (Object) this, font, xo, yo, lines, positioner);
             if (result.isInterrupt()) {
                 callback.cancel();
             }

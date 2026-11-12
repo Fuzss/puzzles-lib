@@ -32,7 +32,7 @@ abstract class CameraFabricMixin {
         MutableFloat roll = MutableFloat.fromEvent((Float zRot) -> this.puzzleslib$zRot = Optional.of(zRot),
                 () -> this.puzzleslib$zRot.orElse(0.0F));
         FabricRendererEvents.COMPUTE_CAMERA_ANGLES.invoker()
-                .onComputeCameraAngles(Camera.class.cast(this), partialTicks, pitch, yaw, roll);
+                .onComputeCameraAngles((Camera) (Object) this, partialTicks, pitch, yaw, roll);
     }
 
     @ModifyArg(method = "setRotation",
@@ -50,7 +50,7 @@ abstract class CameraFabricMixin {
     private float modifyFovBasedOnDeathOrFluid(float fov, @Local(ordinal = 0, argsOnly = true) float partialTicks) {
         MutableFloat fieldOfView = MutableFloat.fromValue(fov);
         FabricRendererEvents.COMPUTE_FIELD_OF_VIEW.invoker()
-                .onComputeFieldOfView(Camera.class.cast(this), partialTicks, fieldOfView);
+                .onComputeFieldOfView((Camera) (Object) this, partialTicks, fieldOfView);
         return fieldOfView.getAsFloat();
     }
 }

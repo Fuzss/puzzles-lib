@@ -49,7 +49,7 @@ abstract class MinecraftFabricMixin {
     @Inject(method = "setLevel", at = @At("HEAD"))
     public void setLevel(ClientLevel level, CallbackInfo callback) {
         if (this.level != null) {
-            FabricClientLevelEvents.UNLOAD_LEVEL.invoker().onLevelUnload(Minecraft.class.cast(this), this.level);
+            FabricClientLevelEvents.UNLOAD_LEVEL.invoker().onLevelUnload((Minecraft) (Object) this, this.level);
         }
     }
 
@@ -65,7 +65,7 @@ abstract class MinecraftFabricMixin {
         }
 
         if (this.level != null) {
-            FabricClientLevelEvents.UNLOAD_LEVEL.invoker().onLevelUnload(Minecraft.class.cast(this), this.level);
+            FabricClientLevelEvents.UNLOAD_LEVEL.invoker().onLevelUnload((Minecraft) (Object) this, this.level);
         }
     }
 
@@ -73,7 +73,7 @@ abstract class MinecraftFabricMixin {
     private void pickBlockOrEntity(CallbackInfo callback) {
         if (this.hitResult != null && this.hitResult.getType() != HitResult.Type.MISS) {
             EventResult result = FabricClientPlayerEvents.PICK_INTERACTION_INPUT.invoker()
-                    .onPickInteraction(Minecraft.class.cast(this), this.player, this.hitResult);
+                    .onPickInteraction((Minecraft) (Object) this, this.player, this.hitResult);
             if (result.isInterrupt()) {
                 callback.cancel();
             }

@@ -29,7 +29,7 @@ abstract class LivingEntityRendererFabricMixin<T extends LivingEntity, S extends
     public void render$0(S state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, CallbackInfo callback) {
         EventResult result = FabricRendererEvents.BEFORE_SUBMIT_LIVING_ENTITY.invoker()
                 .onBeforeSubmitLivingEntity(state,
-                        LivingEntityRenderer.class.cast(this),
+                        (LivingEntityRenderer<T, S, M>) (Object) this,
                         poseStack,
                         submitNodeCollector);
         if (result.isInterrupt()) {
@@ -42,7 +42,7 @@ abstract class LivingEntityRendererFabricMixin<T extends LivingEntity, S extends
     public void render$1(S state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, CallbackInfo callback) {
         FabricRendererEvents.AFTER_SUBMIT_LIVING_ENTITY.invoker()
                 .onAfterSubmitLivingEntity(state,
-                        LivingEntityRenderer.class.cast(this),
+                        (LivingEntityRenderer<T, S, M>) (Object) this,
                         poseStack,
                         submitNodeCollector);
     }

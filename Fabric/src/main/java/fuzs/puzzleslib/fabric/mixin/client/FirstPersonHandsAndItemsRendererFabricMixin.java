@@ -20,7 +20,7 @@ abstract class FirstPersonHandsAndItemsRendererFabricMixin {
     @Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
     private void submitArmWithItem(PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState state, float partialTicks, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo callback) {
         EventResult result = FabricRendererEvents.SUBMIT_ARM_WITH_ITEM.invoker()
-                .onSubmitArmWithItem(FirstPersonHandsAndItemsRenderer.class.cast(this),
+                .onSubmitArmWithItem((FirstPersonHandsAndItemsRenderer) (Object) this,
                         playerState,
                         state,
                         partialTicks,

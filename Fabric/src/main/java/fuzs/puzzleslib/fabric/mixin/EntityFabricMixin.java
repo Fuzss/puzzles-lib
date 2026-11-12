@@ -57,7 +57,7 @@ abstract class EntityFabricMixin implements CapturedDropsEntity {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;tick()V", shift = At.Shift.AFTER))
     public void rideTick(CallbackInfo callback, @Share("isEntityTickCancelled") LocalBooleanRef isEntityTickCancelled) {
         if (!isEntityTickCancelled.get()) {
-            FabricEntityEvents.ENTITY_TICK_END.invoker().onEndEntityTick(Entity.class.cast(this));
+            FabricEntityEvents.ENTITY_TICK_END.invoker().onEndEntityTick((Entity) (Object) this);
         }
     }
 
@@ -91,7 +91,7 @@ abstract class EntityFabricMixin implements CapturedDropsEntity {
     public void startRiding(Entity entityToRide, boolean force, boolean sendEventAndTriggers, CallbackInfoReturnable<Boolean> callback) {
         // runs a little later than Forge when it is actually guaranteed for the rider to start riding
         EventResult eventResult = FabricEntityEvents.ENTITY_START_RIDING.invoker()
-                .onStartRiding(this.level, Entity.class.cast(this), entityToRide);
+                .onStartRiding(this.level, (Entity) (Object) this, entityToRide);
         if (eventResult.isInterrupt()) {
             callback.setReturnValue(false);
         }
@@ -101,7 +101,7 @@ abstract class EntityFabricMixin implements CapturedDropsEntity {
     public void removeVehicle(CallbackInfo callback) {
         if (this.vehicle != null) {
             EventResult eventResult = FabricEntityEvents.ENTITY_STOP_RIDING.invoker()
-                    .onStopRiding(this.level, Entity.class.cast(this), this.vehicle);
+                    .onStopRiding(this.level, (Entity) (Object) this, this.vehicle);
             if (eventResult.isInterrupt()) {
                 callback.cancel();
             }
@@ -111,7 +111,7 @@ abstract class EntityFabricMixin implements CapturedDropsEntity {
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(EntityType<?> type, Level level, CallbackInfo callback) {
         EventResultHolder<EntityDimensions> eventResult = FabricEntityEvents.REFRESH_ENTITY_DIMENSIONS.invoker()
-                .onRefreshEntityDimensions(Entity.class.cast(this), Pose.STANDING, type.getDimensions());
+                .onRefreshEntityDimensions((Entity) (Object) this, Pose.STANDING, type.getDimensions());
         eventResult.ifInterrupt((EntityDimensions entityDimensions) -> {
             this.dimensions = entityDimensions;
             this.eyeHeight = entityDimensions.eyeHeight();
@@ -121,7 +121,7 @@ abstract class EntityFabricMixin implements CapturedDropsEntity {
     @ModifyVariable(method = "refreshDimensions", at = @At("STORE"), ordinal = 1)
     public EntityDimensions refreshDimensions(EntityDimensions newDim) {
         EventResultHolder<EntityDimensions> eventResult = FabricEntityEvents.REFRESH_ENTITY_DIMENSIONS.invoker()
-                .onRefreshEntityDimensions(Entity.class.cast(this), this.getPose(), newDim);
+                .onRefreshEntityDimensions((Entity) (Object) this, this.getPose(), newDim);
         return eventResult.getInterrupt().orElse(newDim);
     }
 
@@ -132,7 +132,7 @@ abstract class EntityFabricMixin implements CapturedDropsEntity {
     protected boolean isInvulnerableToBase(boolean isInvulnerableToBase, DamageSource source) {
         MutableBoolean isInvulnerable = MutableBoolean.fromValue(isInvulnerableToBase);
         FabricEntityEvents.ENTITY_DAMAGE_IMMUNITY.invoker()
-                .onEntityDamageImmunity(Entity.class.cast(this), source, isInvulnerable);
+                .onEntityDamageImmunity((Entity) (Object) this, source, isInvulnerable);
         return isInvulnerable.getAsBoolean();
     }
 }

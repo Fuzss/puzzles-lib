@@ -12,6 +12,6 @@ abstract class OptionsFabricMixin {
 
     @Inject(method = "load", at = @At("HEAD"))
     public void load(CallbackInfo callback) {
-        PuzzlesLibClientDevelopment.initializeGameOptions(Options.class.cast(this));
+        PuzzlesLibClientDevelopment.initializeGameOptions((Options) (Object) this);
     }
 }

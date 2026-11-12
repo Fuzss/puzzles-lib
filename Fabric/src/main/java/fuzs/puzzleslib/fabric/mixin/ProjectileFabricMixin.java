@@ -24,8 +24,8 @@ abstract class ProjectileFabricMixin extends Entity {
     protected void hitTargetOrDeflectSelf(HitResult hitResult, CallbackInfoReturnable<ProjectileDeflection> callback) {
         // simplified patch for this event, Projectile::hitTargetOrDeflectSelf might be overridden in mod classes,
         // but so might the NeoForge patches in e.g. Projectile::onHit
-        EventResult result = FabricEntityEvents.PROJECTILE_IMPACT.invoker().onProjectileImpact(
-                Projectile.class.cast(this), hitResult);
+        EventResult result = FabricEntityEvents.PROJECTILE_IMPACT.invoker()
+                .onProjectileImpact((Projectile) (Object) this, hitResult);
         if (result.isInterrupt()) {
             callback.setReturnValue(ProjectileDeflection.NONE);
         }

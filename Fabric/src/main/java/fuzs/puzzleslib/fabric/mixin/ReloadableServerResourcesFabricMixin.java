@@ -24,7 +24,7 @@ abstract class ReloadableServerResourcesFabricMixin {
 
     @Inject(method = "updateComponentsAndStaticRegistryTags", at = @At("HEAD"))
     public void updateComponentsAndStaticRegistryTags$0(CallbackInfo callback) {
-        FabricEventInvokers.SERVER_RESOURCES.set(ReloadableServerResources.class.cast(this));
+        FabricEventInvokers.SERVER_RESOURCES.set((ReloadableServerResources) (Object) this);
     }
 
     @Inject(method = "updateComponentsAndStaticRegistryTags", at = @At("TAIL"))

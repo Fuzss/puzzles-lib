@@ -44,7 +44,7 @@ abstract class ClientLevelFabricMixin extends Level {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(ClientPacketListener connection, ClientLevel.ClientLevelData levelData, ResourceKey<Level> dimension, Holder<DimensionType> dimensionType, int serverChunkRadius, int serverSimulationDistance, LevelExtractor levelExtractor, boolean isDebug, long biomeZoomSeed, int seaLevel, CallbackInfo callback) {
-        FabricClientLevelEvents.LOAD_LEVEL.invoker().onLevelLoad(Minecraft.getInstance(), ClientLevel.class.cast(this));
+        FabricClientLevelEvents.LOAD_LEVEL.invoker().onLevelLoad(Minecraft.getInstance(), (ClientLevel) (Object) this);
     }
 
     @WrapWithCondition(method = "tickNonPassenger",
@@ -67,7 +67,7 @@ abstract class ClientLevelFabricMixin extends Level {
     @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)
     private void addEntity(Entity entity, CallbackInfo callback) {
         EventResult eventResult = FabricClientEntityEvents.ENTITY_LOAD.invoker()
-                .onEntityLoad(entity, ClientLevel.class.cast(this));
+                .onEntityLoad(entity, (ClientLevel) (Object) this);
         if (eventResult.isInterrupt()) {
             callback.cancel();
         }

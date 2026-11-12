@@ -36,19 +36,19 @@ abstract class PlayerFabricMixin extends LivingEntity {
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick$0(CallbackInfo callback) {
-        FabricPlayerEvents.PLAYER_TICK_START.invoker().onStartPlayerTick(Player.class.cast(this));
+        FabricPlayerEvents.PLAYER_TICK_START.invoker().onStartPlayerTick((Player) (Object) this);
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick$1(CallbackInfo callback) {
-        FabricPlayerEvents.PLAYER_TICK_END.invoker().onEndPlayerTick(Player.class.cast(this));
+        FabricPlayerEvents.PLAYER_TICK_END.invoker().onEndPlayerTick((Player) (Object) this);
     }
 
     @ModifyReturnValue(method = "getDestroySpeed", at = @At("TAIL"))
     public float getDestroySpeed(float speed, BlockState state) {
         MutableFloat breakSpeed = MutableFloat.fromValue(speed);
         EventResult result = FabricPlayerEvents.CALCULATE_BLOCK_BREAK_SPEED.invoker()
-                .onCalculateBlockBreakSpeed(Player.class.cast(this), state, breakSpeed);
+                .onCalculateBlockBreakSpeed((Player) (Object) this, state, breakSpeed);
         if (result.isInterrupt()) {
             breakSpeed.accept(-1.0F);
         }

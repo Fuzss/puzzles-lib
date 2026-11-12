@@ -33,7 +33,7 @@ abstract class ServerExplosionFabricMixin {
         Objects.requireNonNull(this.puzzleslib$explodedPositions, "exploded positions is null");
         FabricLevelEvents.EXPLOSION_DETONATE.invoker()
                 .onExplosionDetonate(this.level,
-                        ServerExplosion.class.cast(this),
+                        (ServerExplosion) (Object) this,
                         this.puzzleslib$explodedPositions,
                         entities);
         return entities;

@@ -34,29 +34,28 @@ abstract class LocalPlayerFabricMixin extends AbstractClientPlayer {
         super(clientLevel, gameProfile);
     }
 
-    @Inject(
-            method = "aiStep", at = @At(
-            value = "INVOKE", target = "Lnet/minecraft/client/player/ClientInput;tick()V", shift = At.Shift.AFTER
-    )
-    )
+    @Inject(method = "aiStep",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/client/player/ClientInput;tick()V",
+                     shift = At.Shift.AFTER))
     public void aiStep(CallbackInfo callback) {
         FabricClientPlayerEvents.MOVEMENT_INPUT_UPDATE.invoker()
-                .onMovementInputUpdate(LocalPlayer.class.cast(this), this.input);
+                .onMovementInputUpdate((LocalPlayer) (Object) this, this.input);
     }
 
-    @ModifyArgs(
-            method = "playSound(Lnet/minecraft/sounds/SoundEvent;FF)V", at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/world/level/Level;playLocalSound(DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FFZ)V"
-    )
-    )
+    @ModifyArgs(method = "playSound(Lnet/minecraft/sounds/SoundEvent;FF)V",
+                at = @At(value = "INVOKE",
+                         target = "Lnet/minecraft/world/level/Level;playLocalSound(DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FFZ)V"))
     public void playSound(Args args, @Cancellable CallbackInfo callback) {
         Preconditions.checkArgument(args.get(3) instanceof SoundEvent, "sound event is wrong type");
         EventResult eventResult = FabricEventImplHelper.onPlaySound((MutableValue<Holder<SoundEvent>> soundEvent, MutableValue<SoundSource> soundSource, MutableFloat soundVolume, MutableFloat soundPitch) -> {
                     return FabricLevelEvents.PLAY_SOUND_AT_ENTITY.invoker()
                             .onPlaySoundAtEntity(this.level(), this, soundEvent, soundSource, soundVolume, soundPitch);
-                }, args, MutableValue.fromEvent((Holder<SoundEvent> holder) -> args.set(3, holder.value()),
-                        () -> BuiltInRegistries.SOUND_EVENT.wrapAsHolder(args.get(3))), 4,
+                },
+                args,
+                MutableValue.fromEvent((Holder<SoundEvent> holder) -> args.set(3, holder.value()),
+                        () -> BuiltInRegistries.SOUND_EVENT.wrapAsHolder(args.get(3))),
+                4,
                 5,
                 6);
         if (eventResult.isInterrupt()) callback.cancel();

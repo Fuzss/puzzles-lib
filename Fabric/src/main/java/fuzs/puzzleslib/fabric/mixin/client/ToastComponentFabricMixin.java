@@ -14,7 +14,7 @@ abstract class ToastComponentFabricMixin {
 
     @Inject(method = "addToast", at = @At("HEAD"), cancellable = true)
     public void addToast(Toast toast, CallbackInfo callback) {
-        EventResult result = FabricGuiEvents.ADD_TOAST.invoker().onAddToast(ToastManager.class.cast(this), toast);
+        EventResult result = FabricGuiEvents.ADD_TOAST.invoker().onAddToast((ToastManager) (Object) this, toast);
         if (result.isInterrupt()) {
             callback.cancel();
         }
