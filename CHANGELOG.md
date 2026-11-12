@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Replace the `BlockEntity.type` access transformer with `BlockEntityHelper::setType` and `BlockEntityHelper::init`
+- Support block family smelting variants in `AbstractRecipeProvider`
 
 ### Fixed
 
