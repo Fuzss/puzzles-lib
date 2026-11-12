@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v26.3.18-mc26.3.x] - 2026-11-12
+
+### Added
+
+- Add `BlockEntityHelper` for changing the type and block state of a `BlockEntity`
+
+### Changed
+
+- Replace the `BlockEntity.type` access transformer with `BlockEntityHelper::setType` and `BlockEntityHelper::init`
+
+### Fixed
+
+- Fix `BlockSetFamily.Writable::provide` not providing the item for blocks that have one
+
 ## [v26.3.17-mc26.3.x] - 2026-10-28
 
 ### Fixed
