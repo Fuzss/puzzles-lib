@@ -1,6 +1,5 @@
 package fuzs.puzzleslib.common.api.data.v3.recipes;
 
-import com.google.common.collect.ImmutableMap;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetFamily;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
 import fuzs.puzzleslib.common.impl.core.proxy.ProxyImpl;
@@ -20,7 +19,6 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,32 +48,29 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
      * @param blockSetFamily the block set family the providers operate on
      * @return the variant providers mapped by block set variant
      *
-     * @see #generateFor(BlockSetFamily, Map, Map)
+     * @see #generateFor(BlockSetFamily, Map, Map, Map)
      */
     public static Map<BlockSetVariant, FamilyRecipeProvider> createVariantWoodProviders(BlockSetFamily blockSetFamily) {
-        return ImmutableMap.<BlockSetVariant, FamilyRecipeProvider>builder()
-                .put(BlockSetVariant.WOOD,
-                        (RecipeProvider recipeProvider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
-                            recipeProvider.woodFromLogs(result, blockSetFamily.getItem(BlockSetVariant.LOG).value());
-                        })
-                .put(BlockSetVariant.STRIPPED_WOOD,
-                        (RecipeProvider recipeProvider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
-                            recipeProvider.woodFromLogs(result,
-                                    blockSetFamily.getItem(BlockSetVariant.STRIPPED_LOG).value());
-                        })
-                .put(BlockSetVariant.SHELF,
-                        (RecipeProvider recipeProvider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
-                            recipeProvider.shelf(result, blockSetFamily.getItem(BlockSetVariant.STRIPPED_LOG).value());
-                        })
-                .put(BlockSetVariant.BOAT,
-                        (RecipeProvider recipeProvider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
-                            recipeProvider.woodenBoat(result, input);
-                        })
-                .put(BlockSetVariant.CHEST_BOAT,
-                        (RecipeProvider recipeProvider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
-                            recipeProvider.chestBoat(result, blockSetFamily.getItem(BlockSetVariant.BOAT).value());
-                        })
-                .build();
+        return Map.of(BlockSetVariant.WOOD,
+                (RecipeProvider provider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
+                    provider.woodFromLogs(result, blockSetFamily.getItem(BlockSetVariant.LOG).value());
+                },
+                BlockSetVariant.STRIPPED_WOOD,
+                (RecipeProvider provider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
+                    provider.woodFromLogs(result, blockSetFamily.getItem(BlockSetVariant.STRIPPED_LOG).value());
+                },
+                BlockSetVariant.SHELF,
+                (RecipeProvider provider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
+                    provider.shelf(result, blockSetFamily.getItem(BlockSetVariant.STRIPPED_LOG).value());
+                },
+                BlockSetVariant.BOAT,
+                (RecipeProvider provider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
+                    provider.woodenBoat(result, input);
+                },
+                BlockSetVariant.CHEST_BOAT,
+                (RecipeProvider provider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
+                    provider.chestBoat(result, blockSetFamily.getItem(BlockSetVariant.BOAT).value());
+                });
     }
 
     /**
@@ -149,7 +144,7 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
      * @param blockSetFamily the block set family
      */
     public void generateFor(BlockSetFamily blockSetFamily) {
-        this.generateFor(blockSetFamily, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
+        this.generateFor(blockSetFamily, Map.of(), Map.of(), Map.of());
     }
 
     /**
@@ -162,7 +157,7 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
      */
     @Deprecated
     public void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, FamilyRecipeProvider> craftingVariants, Map<BlockSetVariant, FamilyRecipeProvider> stonecuttingVariants) {
-        this.generateFor(blockSetFamily, craftingVariants, stonecuttingVariants, Collections.emptyMap());
+        this.generateFor(blockSetFamily, craftingVariants, stonecuttingVariants, Map.of());
     }
 
     /**
@@ -400,13 +395,13 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
         /**
          * Creates and saves the recipe for a single variant.
          *
-         * @param recipeProvider    the recipe provider the recipe is saved to
+         * @param provider          the recipe provider the recipe is saved to
          * @param result            the recipe result
          * @param input             the recipe input
          * @param recipeGroupPrefix the recipe group prefix
          * @param recipeUnlockedBy  the criterion name used to unlock the recipe
          */
-        void create(RecipeProvider recipeProvider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy);
+        void create(RecipeProvider provider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy);
 
         /**
          * @return a stonecutting family recipe provider using {@link RecipeCategory#BUILDING_BLOCKS} and a count of 1
@@ -421,14 +416,8 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
          * @return a stonecutting family recipe provider
          */
         static FamilyRecipeProvider stonecutting(RecipeCategory recipeCategory, int count) {
-            return (RecipeProvider recipeProvider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
-                SingleItemRecipeBuilder recipeBuilder = SingleItemRecipeBuilder.stonecutting(Ingredient.of(input),
-                        recipeCategory,
-                        result,
-                        count);
-                recipeBuilder.unlockedBy(recipeUnlockedBy.orElseGet(() -> getHasName(input)),
-                        recipeProvider.has(input));
-                recipeBuilder.save(recipeProvider.output, getStonecuttingRecipeName(result, input));
+            return (RecipeProvider provider, ItemLike result, ItemLike input, Optional<String> recipeGroupPrefix, Optional<String> recipeUnlockedBy) -> {
+                provider.stonecutterResultFromBase(recipeCategory, result, input, count);
             };
         }
     }
