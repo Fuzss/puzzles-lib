@@ -12,12 +12,8 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFamily.Writable, BlockSetFamily.Context {
@@ -42,7 +38,7 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     private final String baseName;
     private final BlockSetType blockSetType;
     private final WoodType woodType;
-    private Consumer<BlockFamily.Builder> blockFamilyConsumer = Function.identity()::apply;
+    private final List<Consumer<BlockFamily.Builder>> configurators = new ArrayList<>();
 
     public BlockSetFamilyRegistrar(RegistryManager registries, Holder.Reference<Block> baseBlock, String baseName, BlockSetType blockSetType, WoodType woodType) {
         this.registries = registries;
@@ -80,7 +76,6 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
                 vanillaVariant.variantBuilder.accept(blockFamily, holder.value());
             }
         });
-
         if (this.getGeneratedBlockVariants().containsKey(BlockSetVariant.SIGN) && this.getGeneratedBlockVariants()
                 .containsKey(BlockSetVariant.WALL_SIGN)) {
             blockFamily.sign(this.getBlock(BlockSetVariant.SIGN).value(),
@@ -93,7 +88,10 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
                     this.getBlock(BlockSetVariant.WALL_HANGING_SIGN).value());
         }
 
-        this.blockFamilyConsumer.accept(blockFamily);
+        for (Consumer<BlockFamily.Builder> configurator : this.configurators) {
+            configurator.accept(blockFamily);
+        }
+
         return blockFamily.getFamily();
     }
 
@@ -207,9 +205,9 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     }
 
     @Override
-    public Writable configureBlockFamily(Consumer<BlockFamily.Builder> blockFamilyConsumer) {
-        Objects.requireNonNull(blockFamilyConsumer, "consumer is null");
-        this.blockFamilyConsumer = blockFamilyConsumer;
+    public Writable configureBlockFamily(Consumer<BlockFamily.Builder> configurator) {
+        Objects.requireNonNull(configurator, "configurator is null");
+        this.configurators.add(configurator);
         return this;
     }
 }

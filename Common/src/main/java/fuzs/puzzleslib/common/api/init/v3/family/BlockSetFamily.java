@@ -527,10 +527,10 @@ public interface BlockSetFamily {
          * Applies additional configuration to the vanilla {@link BlockFamily} built from this family's generated
          * variants.
          *
-         * @param blockFamilyConsumer the consumer configuring the block family builder
+         * @param configurator the consumer configuring the block family builder
          * @return this family instance
          */
-        Writable configureBlockFamily(Consumer<BlockFamily.Builder> blockFamilyConsumer);
+        Writable configureBlockFamily(Consumer<BlockFamily.Builder> configurator);
     }
 
     /**
