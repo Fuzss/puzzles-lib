@@ -96,7 +96,7 @@ public abstract class AbstractLanguageProvider implements DataProvider, Translat
      */
     public static final Map<BlockSetVariant, UnaryOperator<String>> VARIANT_ITEM_NAMES = ImmutableMap.<BlockSetVariant, UnaryOperator<String>>builder()
             .put(BlockSetVariant.BOAT, (String baseName) -> baseName + " Boat")
-            .put(BlockSetVariant.CHEST_BOAT, (String baseName) -> baseName + " Chest Boat")
+            .put(BlockSetVariant.CHEST_BOAT, (String baseName) -> baseName + " Boat with Chest")
             .build();
     /**
      * The default entity name providers for the common {@link BlockSetVariant BlockSetVariants}, used by
@@ -106,7 +106,7 @@ public abstract class AbstractLanguageProvider implements DataProvider, Translat
      */
     public static final Map<BlockSetVariant, UnaryOperator<String>> VARIANT_ENTITY_NAMES = ImmutableMap.<BlockSetVariant, UnaryOperator<String>>builder()
             .put(BlockSetVariant.BOAT, (String baseName) -> baseName + " Boat")
-            .put(BlockSetVariant.CHEST_BOAT, (String baseName) -> baseName + " Chest Boat")
+            .put(BlockSetVariant.CHEST_BOAT, (String baseName) -> baseName + " Boat with Chest")
             .build();
 
     /**
