@@ -205,9 +205,8 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
     }
 
     private Block getBaseBlockForCrafting(BlockSetFamily blockSetFamily, BlockSetVariant variant, BlockFamily blockFamily) {
-        BlockFamily.Variant vanillaVariant = variant.toVanilla();
-        if (vanillaVariant != null) {
-            return this.getBaseBlockForCrafting(blockFamily, vanillaVariant);
+        if (variant instanceof BlockSetVariant.Vanilla vanillaVariant) {
+            return this.getBaseBlockForCrafting(blockFamily, vanillaVariant.toVanilla());
         } else {
             return blockSetFamily.getBaseBlock().value();
         }

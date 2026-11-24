@@ -72,8 +72,8 @@ public final class BlockSetFamilyRegistrar implements BlockSetFamily, BlockSetFa
     public BlockFamily getBlockFamily() {
         BlockFamily.Builder blockFamily = new BlockFamily.Builder(this.getBaseBlock().value());
         this.getGeneratedBlockVariants().forEach((BlockSetVariant variant, Holder.Reference<Block> holder) -> {
-            if (variant instanceof VanillaBlockSetVariant vanillaVariant) {
-                vanillaVariant.variantBuilder.accept(blockFamily, holder.value());
+            if (variant instanceof BlockSetVariant.Vanilla vanillaVariant) {
+                vanillaVariant.configureBlockFamily(blockFamily, holder.value());
             }
         });
         if (this.getGeneratedBlockVariants().containsKey(BlockSetVariant.SIGN) && this.getGeneratedBlockVariants()

@@ -490,11 +490,11 @@ public interface BlockSetFamily {
          * @param blockFamily the vanilla block family to provide variants from
          * @return this family instance
          *
-         * @see BlockSetVariant#fromVanilla(BlockFamily.Variant)
+         * @see BlockSetVariant.Vanilla#fromVanilla(BlockFamily.Variant)
          */
         default Writable provide(BlockFamily blockFamily) {
             blockFamily.getVariants().forEach((BlockFamily.Variant variant, Block block) -> {
-                BlockSetVariant blockSetVariant = BlockSetVariant.fromVanilla(variant);
+                BlockSetVariant blockSetVariant = BlockSetVariant.Vanilla.fromVanilla(variant);
                 if (blockSetVariant != null) {
                     this.provideFor(blockSetVariant, block);
                     if (block.asItem() != Items.AIR) {

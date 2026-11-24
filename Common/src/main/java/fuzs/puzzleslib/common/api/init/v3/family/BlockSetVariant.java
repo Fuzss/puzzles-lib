@@ -1,6 +1,5 @@
 package fuzs.puzzleslib.common.api.init.v3.family;
 
-import fuzs.puzzleslib.common.impl.init.VanillaBlockSetVariant;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -26,6 +25,13 @@ import org.jspecify.annotations.Nullable;
  * Variants either mirror a vanilla {@link BlockFamily.Variant} or are {@link StandaloneBlockSetVariant standalone} when
  * no vanilla equivalent exists (for example, shelves and boats). They are added to a family by generating them via
  * {@link BlockSetFamily.Writable#generateFor(BlockSetVariant)}.
+ * <p>
+ * A variant's identity is its {@link #getSerializedName() serialized name}: variants with the same name must be
+ * considered equal and can be used interchangeably as keys in the maps used by registration and the data providers.
+ * Extending {@link VanillaBlockSetVariant} or {@link StandaloneBlockSetVariant} provides this equality. A custom
+ * variant may therefore reuse the resources of an existing variant by reporting the same name, while supplying
+ * different blocks or items. Variants backed by a vanilla variant should extend {@link VanillaBlockSetVariant}, as only
+ * those are included when a vanilla {@link BlockFamily} is built.
  */
 public interface BlockSetVariant extends StringRepresentable {
     /**
@@ -495,48 +501,58 @@ public interface BlockSetVariant extends StringRepresentable {
      */
     void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride);
 
-    /**
-     * Returns the vanilla {@link BlockFamily.Variant} this variant corresponds to.
-     *
-     * @return the vanilla variant, or {@code null} if this variant has no vanilla equivalent
-     *
-     * @see #fromVanilla(BlockFamily.Variant)
-     */
-    BlockFamily.@Nullable Variant toVanilla();
+    interface Vanilla extends BlockSetVariant {
+        /**
+         * Returns the vanilla {@link BlockFamily.Variant} this variant corresponds to.
+         *
+         * @return the vanilla variant, or {@code null} if this variant has no vanilla equivalent
+         *
+         * @see #fromVanilla(BlockFamily.Variant)
+         */
+        BlockFamily.Variant toVanilla();
 
-    /**
-     * Retrieves the {@link BlockSetVariant} matching a vanilla {@link BlockFamily.Variant}.
-     *
-     * @param vanillaVariant the vanilla variant to look up
-     * @return the matching block set variant, or {@code null} if there is no equivalent
-     */
-    static @Nullable BlockSetVariant fromVanilla(BlockFamily.Variant vanillaVariant) {
-        return switch (vanillaVariant) {
-            case BUTTON -> BUTTON;
-            case CHISELED -> CHISELED;
-            case CRACKED -> CRACKED;
-            case CUT -> CUT;
-            case DOOR -> DOOR;
-            case CUSTOM_FENCE, FENCE -> FENCE;
-            case CUSTOM_FENCE_GATE, FENCE_GATE -> FENCE_GATE;
-            case CUSTOM_HANGING_SIGN, HANGING_SIGN -> HANGING_SIGN;
-            case LOG -> LOG;
-            case STRIPPED_LOG -> STRIPPED_LOG;
-            case MOSAIC -> MOSAIC;
-            case SIGN -> SIGN;
-            case SLAB -> SLAB;
-            case STAIRS -> STAIRS;
-            case PRESSURE_PLATE -> PRESSURE_PLATE;
-            case POLISHED -> POLISHED;
-            case TRAPDOOR -> TRAPDOOR;
-            case WALL -> WALL;
-            case WALL_SIGN -> WALL_SIGN;
-            case CUSTOM_WALL_HANGING_SIGN, WALL_HANGING_SIGN -> WALL_HANGING_SIGN;
-            case BRICKS -> BRICKS;
-            case COBBLED -> COBBLED;
-            case TILES -> TILES;
-            case PILLAR -> PILLAR;
-            default -> null;
-        };
+        /**
+         * Adds the given block to the given vanilla block family builder using this variant's builder.
+         *
+         * @param blockFamily the block family builder
+         * @param block       the block to add
+         */
+        void configureBlockFamily(BlockFamily.Builder blockFamily, Block block);
+
+        /**
+         * Retrieves the {@link BlockSetVariant} matching a vanilla {@link BlockFamily.Variant}.
+         *
+         * @param variant the vanilla variant to look up
+         * @return the matching block set variant, or {@code null} if there is no equivalent
+         */
+        static @Nullable BlockSetVariant fromVanilla(BlockFamily.Variant variant) {
+            return switch (variant) {
+                case BUTTON -> BUTTON;
+                case CHISELED -> CHISELED;
+                case CRACKED -> CRACKED;
+                case CUT -> CUT;
+                case DOOR -> DOOR;
+                case CUSTOM_FENCE, FENCE -> FENCE;
+                case CUSTOM_FENCE_GATE, FENCE_GATE -> FENCE_GATE;
+                case CUSTOM_HANGING_SIGN, HANGING_SIGN -> HANGING_SIGN;
+                case LOG -> LOG;
+                case STRIPPED_LOG -> STRIPPED_LOG;
+                case MOSAIC -> MOSAIC;
+                case SIGN -> SIGN;
+                case SLAB -> SLAB;
+                case STAIRS -> STAIRS;
+                case PRESSURE_PLATE -> PRESSURE_PLATE;
+                case POLISHED -> POLISHED;
+                case TRAPDOOR -> TRAPDOOR;
+                case WALL -> WALL;
+                case WALL_SIGN -> WALL_SIGN;
+                case CUSTOM_WALL_HANGING_SIGN, WALL_HANGING_SIGN -> WALL_HANGING_SIGN;
+                case BRICKS -> BRICKS;
+                case COBBLED -> COBBLED;
+                case TILES -> TILES;
+                case PILLAR -> PILLAR;
+                default -> null;
+            };
+        }
     }
 }

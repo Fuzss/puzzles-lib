@@ -1,7 +1,6 @@
 package fuzs.puzzleslib.common.api.init.v3.family;
 
 import net.minecraft.data.BlockFamily;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -28,14 +27,6 @@ public abstract class StandaloneBlockSetVariant implements BlockSetVariant {
      */
     public StandaloneBlockSetVariant(BlockFamily.Variant variant) {
         this(variant.getRecipeGroup());
-    }
-
-    /**
-     * @return always {@code null}, since standalone variants have no vanilla equivalent
-     */
-    @Override
-    public BlockFamily.@Nullable Variant toVanilla() {
-        return null;
     }
 
     @Override
