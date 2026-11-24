@@ -1,12 +1,13 @@
 package fuzs.puzzleslib.common.api.init.v3.family;
 
 import net.minecraft.data.BlockFamily;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 /**
  * A {@link BlockSetVariant} that is not backed by a vanilla {@link BlockFamily.Variant}, used for variants that have no
- * vanilla equivalent such as shelves and boats. {@link #toVanilla()} always returns {@code null} for these variants.
+ * vanilla equivalent such as shelves and boats.
  */
 public abstract class StandaloneBlockSetVariant implements BlockSetVariant {
     private final String name;
@@ -28,6 +29,9 @@ public abstract class StandaloneBlockSetVariant implements BlockSetVariant {
     public StandaloneBlockSetVariant(BlockFamily.Variant variant) {
         this(variant.getRecipeGroup());
     }
+
+    @Override
+    public abstract void generateFor(BlockSetFamily.Context context, @Nullable String baseNameOverride);
 
     @Override
     public String toString() {

@@ -15,10 +15,16 @@ import java.util.function.BiConsumer;
  * subclass overriding {@link #registerBlock(BlockSetFamily.Context, String)} (for example, to generate a falling slab)
  * therefore remains interchangeable with the built-in variant for registration and all data generation.
  */
-public abstract class VanillaBlockSetVariant implements BlockSetVariant.Vanilla {
+public class VanillaBlockSetVariant implements BlockSetVariant.Vanilla {
     private final BlockFamily.Variant variant;
     private final BiConsumer<BlockFamily.Builder, Block> variantBuilder;
 
+    /**
+     * Creates a new variant from the given vanilla variant and block family builder function.
+     *
+     * @param variant        the vanilla variant this variant corresponds to
+     * @param variantBuilder adds a block to a vanilla block family as this variant
+     */
     public VanillaBlockSetVariant(BlockFamily.Variant variant, BiConsumer<BlockFamily.Builder, Block> variantBuilder) {
         this.variant = variant;
         this.variantBuilder = variantBuilder;
@@ -38,10 +44,9 @@ public abstract class VanillaBlockSetVariant implements BlockSetVariant.Vanilla 
      */
     public void registerBlock(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
         context.registerBlock(this,
-                context.getRegistries()
-                        .registerBlock(this.getName(context, this.getSerializedName(), baseNameOverride), () -> {
-                            return BlockBehaviour.Properties.ofFullCopy(context.getBaseBlock().value());
-                        }));
+                context.getRegistries().registerBlock(this.getName(context, baseNameOverride), () -> {
+                    return BlockBehaviour.Properties.ofFullCopy(context.getBaseBlock().value());
+                }));
     }
 
     /**
@@ -53,16 +58,6 @@ public abstract class VanillaBlockSetVariant implements BlockSetVariant.Vanilla 
     public void registerItem(BlockSetFamily.Context context, @Nullable String baseNameOverride) {
         context.registerItem(this, context.getRegistries().registerBlockItem(context.getBlock(this)));
     }
-
-    /**
-     * Resolves the registered name of this variant's blocks and items from the family's base name.
-     *
-     * @param context          the family context
-     * @param variantName      the variant's serialized name
-     * @param baseNameOverride optional name override for the base block, or {@code null} to use the family's base name
-     * @return the resolved name
-     */
-    public abstract String getName(BlockSetFamily.Context context, String variantName, @Nullable String baseNameOverride);
 
     @Override
     public BlockFamily.Variant toVanilla() {
@@ -98,29 +93,5 @@ public abstract class VanillaBlockSetVariant implements BlockSetVariant.Vanilla 
     @Override
     public int hashCode() {
         return Objects.hash(this.getSerializedName());
-    }
-
-    public static class Prefix extends VanillaBlockSetVariant {
-
-        public Prefix(BlockFamily.Variant variant, BiConsumer<BlockFamily.Builder, Block> variantBuilder) {
-            super(variant, variantBuilder);
-        }
-
-        @Override
-        public String getName(BlockSetFamily.Context context, String variantName, @Nullable String baseNameOverride) {
-            return context.getNameWithPrefix(variantName, baseNameOverride);
-        }
-    }
-
-    public static class Suffix extends VanillaBlockSetVariant {
-
-        public Suffix(BlockFamily.Variant variant, BiConsumer<BlockFamily.Builder, Block> variantBuilder) {
-            super(variant, variantBuilder);
-        }
-
-        @Override
-        public String getName(BlockSetFamily.Context context, String variantName, @Nullable String baseNameOverride) {
-            return context.getNameWithSuffix(variantName, baseNameOverride);
-        }
     }
 }
