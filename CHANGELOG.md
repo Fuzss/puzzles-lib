@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v26.3.19-mc26.3.x] - 2026-11-25
+
+### Added
+
+- Add `BlockSetVariant.Vanilla` and the public `VanillaBlockSetVariant` base class for creating custom variants backed
+  by a vanilla `BlockFamily.Variant`
+
+### Fixed
+
+- Apply all configurators registered via `BlockSetFamily.Writable::configureBlockFamily` instead of only the last one
+- Fix chest boat translations to use the same name format as vanilla
+
 ## [v26.3.18-mc26.3.x] - 2026-11-12
 
 ### Added
