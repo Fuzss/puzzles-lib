@@ -4,11 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import fuzs.puzzleslib.common.api.config.v3.serialization.KeyedValueProvider;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.init.v3.family.BlockSetVariant;
-import fuzs.puzzleslib.common.api.init.v3.tags.TagFactory;
+import fuzs.puzzleslib.common.api.init.v3.registry.ContentRegistrationHelper;
 import fuzs.puzzleslib.common.impl.data.SortingTagBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
@@ -71,10 +72,14 @@ public abstract class AbstractTagsProvider<T> extends TagsProvider<T> {
      */
     public static final Map<BlockSetVariant, TagKey<Block>> VARIANT_WOODEN_BLOCK_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Block>>builder()
             .putAll(VARIANT_BLOCK_TAGS)
-            .put(BlockSetVariant.LOG, TagFactory.COMMON.registerBlockTag("natural_logs"))
-            .put(BlockSetVariant.WOOD, TagFactory.COMMON.registerBlockTag("natural_woods"))
-            .put(BlockSetVariant.STRIPPED_LOG, TagFactory.COMMON.registerBlockTag("stripped_logs"))
-            .put(BlockSetVariant.STRIPPED_WOOD, TagFactory.COMMON.registerBlockTag("stripped_woods"))
+            .put(BlockSetVariant.LOG,
+                    TagKey.create(Registries.BLOCK, ContentRegistrationHelper.commonId("natural_logs")))
+            .put(BlockSetVariant.WOOD,
+                    TagKey.create(Registries.BLOCK, ContentRegistrationHelper.commonId("natural_woods")))
+            .put(BlockSetVariant.STRIPPED_LOG,
+                    TagKey.create(Registries.BLOCK, ContentRegistrationHelper.commonId("stripped_logs")))
+            .put(BlockSetVariant.STRIPPED_WOOD,
+                    TagKey.create(Registries.BLOCK, ContentRegistrationHelper.commonId("stripped_woods")))
             .put(BlockSetVariant.BUTTON, BlockItemTags.WOODEN_BUTTONS.block())
             .put(BlockSetVariant.DOOR, BlockItemTags.WOODEN_DOORS.block())
             .put(BlockSetVariant.FENCE, BlockItemTags.WOODEN_FENCES.block())
@@ -119,10 +124,14 @@ public abstract class AbstractTagsProvider<T> extends TagsProvider<T> {
      */
     public static final Map<BlockSetVariant, TagKey<Item>> VARIANT_WOODEN_ITEM_TAGS = ImmutableMap.<BlockSetVariant, TagKey<Item>>builder()
             .putAll(VARIANT_ITEM_TAGS)
-            .put(BlockSetVariant.LOG, TagFactory.COMMON.registerItemTag("natural_logs"))
-            .put(BlockSetVariant.WOOD, TagFactory.COMMON.registerItemTag("natural_woods"))
-            .put(BlockSetVariant.STRIPPED_LOG, TagFactory.COMMON.registerItemTag("stripped_logs"))
-            .put(BlockSetVariant.STRIPPED_WOOD, TagFactory.COMMON.registerItemTag("stripped_woods"))
+            .put(BlockSetVariant.LOG,
+                    TagKey.create(Registries.ITEM, ContentRegistrationHelper.commonId("natural_logs")))
+            .put(BlockSetVariant.WOOD,
+                    TagKey.create(Registries.ITEM, ContentRegistrationHelper.commonId("natural_woods")))
+            .put(BlockSetVariant.STRIPPED_LOG,
+                    TagKey.create(Registries.ITEM, ContentRegistrationHelper.commonId("stripped_logs")))
+            .put(BlockSetVariant.STRIPPED_WOOD,
+                    TagKey.create(Registries.ITEM, ContentRegistrationHelper.commonId("stripped_woods")))
             .put(BlockSetVariant.BUTTON, BlockItemTags.WOODEN_BUTTONS.item())
             .put(BlockSetVariant.DOOR, BlockItemTags.WOODEN_DOORS.item())
             .put(BlockSetVariant.FENCE, BlockItemTags.WOODEN_FENCES.item())
@@ -139,7 +148,8 @@ public abstract class AbstractTagsProvider<T> extends TagsProvider<T> {
      */
     public static final Map<BlockSetVariant, TagKey<EntityType<?>>> VARIANT_ENTITY_TYPE_TAGS = ImmutableMap.<BlockSetVariant, TagKey<EntityType<?>>>builder()
             .put(BlockSetVariant.BOAT, EntityTypeTags.BOAT)
-            .put(BlockSetVariant.CHEST_BOAT, TagFactory.COMMON.registerEntityTypeTag("boats"))
+            .put(BlockSetVariant.CHEST_BOAT,
+                    TagKey.create(Registries.ENTITY_TYPE, ContentRegistrationHelper.commonId("boats")))
             .build();
 
     /**

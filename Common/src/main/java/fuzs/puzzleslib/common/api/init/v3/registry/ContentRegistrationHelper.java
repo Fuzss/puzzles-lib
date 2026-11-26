@@ -30,6 +30,18 @@ import net.minecraft.world.level.block.SkullBlock;
  */
 public final class ContentRegistrationHelper {
     /**
+     * The {@code common} namespace.
+     */
+    public static final String COMMON_ID = "c";
+    /**
+     * The {@code fabric} namespace.
+     */
+    public static final String FABRIC_ID = "fabric";
+    /**
+     * The {@code neoforge} namespace.
+     */
+    public static final String NEOFORGE_ID = "neoforge";
+    /**
      * The shaped transmute recipe serializer id that is used during registration.
      */
     public static final String TRANSMUTE_SHAPED_RECIPE_SERIALIZER_ID = "crafting_transmute_shaped";
@@ -40,6 +52,36 @@ public final class ContentRegistrationHelper {
 
     private ContentRegistrationHelper() {
         // NO-OP
+    }
+
+    /**
+     * Creates an identifier in the {@code c} namespace for the provided path.
+     *
+     * @param path the path of the identifier
+     * @return the new identifier
+     */
+    public static Identifier commonId(String path) {
+        return Identifier.fromNamespaceAndPath(COMMON_ID, path);
+    }
+
+    /**
+     * Creates an identifier in the {@code fabric} namespace for the provided path.
+     *
+     * @param path the path of the identifier
+     * @return the new identifier
+     */
+    public static Identifier fabricId(String path) {
+        return Identifier.fromNamespaceAndPath(FABRIC_ID, path);
+    }
+
+    /**
+     * Creates an identifier in the {@code neoforge} namespace for the provided path.
+     *
+     * @param path the path of the identifier
+     * @return the new identifier
+     */
+    public static Identifier neoForgeId(String path) {
+        return Identifier.fromNamespaceAndPath(NEOFORGE_ID, path);
     }
 
     /**
