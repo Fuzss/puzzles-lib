@@ -161,19 +161,6 @@ public abstract class AbstractLanguageProvider implements DataProvider, Translat
      * Generates translations for all blocks, items, and entity types of the given block set family using the default
      * variant name providers.
      *
-     * @param translationBuilder the translation builder translations are registered with
-     * @param blockSetFamily     the block set family
-     * @param baseName           the base name the variant names are derived from
-     */
-    @Deprecated
-    public void generateFor(TranslationBuilder translationBuilder, BlockSetFamily blockSetFamily, String baseName) {
-        this.generateFor(blockSetFamily, baseName);
-    }
-
-    /**
-     * Generates translations for all blocks, items, and entity types of the given block set family using the default
-     * variant name providers.
-     *
      * @param blockSetFamily the block set family
      * @param baseName       the base name the variant names are derived from
      */

@@ -273,30 +273,6 @@ public interface BlockSetFamily {
     Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getGeneratedEntityVariants();
 
     /**
-     * @deprecated use {@link #getGeneratedBlockVariants()}
-     */
-    @Deprecated
-    default Map<BlockSetVariant, Holder.Reference<Block>> getBlockVariants() {
-        return this.getGeneratedBlockVariants();
-    }
-
-    /**
-     * @deprecated use {@link #getGeneratedItemVariants()}
-     */
-    @Deprecated
-    default Map<BlockSetVariant, Holder.Reference<Item>> getItemVariants() {
-        return this.getGeneratedItemVariants();
-    }
-
-    /**
-     * @deprecated use {@link #getGeneratedEntityVariants()}
-     */
-    @Deprecated
-    default Map<BlockSetVariant, Holder.Reference<EntityType<?>>> getEntityVariants() {
-        return this.getGeneratedEntityVariants();
-    }
-
-    /**
      * Returns the block for the given variant, whether generated or provided.
      *
      * @param variant the block variant
@@ -348,14 +324,6 @@ public interface BlockSetFamily {
                 consumer.accept(blockEntity.value(), holder.value());
             }
         });
-    }
-
-    /**
-     * @deprecated use {@link #registerFor(GameplayContentContext, Map, Map)}
-     */
-    @Deprecated
-    default void registerFor(GameplayContentContext context, Map<BlockSetVariant, Vector2ic> flammableVariants) {
-        this.registerFor(context, Map.of(), flammableVariants);
     }
 
     /**

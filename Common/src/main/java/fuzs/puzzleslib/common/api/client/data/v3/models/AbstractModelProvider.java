@@ -188,7 +188,7 @@ public abstract class AbstractModelProvider implements DataProvider {
      * @see BlockModelGenerators#family(Block)
      */
     public void generateForBlocks(BlockModelGenerators generators, BlockSetFamily family) {
-        this.generateForBlocks(generators, family, Collections.emptyMap());
+        this.generateForBlocks(generators, family, Map.of());
     }
 
     /**

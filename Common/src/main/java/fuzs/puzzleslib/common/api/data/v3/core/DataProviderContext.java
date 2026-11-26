@@ -3,7 +3,6 @@ package fuzs.puzzleslib.common.api.data.v3.core;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jspecify.annotations.Nullable;
 
@@ -37,15 +36,6 @@ public interface DataProviderContext {
      * @return the full registry lookup provider
      */
     CompletableFuture<HolderLookup.Provider> getRegistries();
-
-    /**
-     * @return the world registries lookup provider; only to be used when the full registry lookup provider is not
-     *         suitable
-     *
-     * @see VanillaRegistries#WORLD_BUILDER
-     */
-    @Deprecated
-    CompletableFuture<HolderLookup.Provider> getWorldRegistries();
 
     /**
      * @return the client resource manager

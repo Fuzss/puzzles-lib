@@ -149,19 +149,6 @@ public abstract class AbstractRecipeProvider extends RecipeProvider implements R
 
     /**
      * Generates recipes for all blocks of the given block set family, using the given variant providers for individual
-     * crafting and stonecutting variants.
-     *
-     * @param blockSetFamily       the block set family
-     * @param craftingVariants     the crafting variant providers
-     * @param stonecuttingVariants the stonecutter variant providers
-     */
-    @Deprecated
-    public void generateFor(BlockSetFamily blockSetFamily, Map<BlockSetVariant, FamilyRecipeProvider> craftingVariants, Map<BlockSetVariant, FamilyRecipeProvider> stonecuttingVariants) {
-        this.generateFor(blockSetFamily, craftingVariants, stonecuttingVariants, Map.of());
-    }
-
-    /**
-     * Generates recipes for all blocks of the given block set family, using the given variant providers for individual
      * crafting, stonecutting, and smelting variants.
      *
      * @param blockSetFamily       the block set family

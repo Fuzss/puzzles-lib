@@ -21,7 +21,6 @@ multiloader {
             "AbstractHorseFabricMixin",
             "AnimalFabricMixin",
             "AnvilMenuFabricMixin",
-            "BlockEntityFabricMixin",
             "BlockFabricMixin",
             "BoneMealItemFabricMixin",
             "BowItemFabricMixin",

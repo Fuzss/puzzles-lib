@@ -41,11 +41,6 @@ public record EventBackedDataProviderContext(GatherDataEvent event,
     }
 
     @Override
-    public CompletableFuture<HolderLookup.Provider> getWorldRegistries() {
-        return this.packGenerator.getWorldLookupProvider();
-    }
-
-    @Override
     public ResourceManager getClientResources() {
         return this.event.getResourceManager(PackType.CLIENT_RESOURCES);
     }

@@ -1,6 +1,5 @@
 package fuzs.puzzleslib.neoforge.impl.data;
 
-import com.google.common.base.Preconditions;
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.common.api.data.v3.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.data.v3.metadata.ModPackMetadataProvider;
@@ -56,11 +55,11 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     /**
      * The registry set builder for the world layer.
      */
-    private RegistrySetBuilder worldRegistrySetBuilder = new RegistrySetBuilder();
+    private final RegistrySetBuilder worldRegistries = new RegistrySetBuilder();
     /**
      * The registry set builder for the reloadable layer.
      */
-    private RegistrySetBuilder reloadableRegistrySetBuilder = new RegistrySetBuilder();
+    private final RegistrySetBuilder reloadableRegistries = new RegistrySetBuilder();
     /**
      * The loot table sub-providers accumulated into a single loot table provider.
      */
@@ -134,41 +133,25 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
 
     @Override
     public <T> DataProviderBuilder addWorldBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
-        this.worldRegistrySetBuilder.add(key, bootstrap);
+        this.worldRegistries.add(key, bootstrap);
         return this;
     }
 
     @Override
     public DataProviderBuilder addWorldBootstrap(MultiRegistryBootstrap bootstrap) {
-        this.worldRegistrySetBuilder.add(bootstrap);
+        this.worldRegistries.add(bootstrap);
         return this;
     }
 
     @Override
     public <T> DataProviderBuilder addReloadableBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
-        this.reloadableRegistrySetBuilder.add(key, bootstrap);
+        this.reloadableRegistries.add(key, bootstrap);
         return this;
     }
 
     @Override
     public DataProviderBuilder addReloadableBootstrap(MultiRegistryBootstrap bootstrap) {
-        this.reloadableRegistrySetBuilder.add(bootstrap);
-        return this;
-    }
-
-    @Override
-    public DataProviderBuilder setRegistrySetBuilder(RegistrySetBuilder registrySetBuilder) {
-        Preconditions.checkState(this.worldRegistrySetBuilder.getEntryKeys().isEmpty(),
-                "world registry set builder already contains registry entries");
-        this.worldRegistrySetBuilder = Objects.requireNonNull(registrySetBuilder, "registry set builder is null");
-        return this;
-    }
-
-    @Override
-    public DataProviderBuilder setReloadableRegistrySetBuilder(RegistrySetBuilder registrySetBuilder) {
-        Preconditions.checkState(this.reloadableRegistrySetBuilder.getEntryKeys().isEmpty(),
-                "reloadable registry set builder already contains registry entries");
-        this.reloadableRegistrySetBuilder = Objects.requireNonNull(registrySetBuilder, "registry set builder is null");
+        this.reloadableRegistries.add(bootstrap);
         return this;
     }
 
@@ -182,21 +165,6 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     public DataProviderBuilder addProvider(DataProviderContext.Factory... dataProviders) {
         for (DataProviderContext.Factory dataProvider : dataProviders) {
             this.addProvider(dataProvider);
-        }
-
-        return this;
-    }
-
-    @Override
-    public DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry provider) {
-        Objects.requireNonNull(provider, "loot table sub-provider entry is null");
-        return this.addLootProvider(provider.bootstrap(), provider.paramSet());
-    }
-
-    @Override
-    public DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry... providers) {
-        for (LootTableProvider.SubProviderEntry entry : providers) {
-            this.addLootProvider(entry);
         }
 
         return this;
@@ -317,16 +285,14 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
             this.addReloadableBootstrap(Registries.LOOT_TABLE, new LootTableProvider(Set.of(), providers));
         }
 
-        if (!this.worldRegistrySetBuilder.getEntryKeys().isEmpty()) {
+        if (!this.worldRegistries.getEntryKeys().isEmpty()) {
             // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
-            generator.createWorldRegistryObjects(this.worldRegistrySetBuilder,
-                    null,
-                    this.getWorldRegistryProviderName());
+            generator.createWorldRegistryObjects(this.worldRegistries, null, this.getWorldRegistryProviderName());
         }
 
-        if (!this.reloadableRegistrySetBuilder.getEntryKeys().isEmpty()) {
+        if (!this.reloadableRegistries.getEntryKeys().isEmpty()) {
             // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
-            generator.createReloadableRegistryObjects(this.reloadableRegistrySetBuilder,
+            generator.createReloadableRegistryObjects(this.reloadableRegistries,
                     null,
                     this.getReloadableRegistryProviderName());
         }

@@ -1,5 +1,6 @@
 package fuzs.puzzleslib.neoforge.api.core.v1;
 
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -33,8 +34,8 @@ public final class NeoForgeModContainerHelper {
      */
     public static Optional<IEventBus> getOptionalActiveModEventBus() {
         return Optional.of(ModLoadingContext.get().getActiveContainer())
-                // filter out minecraft, which is the default mod container returned when none is currently set as active
-                .filter(modContainer -> !modContainer.getNamespace().equals("minecraft"))
+                // Filter out the default namespace; it is the mod container returned when none is currently set as active.
+                .filter(modContainer -> !modContainer.getNamespace().equals(Identifier.DEFAULT_NAMESPACE))
                 .map(ModContainer::getEventBus);
     }
 

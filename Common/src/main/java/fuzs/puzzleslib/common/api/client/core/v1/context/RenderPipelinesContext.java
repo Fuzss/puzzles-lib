@@ -9,15 +9,6 @@ import net.minecraft.client.renderer.oit.OitPipelineSet;
 public interface RenderPipelinesContext {
     /**
      * @param pipeline the render pipeline
-     * @deprecated use {@link #registerPipeline(RenderPipeline)}
-     */
-    @Deprecated
-    default void registerRenderPipeline(RenderPipeline pipeline) {
-        this.registerPipeline(pipeline);
-    }
-
-    /**
-     * @param pipeline the render pipeline
      */
     void registerPipeline(RenderPipeline pipeline);
 

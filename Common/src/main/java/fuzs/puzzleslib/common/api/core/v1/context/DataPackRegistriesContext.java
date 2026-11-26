@@ -9,18 +9,6 @@ import net.minecraft.resources.ResourceKey;
  */
 public interface DataPackRegistriesContext {
     /**
-     * Registers an unsynchronized dynamic registry.
-     *
-     * @param registryKey the registry resource key
-     * @param codec       the codec for serializing registry values
-     * @param <T>         the registry value type
-     */
-    @Deprecated
-    default <T> void registerRegistry(ResourceKey<Registry<T>> registryKey, Codec<T> codec) {
-        this.registerWorldRegistry(registryKey, codec);
-    }
-
-    /**
      * Registers an unsynchronized world registry.
      *
      * @param registryKey the registry resource key

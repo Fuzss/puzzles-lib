@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -13,10 +12,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.NonInteractiveResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * Small helper class related to working with implementations of {@link AbstractContainerMenu}.
@@ -86,64 +83,6 @@ public final class ContainerMenuHelper {
         }
 
         return inventory.getSelectedSlot();
-    }
-
-    /**
-     * Replace the container slot representing the currently selected hotbar slot with a non-interactive variant.
-     * <p>
-     * Useful for handheld container items such as bags while their menu is open.
-     *
-     * @param containerMenu the container menu
-     */
-    @Deprecated
-    public static void setSelectedSlotLocked(AbstractContainerMenu containerMenu) {
-        setSlotLocked(containerMenu, EquipmentSlot.MAINHAND);
-    }
-
-    /**
-     * Allows for creating a container backed by a list of items.
-     * <p>
-     * Useful for items that are stored on e.g. a block entity, but not accessible via a container, but should be
-     * accessible via a menu implementation.
-     * <p>
-     * An example would be a slot for setting a filter item that is kept separate from the main container inventory.
-     *
-     * @param items     list of items
-     * @param container listener for changes to the item list
-     * @return the created container
-     */
-    @Deprecated
-    public static SimpleContainer createListBackedContainer(NonNullList<ItemStack> items, @Nullable Container container) {
-        return createListBackedContainer(items, container != null ? (Container containerX) -> {
-            container.setChanged();
-        } : null);
-    }
-
-    /**
-     * Allows for creating a container backed by a list of items.
-     * <p>
-     * Useful for items that are stored on e.g. a block entity, but not accessible via a container, but should be
-     * accessible via a menu implementation.
-     * <p>
-     * An example would be a slot for setting a filter item that is kept separate from the main container inventory.
-     *
-     * @param items    list of items
-     * @param listener listener for changes to the item list
-     * @return the created container
-     */
-    @Deprecated
-    public static SimpleContainer createListBackedContainer(NonNullList<ItemStack> items, @Nullable Consumer<Container> listener) {
-        SimpleContainer simpleContainer = new SimpleContainer() {
-            @Override
-            public void setChanged() {
-                if (listener != null) {
-                    listener.accept(this);
-                }
-            }
-        };
-        simpleContainer.size = items.size();
-        simpleContainer.items = items;
-        return simpleContainer;
     }
 
     /**

@@ -10,7 +10,6 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.MultiRegistryBootstrap;
 import net.minecraft.core.registries.SingleRegistryBootstrap;
 import net.minecraft.data.advancements.AdvancementSubProvider;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
@@ -102,32 +101,6 @@ public interface DataProviderBuilder {
      * @param <T>       the registry element type
      * @return this builder instance
      */
-    @Deprecated
-    default <T> DataProviderBuilder add(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
-        return this.addWorldBootstrap(key, bootstrap);
-    }
-
-    /**
-     * Adds a multi-registry bootstrap to the world layer, mirroring
-     * {@link RegistrySetBuilder#add(MultiRegistryBootstrap)}.
-     *
-     * @param bootstrap the bootstrap
-     * @return this builder instance
-     */
-    @Deprecated
-    default DataProviderBuilder add(MultiRegistryBootstrap bootstrap) {
-        return this.addWorldBootstrap(bootstrap);
-    }
-
-    /**
-     * Adds a registry and its bootstrap to the world layer, mirroring
-     * {@link RegistrySetBuilder#add(ResourceKey, SingleRegistryBootstrap)}.
-     *
-     * @param key       the registry key
-     * @param bootstrap the bootstrap
-     * @param <T>       the registry element type
-     * @return this builder instance
-     */
     <T> DataProviderBuilder addWorldBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap);
 
     /**
@@ -138,32 +111,6 @@ public interface DataProviderBuilder {
      * @return this builder instance
      */
     DataProviderBuilder addWorldBootstrap(MultiRegistryBootstrap bootstrap);
-
-    /**
-     * Adds a registry and its bootstrap to the reloadable layer, mirroring
-     * {@link RegistrySetBuilder#add(ResourceKey, SingleRegistryBootstrap)}.
-     *
-     * @param key       the registry key
-     * @param bootstrap the bootstrap
-     * @param <T>       the registry element type
-     * @return this builder instance
-     */
-    @Deprecated
-    default <T> DataProviderBuilder addReloadable(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
-        return this.addReloadableBootstrap(key, bootstrap);
-    }
-
-    /**
-     * Adds a multi-registry bootstrap to the reloadable layer, mirroring
-     * {@link RegistrySetBuilder#add(MultiRegistryBootstrap)}.
-     *
-     * @param bootstrap the bootstrap
-     * @return this builder instance
-     */
-    @Deprecated
-    default DataProviderBuilder addReloadable(MultiRegistryBootstrap bootstrap) {
-        return this.addReloadableBootstrap(bootstrap);
-    }
 
     /**
      * Adds a registry and its bootstrap to the reloadable layer, mirroring
@@ -186,28 +133,6 @@ public interface DataProviderBuilder {
     DataProviderBuilder addReloadableBootstrap(MultiRegistryBootstrap bootstrap);
 
     /**
-     * Sets an existing {@link RegistrySetBuilder} for the world (default) layer, replacing the internal one.
-     * <p>
-     * The builder may only be replaced while it does not contain any entries yet.
-     *
-     * @param registrySetBuilder the registry set builder to use
-     * @return this builder instance
-     */
-    @Deprecated
-    DataProviderBuilder setRegistrySetBuilder(RegistrySetBuilder registrySetBuilder);
-
-    /**
-     * Sets an existing {@link RegistrySetBuilder} for the reloadable layer, replacing the internal one.
-     * <p>
-     * The builder may only be replaced while it does not contain any entries yet.
-     *
-     * @param registrySetBuilder the registry set builder to use
-     * @return this builder instance
-     */
-    @Deprecated
-    DataProviderBuilder setReloadableRegistrySetBuilder(RegistrySetBuilder registrySetBuilder);
-
-    /**
      * Adds a single data provider factory.
      *
      * @param dataProvider the data provider factory
@@ -222,24 +147,6 @@ public interface DataProviderBuilder {
      * @return this builder instance
      */
     DataProviderBuilder addProvider(DataProviderContext.Factory... dataProviders);
-
-    /**
-     * Adds a single loot table sub-provider entry to the accumulated loot table provider.
-     *
-     * @param provider the loot table sub-provider entry
-     * @return this builder instance
-     */
-    @Deprecated
-    DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry provider);
-
-    /**
-     * Adds loot table sub-provider entries to the accumulated loot table provider.
-     *
-     * @param providers the loot table sub-provider entries
-     * @return this builder instance
-     */
-    @Deprecated
-    DataProviderBuilder addLootProvider(LootTableProvider.SubProviderEntry... providers);
 
     /**
      * Adds a loot table sub-provider to the accumulated loot table provider, using the given context key set.
