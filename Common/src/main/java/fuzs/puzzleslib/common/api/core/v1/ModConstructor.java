@@ -113,13 +113,6 @@ public interface ModConstructor {
     }
 
     /**
-     * @param context register server resource reload listeners
-     */
-    default void onAddDataPackReloadListeners(DataPackReloadListenersContext context) {
-        // NO-OP
-    }
-
-    /**
      * @param context register patches for item data components
      */
     default void onRegisterItemComponentPatches(ItemComponentsContext context) {

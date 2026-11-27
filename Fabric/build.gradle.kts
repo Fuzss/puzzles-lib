@@ -46,7 +46,6 @@ multiloader {
             "PlayerChunkSenderFabricMixin",
             "PlayerFabricMixin",
             "ProjectileFabricMixin",
-            "ReloadableServerResourcesFabricMixin",
             "RunAroundLikeCrazyGoalFabricMixin",
             "ServerExplosionFabricMixin",
             "ServerLevelFabricMixin",

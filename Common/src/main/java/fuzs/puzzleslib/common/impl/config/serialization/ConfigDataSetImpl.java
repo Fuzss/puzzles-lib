@@ -12,7 +12,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.tags.TagKey;
 import org.jspecify.annotations.Nullable;
 
@@ -91,7 +90,7 @@ public final class ConfigDataSetImpl<T> implements ConfigDataSet<T> {
 
     public static void registerEventHandlers() {
         // Registered only once, since invokers are never unregistered; data sets invalidate themselves via TAG_VERSION.
-        ServerResourcesLoadCallback.EVENT.register((ReloadableServerResources serverResources, RegistryAccess registries) -> {
+        ServerResourcesLoadCallback.EVENT.register((RegistryAccess registries) -> {
             TAG_VERSION.incrementAndGet();
         });
         if (ModLoaderEnvironment.INSTANCE.isClient()) {

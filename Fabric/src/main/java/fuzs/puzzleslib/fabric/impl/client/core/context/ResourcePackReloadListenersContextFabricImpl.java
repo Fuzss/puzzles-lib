@@ -36,27 +36,27 @@ public final class ResourcePackReloadListenersContextFabricImpl implements Resou
             .build();
 
     @Override
-    public void registerReloadListener(Identifier identifier, PreparableReloadListener reloadListener) {
-        Objects.requireNonNull(identifier, "id is null");
+    public void registerReloadListener(Identifier id, PreparableReloadListener reloadListener) {
+        Objects.requireNonNull(id, "id is null");
         Objects.requireNonNull(reloadListener, "reload listener is null");
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(identifier, reloadListener);
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(id, reloadListener);
     }
 
     @Override
-    public void registerReloadListener(Identifier identifier, Identifier otherResourceLocation, PreparableReloadListener reloadListener) {
-        Objects.requireNonNull(identifier, "identifier is null");
-        Objects.requireNonNull(otherResourceLocation, "other identifier is null");
+    public void registerReloadListener(Identifier id, Identifier otherId, PreparableReloadListener reloadListener) {
+        Objects.requireNonNull(id, "identifier is null");
+        Objects.requireNonNull(otherId, "other identifier is null");
         Objects.requireNonNull(reloadListener, "reload listener is null");
-        if (VANILLA_CLIENT_RELOAD_LISTENERS.containsKey(identifier)) {
-            ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(otherResourceLocation, reloadListener);
+        if (VANILLA_CLIENT_RELOAD_LISTENERS.containsKey(id)) {
+            ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(otherId, reloadListener);
             ResourceLoader.get(PackType.CLIENT_RESOURCES)
-                    .addListenerOrdering(VANILLA_CLIENT_RELOAD_LISTENERS.get(identifier), otherResourceLocation);
-        } else if (VANILLA_CLIENT_RELOAD_LISTENERS.containsKey(otherResourceLocation)) {
-            ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(identifier, reloadListener);
+                    .addListenerOrdering(VANILLA_CLIENT_RELOAD_LISTENERS.get(id), otherId);
+        } else if (VANILLA_CLIENT_RELOAD_LISTENERS.containsKey(otherId)) {
+            ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(id, reloadListener);
             ResourceLoader.get(PackType.CLIENT_RESOURCES)
-                    .addListenerOrdering(identifier, VANILLA_CLIENT_RELOAD_LISTENERS.get(otherResourceLocation));
+                    .addListenerOrdering(id, VANILLA_CLIENT_RELOAD_LISTENERS.get(otherId));
         } else {
-            throw new RuntimeException("Unknown reload listeners: " + identifier + ", " + otherResourceLocation);
+            throw new RuntimeException("Unknown reload listeners: " + id + ", " + otherId);
         }
     }
 }

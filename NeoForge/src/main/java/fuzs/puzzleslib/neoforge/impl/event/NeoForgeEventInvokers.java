@@ -497,7 +497,7 @@ public final class NeoForgeEventInvokers {
         INSTANCE.register(ServerResourcesLoadCallback.class,
                 TagsUpdatedEvent.ServerDataLoad.class,
                 (ServerResourcesLoadCallback callback, TagsUpdatedEvent.ServerDataLoad event) -> {
-                    callback.onServerResourcesLoad(event.getServerResources(), event.getRegistries());
+                    callback.onServerResourcesLoad(event.getRegistries());
                 });
         INSTANCE.register(ExplosionEvents.Start.class,
                 ExplosionEvent.Start.class,

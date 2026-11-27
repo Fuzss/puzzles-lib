@@ -2,11 +2,7 @@ package fuzs.puzzleslib.common.api.event.v1.server;
 
 import fuzs.puzzleslib.common.api.event.v1.core.EventInvoker;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.ReloadableServerResources;
 
-/**
- * TODO remove ReloadableServerResources, it is unused and complicates the Fabric API implementation
- */
 @FunctionalInterface
 public interface ServerResourcesLoadCallback {
     EventInvoker<ServerResourcesLoadCallback> EVENT = EventInvoker.lookup(ServerResourcesLoadCallback.class);
@@ -14,8 +10,7 @@ public interface ServerResourcesLoadCallback {
     /**
      * Fires on the server when tags have been updated; useful for reloading data that depends on them.
      *
-     * @param serverResources the reloadable server resources
-     * @param registries      the dynamic registries
+     * @param registries the dynamic registries
      */
-    void onServerResourcesLoad(ReloadableServerResources serverResources, RegistryAccess registries);
+    void onServerResourcesLoad(RegistryAccess registries);
 }

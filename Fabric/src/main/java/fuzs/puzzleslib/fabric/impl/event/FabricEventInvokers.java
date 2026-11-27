@@ -11,7 +11,6 @@ import fuzs.puzzleslib.common.api.event.v1.level.*;
 import fuzs.puzzleslib.common.api.event.v1.level.BlockEvents;
 import fuzs.puzzleslib.common.api.event.v1.server.*;
 import fuzs.puzzleslib.common.api.init.v3.registry.LookupHelper;
-import fuzs.puzzleslib.common.impl.PuzzlesLib;
 import fuzs.puzzleslib.fabric.api.event.v1.*;
 import fuzs.puzzleslib.fabric.impl.core.FabricProxy;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -37,7 +36,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
@@ -72,8 +70,6 @@ import java.util.function.UnaryOperator;
 import static fuzs.puzzleslib.fabric.api.event.v1.core.FabricEventInvokerRegistry.INSTANCE;
 
 public final class FabricEventInvokers {
-    public static final ThreadLocal<ReloadableServerResources> SERVER_RESOURCES = new ThreadLocal<>();
-
     private FabricEventInvokers() {
         // NO-OP
     }
@@ -128,13 +124,7 @@ public final class FabricEventInvokers {
                 (ServerResourcesLoadCallback callback) -> {
                     return (RegistryAccess registries, boolean client) -> {
                         if (!client) {
-                            ReloadableServerResources serverResources = SERVER_RESOURCES.get();
-                            if (serverResources != null) {
-                                callback.onServerResourcesLoad(serverResources, registries);
-                            } else {
-                                PuzzlesLib.LOGGER.warn("Missing server resources for {}",
-                                        ServerResourcesLoadCallback.class.getSimpleName());
-                            }
+                            callback.onServerResourcesLoad(registries);
                         }
                     };
                 });

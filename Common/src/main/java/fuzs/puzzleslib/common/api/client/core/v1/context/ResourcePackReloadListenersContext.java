@@ -107,65 +107,65 @@ public interface ResourcePackReloadListenersContext {
     /**
      * Register a {@link PreparableReloadListener}.
      *
-     * @param identifier     the reload listener identifier
+     * @param id             the reload listener identifier
      * @param reloadListener the reload listener to add
      */
-    void registerReloadListener(Identifier identifier, PreparableReloadListener reloadListener);
+    void registerReloadListener(Identifier id, PreparableReloadListener reloadListener);
 
     /**
      * Register a {@link PreparableReloadListener}.
      *
-     * @param identifier      the reload listener identifier
-     * @param otherIdentifier the other reload listener identifier, either for the new listener or for the existing
-     *                        vanilla listener
-     * @param reloadListener  the reload listener to add
+     * @param id             the reload listener identifier
+     * @param otherId        the other reload listener identifier, either for the new listener or for the existing
+     *                       vanilla listener
+     * @param reloadListener the reload listener to add
      */
-    void registerReloadListener(Identifier identifier, Identifier otherIdentifier, PreparableReloadListener reloadListener);
+    void registerReloadListener(Identifier id, Identifier otherId, PreparableReloadListener reloadListener);
 
     /**
      * Register a {@link ResourceManagerReloadListener}.
      *
-     * @param identifier     the reload listener identifier
+     * @param id             the reload listener identifier
      * @param reloadListener the reload listener to add
      */
-    default void registerReloadListener(Identifier identifier, ResourceManagerReloadListener reloadListener) {
-        this.registerReloadListener(identifier, (PreparableReloadListener) reloadListener);
+    default void registerReloadListener(Identifier id, ResourceManagerReloadListener reloadListener) {
+        this.registerReloadListener(id, (PreparableReloadListener) reloadListener);
     }
 
     /**
      * Register a {@link ResourceManagerReloadListener}.
      *
-     * @param identifier      the reload listener identifier, either for the new listener or for the existing vanilla
-     *                        listener
-     * @param otherIdentifier the other reload listener identifier, either for the new listener or for the existing
-     *                        vanilla listener
-     * @param reloadListener  the reload listener to add
+     * @param id             the reload listener identifier, either for the new listener or for the existing vanilla
+     *                       listener
+     * @param otherId        the other reload listener identifier, either for the new listener or for the existing
+     *                       vanilla listener
+     * @param reloadListener the reload listener to add
      */
-    default void registerReloadListener(Identifier identifier, Identifier otherIdentifier, ResourceManagerReloadListener reloadListener) {
-        this.registerReloadListener(identifier, otherIdentifier, (PreparableReloadListener) reloadListener);
+    default void registerReloadListener(Identifier id, Identifier otherId, ResourceManagerReloadListener reloadListener) {
+        this.registerReloadListener(id, otherId, (PreparableReloadListener) reloadListener);
     }
 
     /**
      * Register a {@link SimplePreparableReloadListener}.
      *
-     * @param identifier     the reload listener identifier, either for the new listener or for the existing vanilla
+     * @param id             the reload listener identifier, either for the new listener or for the existing vanilla
      *                       listener
      * @param reloadListener the reload listener to add
      */
-    default <T> void registerReloadListener(Identifier identifier, SimplePreparableReloadListener<T> reloadListener) {
-        this.registerReloadListener(identifier, (PreparableReloadListener) reloadListener);
+    default <T> void registerReloadListener(Identifier id, SimplePreparableReloadListener<T> reloadListener) {
+        this.registerReloadListener(id, (PreparableReloadListener) reloadListener);
     }
 
     /**
      * Register a {@link SimplePreparableReloadListener}.
      *
-     * @param identifier      the reload listener identifier, either for the new listener or for the existing vanilla
-     *                        listener
-     * @param otherIdentifier the other reload listener identifier, either for the new listener or for the existing
-     *                        vanilla listener
-     * @param reloadListener  the reload listener to add
+     * @param id             the reload listener identifier, either for the new listener or for the existing vanilla
+     *                       listener
+     * @param otherId        the other reload listener identifier, either for the new listener or for the existing
+     *                       vanilla listener
+     * @param reloadListener the reload listener to add
      */
-    default <T> void registerReloadListener(Identifier identifier, Identifier otherIdentifier, SimplePreparableReloadListener<T> reloadListener) {
-        this.registerReloadListener(identifier, otherIdentifier, (PreparableReloadListener) reloadListener);
+    default <T> void registerReloadListener(Identifier id, Identifier otherId, SimplePreparableReloadListener<T> reloadListener) {
+        this.registerReloadListener(id, otherId, (PreparableReloadListener) reloadListener);
     }
 }
