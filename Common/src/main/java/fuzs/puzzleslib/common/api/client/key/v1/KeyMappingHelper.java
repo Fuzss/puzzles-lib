@@ -67,10 +67,7 @@ public interface KeyMappingHelper {
     }
 
     /**
-     * Checks if a key mapping is pressed.
-     * <p>
-     * NeoForge replaces the vanilla call to {@link KeyMapping#matches(KeyEvent)} in a few places to account for key
-     * activation contexts (game &amp; screen environments).
+     * Checks if a key mapping is pressed and active in the current activation context.
      *
      * @param keyMapping the key mapping
      * @param keyEvent   the key event

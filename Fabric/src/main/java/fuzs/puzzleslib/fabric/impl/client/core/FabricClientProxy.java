@@ -147,7 +147,7 @@ public class FabricClientProxy extends FabricCommonProxy implements ClientProxyI
 
     @Override
     public boolean isKeyActiveAndMatches(KeyMapping keyMapping, KeyEvent keyEvent) {
-        return keyMapping.matches(keyEvent);
+        return net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.isActiveAndMatches(keyMapping, keyEvent);
     }
 
     @Override

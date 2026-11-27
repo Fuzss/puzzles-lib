@@ -69,7 +69,6 @@ multiloader {
             "GuiFabricMixin",
             "GuiGraphicsExtractorFabricMixin",
             "KeyboardHandlerFabricMixin",
-            "KeyMappingFabricMixin",
             "LivingEntityRendererFabricMixin",
             "LocalPlayerFabricMixin",
             "MinecraftFabricMixin",
