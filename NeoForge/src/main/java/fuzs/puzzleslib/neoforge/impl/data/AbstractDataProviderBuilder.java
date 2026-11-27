@@ -29,7 +29,9 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.data.event.DatapackRegistryGatherer;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.data.event.PackGenerator;
 
 import java.nio.file.Path;
@@ -53,13 +55,13 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
      */
     private final List<DataProviderContext.Factory> dataProviders = new ArrayList<>();
     /**
-     * The registry set builder for the world layer.
+     * The registry bootstrap entries for the world layer.
      */
-    private final RegistrySetBuilder worldRegistries = new RegistrySetBuilder();
+    private final List<RegistryEntry> worldRegistryEntries = new ArrayList<>();
     /**
-     * The registry set builder for the reloadable layer.
+     * The registry bootstrap entries for the reloadable layer.
      */
-    private final RegistrySetBuilder reloadableRegistries = new RegistrySetBuilder();
+    private final List<RegistryEntry> reloadableRegistryEntries = new ArrayList<>();
     /**
      * The loot table sub-providers accumulated into a single loot table provider.
      */
@@ -133,25 +135,25 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
 
     @Override
     public <T> DataProviderBuilder addWorldBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
-        this.worldRegistries.add(key, bootstrap);
+        this.worldRegistryEntries.add(new SingleRegistryEntry<>(key, bootstrap));
         return this;
     }
 
     @Override
     public DataProviderBuilder addWorldBootstrap(MultiRegistryBootstrap bootstrap) {
-        this.worldRegistries.add(bootstrap);
+        this.worldRegistryEntries.add(new MultiRegistryEntry(bootstrap));
         return this;
     }
 
     @Override
     public <T> DataProviderBuilder addReloadableBootstrap(ResourceKey<? extends Registry<T>> key, SingleRegistryBootstrap<T> bootstrap) {
-        this.reloadableRegistries.add(key, bootstrap);
+        this.reloadableRegistryEntries.add(new SingleRegistryEntry<>(key, bootstrap));
         return this;
     }
 
     @Override
     public DataProviderBuilder addReloadableBootstrap(MultiRegistryBootstrap bootstrap) {
-        this.reloadableRegistries.add(bootstrap);
+        this.reloadableRegistryEntries.add(new MultiRegistryEntry(bootstrap));
         return this;
     }
 
@@ -238,6 +240,14 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     protected abstract PackGenerator createRegistryPackGenerator(GatherDataEvent event);
 
     /**
+     * Whether registry entries are added to the global registry set via {@link GatherDataRegistryEntriesEvent} instead
+     * of being generated into this builder's own pack.
+     *
+     * @return whether registry entries are gathered globally
+     */
+    protected abstract boolean generatesGlobalRegistryEntries();
+
+    /**
      * The provider name used for generating world registry objects. This must be unique per event, since
      * {@link PackGenerator} registers providers by their bare name.
      *
@@ -258,7 +268,7 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
     }
 
     /**
-     * Registers the {@link GatherDataEvent} listener reading this builder's current state when the event fires.
+     * Registers the data generation event listeners reading this builder's current state when the events fire.
      */
     private void registerEventListener() {
         if (!ModLoaderEnvironment.INSTANCE.isDataGeneration()) {
@@ -266,35 +276,33 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         }
 
         NeoForgeModContainerHelper.getOptionalModEventBus(this.modId).ifPresent((IEventBus eventBus) -> {
+            if (this.generatesGlobalRegistryEntries()) {
+                eventBus.addListener(this::addGlobalRegistryEntries);
+            }
+
             eventBus.addListener((final GatherDataEvent.Client event) -> {
                 this.addDataProviders(event);
             });
         });
     }
 
+    private void addGlobalRegistryEntries(GatherDataRegistryEntriesEvent event) {
+        this.addLootTableProvider();
+        for (RegistryEntry entry : this.worldRegistryEntries) {
+            entry.add(event);
+        }
+
+        for (RegistryEntry entry : this.reloadableRegistryEntries) {
+            entry.add(event);
+        }
+    }
+
     private void addDataProviders(GatherDataEvent event) {
         RootDataProviderFactory factory = this.createRootDataProviderFactory(event);
         PackGenerator generator = this.createRegistryPackGenerator(event);
 
-        // Accumulated loot table sub-providers are materialized into a single loot table provider right before the
-        // reloadable layer is built, so they share one random sequence collision map.
-        if (!this.lootTableSubProviders.isEmpty()) {
-            List<LootTableProvider.SubProviderEntry> providers = this.lootTableSubProviders.stream()
-                    .map(SubProviderEntry::repack)
-                    .toList();
-            this.addReloadableBootstrap(Registries.LOOT_TABLE, new LootTableProvider(Set.of(), providers));
-        }
-
-        if (!this.worldRegistries.getEntryKeys().isEmpty()) {
-            // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
-            generator.createWorldRegistryObjects(this.worldRegistries, null, this.getWorldRegistryProviderName());
-        }
-
-        if (!this.reloadableRegistries.getEntryKeys().isEmpty()) {
-            // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
-            generator.createReloadableRegistryObjects(this.reloadableRegistries,
-                    null,
-                    this.getReloadableRegistryProviderName());
+        if (!this.generatesGlobalRegistryEntries()) {
+            this.addLocalRegistryEntries(generator);
         }
 
         for (DataProviderContext.Factory dataProvider : this.dataProviders) {
@@ -304,7 +312,78 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         }
     }
 
-    protected record SubProviderEntry(LootTableSubProvider.Factory bootstrap, Holder<ContextKeySet> paramSet) {
+    private void addLocalRegistryEntries(PackGenerator generator) {
+        this.addLootTableProvider();
+        if (!this.worldRegistryEntries.isEmpty()) {
+            // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
+            generator.createWorldRegistryObjects(createRegistrySetBuilder(this.worldRegistryEntries),
+                    null,
+                    this.getWorldRegistryProviderName());
+        }
+
+        if (!this.reloadableRegistryEntries.isEmpty()) {
+            // Make sure this generates for all namespaces (namely vanilla) by passing a null set.
+            generator.createReloadableRegistryObjects(createRegistrySetBuilder(this.reloadableRegistryEntries),
+                    null,
+                    this.getReloadableRegistryProviderName());
+        }
+    }
+
+    private void addLootTableProvider() {
+        if (this.lootTableSubProviders.isEmpty()) {
+            return;
+        }
+
+        // Accumulated loot table sub-providers are materialized into a single loot table provider right before the
+        // reloadable layer is built, so they share one random sequence collision map.
+        List<LootTableProvider.SubProviderEntry> providers = this.lootTableSubProviders.stream()
+                .map(SubProviderEntry::repack)
+                .toList();
+        this.addReloadableBootstrap(Registries.LOOT_TABLE, new LootTableProvider(Set.of(), providers));
+    }
+
+    private static RegistrySetBuilder createRegistrySetBuilder(List<RegistryEntry> entries) {
+        RegistrySetBuilder registrySetBuilder = new RegistrySetBuilder();
+
+        for (RegistryEntry entry : entries) {
+            entry.add(registrySetBuilder);
+        }
+
+        return registrySetBuilder;
+    }
+
+    private sealed interface RegistryEntry {
+        void add(RegistrySetBuilder registrySetBuilder);
+
+        void add(DatapackRegistryGatherer gatherer);
+    }
+
+    private record SingleRegistryEntry<T>(ResourceKey<? extends Registry<T>> key,
+                                          SingleRegistryBootstrap<T> bootstrap) implements RegistryEntry {
+        @Override
+        public void add(RegistrySetBuilder registrySetBuilder) {
+            registrySetBuilder.add(this.key, this.bootstrap);
+        }
+
+        @Override
+        public void add(DatapackRegistryGatherer gatherer) {
+            gatherer.add(this.key, this.bootstrap);
+        }
+    }
+
+    private record MultiRegistryEntry(MultiRegistryBootstrap bootstrap) implements RegistryEntry {
+        @Override
+        public void add(RegistrySetBuilder registrySetBuilder) {
+            registrySetBuilder.add(this.bootstrap);
+        }
+
+        @Override
+        public void add(DatapackRegistryGatherer gatherer) {
+            gatherer.add(this.bootstrap);
+        }
+    }
+
+    private record SubProviderEntry(LootTableSubProvider.Factory bootstrap, Holder<ContextKeySet> paramSet) {
         public LootTableProvider.SubProviderEntry repack() {
             return new LootTableProvider.SubProviderEntry(this.bootstrap(), this.paramSet().value());
         }
@@ -335,6 +414,11 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         protected PackGenerator createRegistryPackGenerator(GatherDataEvent event) {
             return event.getDefaultPackGenerator();
         }
+
+        @Override
+        protected boolean generatesGlobalRegistryEntries() {
+            return true;
+        }
     }
 
     private static final class BuiltInDataProviderBuilder extends AbstractDataProviderBuilder {
@@ -358,6 +442,11 @@ public abstract class AbstractDataProviderBuilder implements DataProviderBuilder
         protected PackGenerator createRegistryPackGenerator(GatherDataEvent event) {
             PackOutput packOutput = event.getGenerator().getPackOutput(this.getOutputFolder().toString());
             return event.getPackGenerator(packOutput);
+        }
+
+        @Override
+        protected boolean generatesGlobalRegistryEntries() {
+            return false;
         }
 
         private Path getOutputFolder() {

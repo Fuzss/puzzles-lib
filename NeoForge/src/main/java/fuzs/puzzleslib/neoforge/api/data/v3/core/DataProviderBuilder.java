@@ -18,6 +18,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 
 import java.util.function.BiFunction;
 
@@ -26,13 +27,14 @@ import java.util.function.BiFunction;
  * {@link GatherDataEvent}.
  * <p>
  * The builder replaces having to construct a {@link RegistrySetBuilder} manually: it mimics
- * {@link RegistrySetBuilder}'s {@code add} methods while remaining chainable, so registries and data providers can be
- * configured in a single fluent call. Registries are split into a world and a reloadable layer, each with their own
- * {@code add} method pair and their own setter accepting an existing {@link RegistrySetBuilder}. Methods without a
- * layer qualifier target the world (default) layer, methods qualified with {@code Reloadable} target the reloadable
- * layer.
+ * {@link RegistrySetBuilder RegistrySetBuilder's} {@code add} methods while remaining chainable. Registries are split
+ * into a world and a reloadable layer. Methods without a layer qualifier target the world layer.
  * <p>
- * The event listener is registered immediately when the builder is created; therefore, no terminal build or register
+ * Registry entries for the mod itself are gathered globally via {@link GatherDataRegistryEntriesEvent}, so they are
+ * available to all data providers and built-in packs. Registry entries for built-in packs are generated into the pack
+ * itself and are therefore not part of the global registry set.
+ * <p>
+ * The event listeners are registered immediately when the builder is created; therefore, no terminal build or register
  * call is required; all configuration methods return this builder for chaining.
  */
 public interface DataProviderBuilder {
