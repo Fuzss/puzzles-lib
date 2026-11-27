@@ -132,7 +132,7 @@ public final class NeoForgeClientEventInvokers {
                     // Forge does not grant access to unbaked models, so lookup every unbaked model and replace the baked model if necessary
                     // this also means the event is limited to top level models which should be fine though, the same restriction is applied on Fabric
                     // do not iterate over the models map provided by the event, when Modern Fix is installed it will be almost empty as models are loaded dynamically
-                    for (ModelResourceLocation modelLocation : getTopLevelModelLocations()) {
+                    forEachTopLevelModelLocation((ModelResourceLocation modelLocation) -> {
                         try {
                             EventResultHolder<UnbakedModel> result = callback.onModifyUnbakedModel(modelLocation,
                                     () -> {
@@ -157,7 +157,7 @@ public final class NeoForgeClientEventInvokers {
                         } catch (Exception exception) {
                             PuzzlesLib.LOGGER.error("Failed to modify unbaked model", exception);
                         }
-                    }
+                    });
                     PuzzlesLib.LOGGER.info("Modifying unbaked models took {}ms", stopwatch.stop().elapsed().toMillis());
                 });
         INSTANCE.register(ModelEvents.ModifyBakedModel.class,
@@ -180,7 +180,7 @@ public final class NeoForgeClientEventInvokers {
                     // Forge has no event firing for every baked model like Fabric,
                     // instead go through the baked models map and fire the event for every model manually
                     // do not iterate over the models map provided by the event, when Modern Fix is installed it will be almost empty as models are loaded dynamically
-                    for (ModelResourceLocation modelLocation : getTopLevelModelLocations()) {
+                    forEachTopLevelModelLocation((ModelResourceLocation modelLocation) -> {
                         try {
                             EventResultHolder<BakedModel> result = callback.onModifyBakedModel(modelLocation, () -> {
                                 return modelGetter.apply(modelLocation);
@@ -193,7 +193,7 @@ public final class NeoForgeClientEventInvokers {
                         } catch (Exception exception) {
                             PuzzlesLib.LOGGER.error("Failed to modify baked model", exception);
                         }
-                    }
+                    });
                     PuzzlesLib.LOGGER.info("Modifying baked models took {}ms", stopwatch.stop().elapsed().toMillis());
                 });
         INSTANCE.register(ModelEvents.AddAdditionalBakedModel.class,
@@ -970,20 +970,19 @@ public final class NeoForgeClientEventInvokers {
         });
     }
 
-    private static Set<ModelResourceLocation> getTopLevelModelLocations() {
-        Set<ModelResourceLocation> modelLocations = new HashSet<>();
-        modelLocations.add(ModelBakery.MISSING_MODEL_VARIANT);
+    private static void forEachTopLevelModelLocation(Consumer<ModelResourceLocation> consumer) {
+        consumer.accept(ModelBakery.MISSING_MODEL_VARIANT);
         for (Block block : BuiltInRegistries.BLOCK) {
+            ResourceLocation resourceLocation = BuiltInRegistries.BLOCK.getKey(block);
             block.getStateDefinition().getPossibleStates().forEach(blockState -> {
-                modelLocations.add(BlockModelShaper.stateToModelLocation(blockState));
+                consumer.accept(BlockModelShaper.stateToModelLocation(resourceLocation, blockState));
             });
         }
-        for (ResourceLocation resourcelocation : BuiltInRegistries.ITEM.keySet()) {
-            modelLocations.add(ModelResourceLocation.inventory(resourcelocation));
+        for (ResourceLocation resourceLocation : BuiltInRegistries.ITEM.keySet()) {
+            consumer.accept(ModelResourceLocation.inventory(resourceLocation));
         }
-        modelLocations.add(ItemRenderer.TRIDENT_IN_HAND_MODEL);
-        modelLocations.add(ItemRenderer.SPYGLASS_IN_HAND_MODEL);
+        consumer.accept(ItemRenderer.TRIDENT_IN_HAND_MODEL);
+        consumer.accept(ItemRenderer.SPYGLASS_IN_HAND_MODEL);
         // skip the Forge additional models call, we probably don't need those and better to avoid accessing internals
-        return modelLocations;
     }
 }
