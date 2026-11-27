@@ -24,6 +24,9 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.level.block.SkullBlock;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.StringJoiner;
 
 /**
  * Contains methods for registering various gameplay content.
@@ -246,5 +249,21 @@ public final class ContentRegistrationHelper {
      */
     public static String getTranslationKey(ResourceKey<?> key) {
         return Util.makeDescriptionId(Registries.elementsDirPath(key.registryKey()), key.identifier());
+    }
+
+    /**
+     * Splits a string into individual words and capitalizes all of them.
+     *
+     * @param string the string
+     * @return the capitalized words
+     */
+    public static String getCapitalizedString(String string) {
+        String[] strings = string.toLowerCase().split("[\\s_]+");
+        StringJoiner joiner = new StringJoiner(" ");
+        for (String value : strings) {
+            joiner.add(StringUtils.capitalize(value));
+        }
+
+        return joiner.toString();
     }
 }

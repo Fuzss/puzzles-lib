@@ -8,12 +8,14 @@ import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
 import fuzs.puzzleslib.common.impl.client.core.proxy.ClientProxyImpl;
 import fuzs.puzzleslib.common.impl.core.context.ModConstructorImpl;
 import fuzs.puzzleslib.neoforge.api.core.v1.NeoForgeModContainerHelper;
+import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.impl.client.config.NeoForgeConfigurationScreen;
 import fuzs.puzzleslib.neoforge.impl.client.event.NeoForgeClientEventInvokers;
 import fuzs.puzzleslib.neoforge.impl.client.key.NeoForgeKeyMappingHelper;
 import fuzs.puzzleslib.neoforge.impl.client.renderer.NeoForgeMutableBakedQuad;
 import fuzs.puzzleslib.neoforge.impl.core.NeoForgeCommonProxy;
 import fuzs.puzzleslib.neoforge.impl.core.context.PayloadTypesContextNeoForgeImpl;
+import fuzs.puzzleslib.neoforge.impl.client.data.ConfigLanguageProvider;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -121,6 +123,11 @@ public class NeoForgeClientProxy extends NeoForgeCommonProxy implements ClientPr
                 .registerExtensionPoint(IConfigScreenFactory.class, (ModContainer modContainer, Screen screen) -> {
                     return new NeoForgeConfigurationScreen(modContainer.getModId(), screen, otherModIds);
                 });
+    }
+
+    @Override
+    public void registerConfigLanguageProvider(String modId) {
+        DataProviderBuilder.of(modId, ConfigLanguageProvider::new);
     }
 
     @Override

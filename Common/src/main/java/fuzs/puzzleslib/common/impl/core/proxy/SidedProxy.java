@@ -49,4 +49,8 @@ public interface SidedProxy {
     default void registerConfigurationScreen(String modId, String... otherModIds) {
         // NO-OP
     }
+
+    default void registerConfigLanguageProvider(String modId) {
+        // NO-OP
+    }
 }

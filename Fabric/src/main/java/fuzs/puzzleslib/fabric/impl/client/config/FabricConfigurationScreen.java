@@ -13,18 +13,16 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.config.ModConfigs;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
 /**
- * An extension of {@link ConfigurationScreen} that replaces translated components with literals.
+ * An extension of {@link ConfigurationScreen} that uses generated config translations.
  * <p>
  * It also allows for displaying configs from multiple mods in a single selection menu.
  * <p>
@@ -166,64 +164,6 @@ public class FabricConfigurationScreen extends OptionsSubScreen {
         return Component.literal(message).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW);
     }
 
-    /**
-     * Turns a config value key usually in lowercase underscore format into human-readable text.
-     *
-     * @param valueKey the value name in the config
-     * @return the text component
-     */
-    private static MutableComponent getConfigValueComponent(String valueKey) {
-        String string = ModContainer.getCapitalizedString(valueKey).replace(" And ", " & ").replace(" Or ", " / ");
-        return Component.literal(string);
-    }
-
-    /**
-     * Applies pretty text component formatting including splitting and coloring to a config value description string.
-     *
-     * @param valueKeyComponent the value key component from {@link #getConfigValueComponent(String)}
-     * @param rawComment        the raw comment string
-     * @return the tooltip component
-     */
-    private static Component getConfigValueTooltipComponent(Component valueKeyComponent, String rawComment) {
-        if (!Strings.isBlank(rawComment)) {
-            Component component = getStylizedStrings(rawComment.split("\\R"));
-            if (component != null) {
-                return Component.empty()
-                        .append(valueKeyComponent)
-                        .append(CommonComponents.NEW_LINE)
-                        .append(CommonComponents.NEW_LINE)
-                        .append(component);
-            }
-        }
-
-        return CommonComponents.EMPTY;
-    }
-
-    /**
-     * Combines multiple strings into a multi-line component with altering text colors.
-     *
-     * @param strings the strings to combine
-     * @return the colored component
-     */
-    private static @Nullable Component getStylizedStrings(String... strings) {
-        MutableComponent mutableComponent = null;
-        for (int i = 0, j = 0; i < strings.length; i++) {
-            // The default value is otherwise displayed twice.
-            if (!strings[i].matches("^ Default: .*")) {
-                String string = strings[i].replaceAll("^ Range: ", "Value Range: ");
-                ChatFormatting chatFormatting = j++ % 2 == 0 ? ChatFormatting.YELLOW : ChatFormatting.GOLD;
-                MutableComponent component = Component.literal(string).withStyle(chatFormatting);
-                if (mutableComponent != null) {
-                    mutableComponent.append(CommonComponents.NEW_LINE).append(component);
-                } else {
-                    mutableComponent = component;
-                }
-            }
-        }
-
-        return mutableComponent;
-    }
-
     public static class CustomConfigurationSectionScreen extends ConfigurationScreen.ConfigurationSectionScreen {
 
         public CustomConfigurationSectionScreen(Screen parent, ModConfig.Type type, ModConfig modConfig, Component title) {
@@ -236,18 +176,6 @@ public class FabricConfigurationScreen extends OptionsSubScreen {
             super(parentContext, parent, valueSpecs, key, entrySet, title);
             // This is set to GAME for startup configs, which is wrong, as they reload just fine.
             this.needsRestart = ModConfigSpec.RestartType.NONE;
-        }
-
-        @Override
-        protected MutableComponent getTranslationComponent(String key) {
-            // Replace the usage of translatable components with component literals directly computed from the value key.
-            return getConfigValueComponent(key);
-        }
-
-        @Override
-        protected Component getTooltipComponent(final String key, ModConfigSpec.@Nullable Range<?> range) {
-            // Replace the usage of translatable components with component literals and apply pretty formatting.
-            return getConfigValueTooltipComponent(this.getTranslationComponent(key), this.getComment(key));
         }
 
         @Override
@@ -289,7 +217,7 @@ public class FabricConfigurationScreen extends OptionsSubScreen {
 
         @Nullable
         protected Element createSection(final String key, final UnmodifiableConfig subconfig, final UnmodifiableConfig subsection) {
-            // Make sure our own screen is used for submenus, while also replacing translated components with literals.
+            // Make sure our own screen is used for submenus.
             if (subconfig.isEmpty()) {
                 return null;
             } else {
@@ -311,7 +239,7 @@ public class FabricConfigurationScreen extends OptionsSubScreen {
 
         @Nullable
         protected <T> Element createList(final String key, final ModConfigSpec.ListValueSpec spec, final ModConfigSpec.ConfigValue<List<T>> list) {
-            // Make sure our own screen is used for submenus, while also replacing translated components with literals.
+            // Make sure our own screen is used for submenus.
             return new Element(this.getTranslationComponent(key).append(CommonComponents.ELLIPSIS),
                     this.getTooltipComponent(key, null),
                     Button.builder(EDIT_COMPONENT,
@@ -336,18 +264,6 @@ public class FabricConfigurationScreen extends OptionsSubScreen {
             super(context, key, title, spec, valueList);
             // This is set to GAME for startup configs, which is wrong, as they reload just fine.
             this.needsRestart = ModConfigSpec.RestartType.NONE;
-        }
-
-        @Override
-        protected MutableComponent getTranslationComponent(String key) {
-            // Replace the usage of translatable components with component literals directly computed from the value key.
-            return getConfigValueComponent(key);
-        }
-
-        @Override
-        protected Component getTooltipComponent(final String key, ModConfigSpec.@Nullable Range<?> range) {
-            // Replace the usage of translatable components with component literals and apply pretty formatting.
-            return getConfigValueTooltipComponent(this.getTranslationComponent(key), this.getComment(key));
         }
 
         @Override

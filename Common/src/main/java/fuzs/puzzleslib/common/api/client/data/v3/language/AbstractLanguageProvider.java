@@ -117,7 +117,7 @@ public abstract class AbstractLanguageProvider implements DataProvider, Translat
      * The path provider for the language files.
      */
     private final PackOutput.PathProvider pathProvider;
-    private final JsonObject output = new JsonObject();
+    protected final JsonObject output = new JsonObject();
 
     /**
      * @param context the data provider context
@@ -139,7 +139,7 @@ public abstract class AbstractLanguageProvider implements DataProvider, Translat
      * @param packOutput the pack output instance
      */
     public AbstractLanguageProvider(String modId, PackOutput packOutput) {
-        this("en_us", modId, packOutput);
+        this(Language.DEFAULT, modId, packOutput);
     }
 
     /**

@@ -1,8 +1,8 @@
 package fuzs.puzzleslib.common.api.core.v1;
 
 import com.google.common.collect.ImmutableMap;
+import fuzs.puzzleslib.common.api.init.v3.registry.ContentRegistrationHelper;
 import fuzs.puzzleslib.common.impl.PuzzlesLib;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -96,24 +96,7 @@ public interface ModContainer {
     static String getDisplayName(String modId) {
         return ModLoaderEnvironment.INSTANCE.getModContainer(modId)
                 .map(ModContainer::getDisplayName)
-                .orElseGet(() -> getCapitalizedString(modId));
-    }
-
-    /**
-     * Splits a string into individual words and capitalizes all of them.
-     *
-     * @param string the string
-     * @return the capitalized words
-     */
-    @ApiStatus.Internal
-    static String getCapitalizedString(String string) {
-        String[] strings = string.toLowerCase().split("[\\s_]+");
-        StringJoiner joiner = new StringJoiner(" ");
-        for (String value : strings) {
-            joiner.add(StringUtils.capitalize(value));
-        }
-
-        return joiner.toString();
+                .orElseGet(() -> ContentRegistrationHelper.getCapitalizedString(modId));
     }
 
     @ApiStatus.Internal
