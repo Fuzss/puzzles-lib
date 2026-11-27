@@ -36,11 +36,22 @@ public class NeoForgeConfigurationScreen extends OptionsSubScreen {
             ModConfig.Type.LOCAL,
             ModConfig.Type.CLIENT,
             ModConfig.Type.SYNCED);
-    private static final Component EDIT_COMPONENT = Component.literal("Edit").append(CommonComponents.ELLIPSIS);
     /**
      * @see ConfigurationScreen#LANG_PREFIX
      */
     private static final String LANG_PREFIX = "neoforge.configuration.uitext.";
+    /**
+     * @see ConfigurationScreen#translationChecker
+     */
+    private static final ConfigurationScreen.TranslationChecker translationChecker = new ConfigurationScreen.TranslationChecker();
+    /**
+     * @see ConfigurationScreen#SECTION
+     */
+    private static final String SECTION = LANG_PREFIX + "section";
+    /**
+     * @see ConfigurationScreen#SECTION_TEXT
+     */
+    private static final String SECTION_TEXT = LANG_PREFIX + "sectiontext";
     /**
      * @see ConfigurationScreen#CRUMB
      */
@@ -48,15 +59,15 @@ public class NeoForgeConfigurationScreen extends OptionsSubScreen {
 
     protected final Set<String> modIds;
 
-    public NeoForgeConfigurationScreen(String modId, Screen lastScreen) {
-        this(Collections.singleton(modId), lastScreen, getConfigTitleComponent(modId));
+    public NeoForgeConfigurationScreen(Screen lastScreen, String modId) {
+        this(lastScreen, getConfigTitleComponent(modId), Collections.singleton(modId));
     }
 
-    public NeoForgeConfigurationScreen(String modId, Screen lastScreen, String... modIds) {
-        this(ImmutableSet.<String>builder().add(modId).add(modIds).build(), lastScreen, getConfigTitleComponent(modId));
+    public NeoForgeConfigurationScreen(Screen lastScreen, String modId, String... modIds) {
+        this(lastScreen, getConfigTitleComponent(modId), ImmutableSet.<String>builder().add(modId).add(modIds).build());
     }
 
-    public NeoForgeConfigurationScreen(Set<String> modIds, Screen lastScreen, Component title) {
+    public NeoForgeConfigurationScreen(Screen lastScreen, Component title, Set<String> modIds) {
         super(lastScreen, Minecraft.getInstance().options, title);
         this.modIds = modIds;
     }
@@ -172,10 +183,26 @@ public class NeoForgeConfigurationScreen extends OptionsSubScreen {
             this.needsRestart = ModConfigSpec.RestartType.NONE;
         }
 
-        public CustomConfigurationSectionScreen(final Context parentContext, final Screen parent, final Map<String, Object> valueSpecs, final String key, final Set<? extends UnmodifiableConfig.Entry> entrySet, Component title) {
+        public CustomConfigurationSectionScreen(Context parentContext, Screen parent, Map<String, Object> valueSpecs, String key, Set<? extends UnmodifiableConfig.Entry> entrySet, Component title) {
             super(parentContext, parent, valueSpecs, key, entrySet, title);
             // This is set to GAME for startup configs, which is wrong, as they reload just fine.
             this.needsRestart = ModConfigSpec.RestartType.NONE;
+        }
+
+        @Override
+        protected Component getTooltipComponent(String key, ModConfigSpec.@Nullable Range<?> range) {
+            String tooltipKey = this.getTranslationKey(key) + ".tooltip";
+            Component tooltipText = Component.translatable(tooltipKey);
+            if (tooltipText.getString().isEmpty()) {
+                return CommonComponents.EMPTY;
+            }
+
+            Component valueName = this.getTranslationComponent(key);
+            return Component.empty()
+                    .append(valueName)
+                    .append(CommonComponents.NEW_LINE)
+                    .append(CommonComponents.NEW_LINE)
+                    .append(tooltipText);
         }
 
         @Override
@@ -216,14 +243,15 @@ public class NeoForgeConfigurationScreen extends OptionsSubScreen {
         }
 
         @Nullable
-        protected Element createSection(final String key, final UnmodifiableConfig subconfig, final UnmodifiableConfig subsection) {
+        protected Element createSection(String key, UnmodifiableConfig subconfig, UnmodifiableConfig subsection) {
             // Make sure our own screen is used for submenus.
             if (subconfig.isEmpty()) {
                 return null;
             } else {
                 return new Element(this.getTranslationComponent(key).append(CommonComponents.ELLIPSIS),
                         this.getTooltipComponent(key, null),
-                        Button.builder(EDIT_COMPONENT,
+                        Button.builder(Component.translatable(SECTION,
+                                        Component.translatable(translationChecker.check(getTranslationKey(key) + ".button", SECTION_TEXT))),
                                         (Button button) -> this.minecraft.gui.setScreen(new CustomConfigurationSectionScreen(
                                                 this.context,
                                                 this,
@@ -238,11 +266,12 @@ public class NeoForgeConfigurationScreen extends OptionsSubScreen {
         }
 
         @Nullable
-        protected <T> Element createList(final String key, final ModConfigSpec.ListValueSpec spec, final ModConfigSpec.ConfigValue<List<T>> list) {
+        protected <T> Element createList(String key, ModConfigSpec.ListValueSpec spec, ModConfigSpec.ConfigValue<List<T>> list) {
             // Make sure our own screen is used for submenus.
             return new Element(this.getTranslationComponent(key).append(CommonComponents.ELLIPSIS),
                     this.getTooltipComponent(key, null),
-                    Button.builder(EDIT_COMPONENT,
+                    Button.builder(Component.translatable(SECTION,
+                                    Component.translatable(translationChecker.check(getTranslationKey(key) + ".button", SECTION_TEXT))),
                                     button -> this.minecraft.gui.setScreen(new CustomConfigurationListScreen<>(Context.list(this.context,
                                             this),
                                             key,
@@ -264,6 +293,22 @@ public class NeoForgeConfigurationScreen extends OptionsSubScreen {
             super(context, key, title, spec, valueList);
             // This is set to GAME for startup configs, which is wrong, as they reload just fine.
             this.needsRestart = ModConfigSpec.RestartType.NONE;
+        }
+
+        @Override
+        protected Component getTooltipComponent(String key, ModConfigSpec.@Nullable Range<?> range) {
+            String tooltipKey = this.getTranslationKey(key) + ".tooltip";
+            Component tooltipText = Component.translatable(tooltipKey);
+            if (tooltipText.getString().isEmpty()) {
+                return CommonComponents.EMPTY;
+            }
+
+            Component valueName = this.getTranslationComponent(key);
+            return Component.empty()
+                    .append(valueName)
+                    .append(CommonComponents.NEW_LINE)
+                    .append(CommonComponents.NEW_LINE)
+                    .append(tooltipText);
         }
 
         @Override

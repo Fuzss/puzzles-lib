@@ -121,7 +121,7 @@ public class NeoForgeClientProxy extends NeoForgeCommonProxy implements ClientPr
     public void registerConfigurationScreen(String modId, String... otherModIds) {
         NeoForgeModContainerHelper.getModContainer(modId)
                 .registerExtensionPoint(IConfigScreenFactory.class, (ModContainer modContainer, Screen screen) -> {
-                    return new NeoForgeConfigurationScreen(modContainer.getModId(), screen, otherModIds);
+                    return new NeoForgeConfigurationScreen(screen, modContainer.getModId(), otherModIds);
                 });
     }
 

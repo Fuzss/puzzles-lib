@@ -9,10 +9,10 @@ import net.minecraft.locale.Language;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.config.ModConfigs;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class ConfigLanguageProvider extends AbstractLanguageProvider {
     private final String modId;
@@ -43,80 +43,81 @@ public class ConfigLanguageProvider extends AbstractLanguageProvider {
         this.output.addProperty(translationKey, value);
     }
 
-    public void addModConfig(String modId, String configType, String fileName, ModConfigSpec configSpec) {
+    private void addModConfig(String modId, String configType, String fileName, ModConfigSpec configSpec) {
         this.addConfigTitle(modId);
         this.addConfigFile(modId, fileName, configType);
-        this.addConfigValues(modId, configSpec.getSpec(), new ArrayList<>(), configSpec::getLevelComment);
+        this.addConfigValues(modId, configSpec, configSpec.getSpec(), new ArrayList<>());
     }
 
-    public void addConfigTitle(String modId) {
+    private void addConfigTitle(String modId) {
         this.add(modId + ".configuration.title", "%s Configuration");
     }
 
-    public void addConfigFile(String modId, String fileName, String configType) {
-        configType = getConfigTypeFromFileName(fileName).orElse(configType);
-        configType = getConfigValueName(configType);
-        fileName = fileName.replaceAll("[^a-zA-Z0-9]+", ".")
+    private void addConfigFile(String modId, String fileName, String configType) {
+        String configTypeName = this.sanitizeValueName(this.getConfigTypeName(fileName).orElse(configType));
+        String sanitizedFileName = fileName.replaceAll("[^a-zA-Z0-9]+", ".")
                 .replaceFirst("^\\.", "")
                 .replaceFirst("\\.$", "")
                 .toLowerCase();
-        this.add(modId + ".configuration.section." + fileName, "%s " + configType + " Settings");
-        this.add(modId + ".configuration.section." + fileName + ".title", "%s " + configType + " Configuration");
+        this.add(modId + ".configuration.section." + sanitizedFileName, "%s " + configTypeName + " Settings");
+        this.add(modId + ".configuration.section." + sanitizedFileName + ".title",
+                "%s " + configTypeName + " Configuration");
     }
 
-    private void addConfigValues(String modId, UnmodifiableConfig config, List<String> path, Function<List<String>, @Nullable String> levelCommentGetter) {
+    private void addConfigValues(String modId, ModConfigSpec configSpec, UnmodifiableConfig config, List<String> path) {
         for (UnmodifiableConfig.Entry entry : config.entrySet()) {
-            this.addConfigValue(modId, entry.getKey());
+            String valueName = entry.getKey();
+            String translationKey;
             String comment;
             if (entry.getValue() instanceof ModConfigSpec.ValueSpec valueSpec) {
+                translationKey = this.getTranslationKey(modId, valueSpec, valueName);
                 comment = valueSpec.getComment();
             } else if (entry.getValue() instanceof UnmodifiableConfig) {
-                path = new ArrayList<>(path);
-                path.add(entry.getKey());
-                comment = levelCommentGetter.apply(path);
-                this.addConfigValues(modId, entry.getValue(), path, levelCommentGetter);
+                List<String> subPath = new ArrayList<>(path);
+                subPath.add(valueName);
+                translationKey = this.getLevelTranslationKey(modId, configSpec, subPath, valueName);
+                comment = configSpec.getLevelComment(subPath);
+                this.addConfigValues(modId, configSpec, entry.getValue(), subPath);
             } else {
-                comment = null;
+                continue;
             }
 
-            this.addConfigValueComment(modId, entry.getKey(), comment);
-            this.addConfigValueButton(modId, entry.getKey());
+            this.addConfigValueKey(translationKey, valueName);
+            this.addConfigValueCommentKey(translationKey, comment);
+            this.addConfigValueButton(translationKey);
         }
     }
 
-    public void addConfigValue(String modId, String valueName) {
-        Objects.requireNonNull(valueName, "value name is null");
-        this.addConfigValue(modId, Collections.singletonList(valueName));
+    private String getTranslationKey(String modId, ModConfigSpec.ValueSpec valueSpec, String valueName) {
+        String translationKey = valueSpec.getTranslationKey();
+        return translationKey == null ? modId + ".configuration." + valueName : translationKey;
     }
 
-    public void addConfigValue(String modId, List<String> valuePath) {
-        this.add(modId + ".configuration." + valuePath.getLast(), getConfigValueName(valuePath.getLast()));
+    @SuppressWarnings("ConstantValue")
+    private String getLevelTranslationKey(String modId, ModConfigSpec configSpec, List<String> subPath, String valueName) {
+        String translationKey = configSpec.getLevelTranslationKey(subPath);
+        return translationKey == null ? modId + ".configuration." + valueName : translationKey;
     }
 
-    public void addConfigValueComment(String modId, String valueName, @Nullable String comment) {
-        Objects.requireNonNull(valueName, "value name is null");
-        this.addConfigValueComment(modId,
-                Collections.singletonList(valueName),
-                comment != null ? new ArrayList<>(Arrays.asList(comment.split("\\R"))) : Collections.emptyList());
+    private void addConfigValueKey(String translationKey, String valueName) {
+        this.add(translationKey, this.sanitizeValueName(valueName));
     }
 
-    public void addConfigValueComment(String modId, List<String> valuePath, List<String> comments) {
-        String value = String.join(System.lineSeparator(), getStylizedStrings(comments));
-        // also put in empty strings, as translations are expected for config values without a comment as well
-        this.add(modId + ".configuration." + valuePath.getLast() + ".tooltip", value);
+    private void addConfigValueCommentKey(String translationKey, @Nullable String comment) {
+        if (Strings.isBlank(comment)) {
+            this.add(translationKey + ".tooltip", "");
+            return;
+        }
+
+        List<String> styledStrings = this.getStylizedStrings(new ArrayList<>(Arrays.asList(comment.split("\\R"))));
+        this.add(translationKey + ".tooltip", String.join("\n", styledStrings));
     }
 
-    public void addConfigValueButton(String modId, String valueName) {
-        Objects.requireNonNull(valueName, "value name is null");
-        this.addConfigValueButton(modId, Collections.singletonList(valueName));
+    private void addConfigValueButton(String translationKey) {
+        this.add(translationKey + ".button", "Edit");
     }
 
-    public void addConfigValueButton(String modId, List<String> valuePath) {
-        this.add(valuePath.getLast() + ".button", "Edit...");
-        this.add(modId + ".configuration." + valuePath.getLast() + ".button", "Edit...");
-    }
-
-    private static Optional<String> getConfigTypeFromFileName(String fileName) {
+    private Optional<String> getConfigTypeName(String fileName) {
         int startIndex = fileName.lastIndexOf('-');
         int endIndex = fileName.lastIndexOf('.');
         if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
@@ -126,12 +127,12 @@ public class ConfigLanguageProvider extends AbstractLanguageProvider {
         }
     }
 
-    private static String getConfigValueName(String valueName) {
+    private String sanitizeValueName(String valueName) {
         String capitalizedValueName = ContentRegistrationHelper.getCapitalizedString(valueName);
         return capitalizedValueName.replace(" And ", " & ").replace(" Or ", " / ");
     }
 
-    private static List<String> getStylizedStrings(List<String> strings) {
+    private List<String> getStylizedStrings(List<String> strings) {
         strings.removeIf((String string) -> string.matches("^ Default: .*"));
         for (int i = 0; i < strings.size(); i++) {
             String string = strings.get(i).replaceAll("^ Range: ", "Value Range: ");
